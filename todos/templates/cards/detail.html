@@ -1,0 +1,13 @@
+{% extends 'content.html' %}
+
+{% block container %}
+<a href="{% url 'todos:board_detail' card.board_ref.id %}">back</a>
+<hr>
+<p>Name: {{ card.title }}</p>
+<p>Board Name: {{ card.board_ref.title }}</p>
+<p>Description: {{ card.description }}</p>
+<p>Archived: {{ card.is_archived }}</p>
+
+<p>Updated: {{ card.updated_at }}</p>
+<p>Created: {{ card.created_at }}</p>
+{% endblock container %}

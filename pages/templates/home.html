@@ -1,0 +1,11 @@
+{% extends 'content.html' %}
+{% load static %}
+
+{% block container %}
+<h1>Home Page</h1>
+<p>This is the home page, this is the  complete program urls</p>
+
+<ul>
+  <li><a href="{% url 'todos:boards' %}">Todo App</a></li>
+</ul>
+{% endblock container %}

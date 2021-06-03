@@ -1,0 +1,25 @@
+{% extends 'content.html' %}
+
+{% block container %}
+<a href="{% url 'todos:boards'  %}">back</a>
+<hr>
+
+<a href="{% url 'todos:boards_cards_new' board.id  %}">New Card</a>
+<hr>
+
+Name: {{ board.title }}
+
+{% if cards %}
+<ul>
+  {% for card in cards %}
+  <li>
+    <a href="{% url 'todos:card_detail' card.id %}">{{ card.title }}</a>
+    <p>{{ card.description }}</p>
+    <p class="date">{{ card.created_at }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No Cards are available.</p>
+{% endif %}
+{% endblock container %}

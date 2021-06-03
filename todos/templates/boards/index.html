@@ -1,0 +1,24 @@
+{% extends 'content.html' %}
+
+{% block container %}
+<a href="{% url 'pages:home' %}">back</a>
+<hr>
+
+<a href="{% url 'todos:boards_new' %}">Create a Board</a>
+<hr>
+
+{% if object_list %}
+<ul>
+  {% for board in object_list %}
+  <li>
+    <a href="{% url 'todos:board_detail' board.id %}">{{ board.title }}</a>
+    <p><a href="{% url 'todos:boards_edit' board.id %}">edit</a> - <a href="{% url 'todos:boards_delete' board.id %}">delete</a></p>
+    <p class="count_board">Cards: {{ board.len_cards }}</p>
+    <p class="date">{{ board.created_at }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Not Boards yet.</p>
+{% endif %}
+{% endblock container %}

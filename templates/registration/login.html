@@ -1,10 +1,48 @@
-{% extends 'base.html' %}
+{% extends 'clear-content.html' %}
 
-{% block content %}
-<h2>Log In</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Log In</button>
-</form>
-{% endblock content %}
+{% block container %}
+  <div class="container" style="margin-bottom: 2em;">
+
+    <div class="z-depth-2">
+      <div class="container">
+        <h2 class="center-align">Log In</h2>
+        <form method="post" class="col s12" style="padding-bottom: 2em;">
+          {% csrf_token %}
+          <div class="row">
+            <div class="input-field col s12">
+              {{form.username}}
+              <label for="username">{{form.username.label}}</label>
+              {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              {{form.password}}
+              <label for="password">{{form.password.label}}</label>
+              {% if form.username.errors %}
+                {% for error in form.password.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+          <div class="col s12 right-align">
+            <button type="submit" class="waves-effect waves-light btn-large">Log In</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock container %}
+
+{% block javascript %}
+  {% if form.errors %}
+    M.toast(
+    {html: "<span>username or password not correct</span>", classes: 'red rounded', displayLength: 32000}
+    );
+  {% endif %}
+{% endblock javascript %}

@@ -1,11 +1,56 @@
-{% extends 'base.html' %}
+{% extends 'clear-content.html' %}
 
-{% block content %}
-<h2>Sign up</h2>
+{% block container %}
+<div class="container" style="margin-bottom: 2em;">
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Sign up</button>
-</form>
-{% endblock content %}
+  <div class="z-depth-2">
+    <div class="container">
+      <h2 class="center-align">Sign up</h2>
+      <form method="post" class="col s12" style="padding-bottom: 2em;">
+        {% csrf_token %}
+        <div class="row">
+          <div class="input-field col s12">
+            {{form.username}}
+            <label for="username">{{form.username.label}}</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            {{form.password1}}
+            <label for="password">{{form.password1.label}}</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            {{form.password2}}
+            <label for="password">{{form.password2.label}}</label>
+          </div>
+        </div>
+        <div class="col s12 right-align">
+          <button type="submit" class="waves-effect waves-light btn-large">Log In</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock container %}
+
+{% block javascript %}
+
+  {% if form.errors %}
+    {% for field in form %}
+      {% for error in field.errors %}
+        M.toast(
+        {html: '<strong>{{ error|escape }}</strong>', classes: 'red rounded', displayLength: 2000}
+        );
+      {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+      M.toast(
+      {html: '<strong>{{ error|escape }}</strong>', classes: 'red rounded', displayLength: 2000}
+      );
+    {% endfor %}
+  {% endif %}
+
+{% endblock javascript %}

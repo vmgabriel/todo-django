@@ -28,6 +28,7 @@ USER_APPLICATIONS = [
     'pages.apps.PagesConfig',
     'accounts.apps.AccountsConfig',
     'todos.apps.TodosConfig',
+    'lists.apps.ListsConfig'
 ]
 
 

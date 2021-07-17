@@ -6,15 +6,16 @@ Django settings for config project.
 import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ns@h_u3zcbgw6or()4&ecja7d1z=cm@#dxn=plhi29@sx8ec4z'
+SECRET_KEY = "sdfdsfaf-asdfsafasfa-das-fdasf.asdf-dasf"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -30,6 +31,10 @@ USER_APPLICATIONS = [
     'todos.apps.TodosConfig',
 ]
 
+EXTERNALS_APPLICATIONS = [
+    "versatileimagefield",
+]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-] + USER_APPLICATIONS
+] + USER_APPLICATIONS + EXTERNALS_APPLICATIONS
 
 MIDDLEWARE = [
     # 'django.middleware.security.SecurityMiddleware',
@@ -131,6 +136,7 @@ STATICFILES_DIRS = (
 )
 
 # Redirect when i can load
+AUTH_USER_MODEL = "accounts.User"
 LOGIN_REDIRECT_URL = 'pages:home'
 LOGOUT_REDIRECT_URL = 'pages:home'
 

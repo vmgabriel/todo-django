@@ -8,7 +8,7 @@ class Board(models.Model):
     """Board of Cards"""
     title = models.CharField(max_length=60)
     creator_ref = models.ForeignKey(
-        'auth.User',
+        'accounts.User',
         on_delete=models.CASCADE,
     )
     created_at = models.DateTimeField(auto_now_add=True)

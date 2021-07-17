@@ -14,4 +14,10 @@ urlpatterns = [
         views.SignUpView.as_view(),
         name='signup'
     ),
+
+    path(
+        'me/profile/',
+        views.UpdateProfileView.as_view(),
+        name='profile-user',
+    ),
 ]

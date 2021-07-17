@@ -1,0 +1,41 @@
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+  <li><a href="#">profile</a></li>
+  <li><a href="{% url 'logout' %}">logout</a></li>
+</ul>
+
+<nav>
+  <div class="nav-wrapper">
+    <div class="brand-logo">
+      {% if user.is_authenticated %}
+      <a href="#" data-target="slide-out" class="sidenav-trigger" style="display: block; margin-right: 0;">
+        <i class="material-icons">menu</i>
+      </a>
+      {% endif %}
+      <a href="{% url 'pages:home' %}">
+        Logo
+      </a>
+    </div>
+
+    <ul id=nav-mobile class="right hide-on-med-and-down">
+      <li><a href="#">Component</a></li>
+      <li><a href="#">Descript</a></li>
+      {% if not user.is_authenticated %}
+        <li><a href="{% url 'accounts:signup' %}">SignUp</a></li>
+      {% endif %}
+
+      <li>
+        {% if user.is_authenticated %}
+          <a class="dropdown-trigger" data-target="dropdown1">
+            {{ user.username }} <i class="material-icons right">arrow_drop_down</i>
+          </a>
+        {% else %}
+          <a href="{% url 'login' %}" class="waves-effect waves-light btn">
+            <i class="material-icons left">add</i>Login
+          </a>
+        {% endif %}
+      </li>
+    </ul>
+
+  </div>
+</nav>

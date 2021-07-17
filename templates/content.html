@@ -1,17 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
+  {% include 'components/sidebar.html' %}
+  {% include 'components/header.html' %}
 
-{% if user.is_authenticated %}
-<p>Hi {{ user.username }}</p>
-<p><a href="{% url 'logout' %}">Log out</a></p>
+  {% if user.is_authenticated %}
+    {% block container %}
+    {% endblock container %}
+  {% else %}
+    {% include 'components/home.html' %}
+  {% endif %}
 
-{% block container %}
-{% endblock container %}
-
-{% else %}
-<p>You're not  logged in.</p>
-<a href="{% url 'login' %}">Log In</a>
-{% endif %}
-
+  {% include 'components/footer.html' %}
 {% endblock content %}
+
+
+{% block js %}
+  $(document).ready(() => {
+      $('.sidenav').sidenav();
+      $('.carousel').carousel();
+      $(".dropdown-trigger").dropdown();
+  });
+
+  {% block javascript %}
+  {% endblock javascript %}
+{% endblock js %}

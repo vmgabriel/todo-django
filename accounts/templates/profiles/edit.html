@@ -2,13 +2,78 @@
 
 {% block container %}
   <div class="container" style="margin-bottom: 2em;">
-    <h4>
-      User Profile {{ object.username }}
-    </h4>
 
-    <form method="post">{% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="Update">
-    </form>
+    <div class="z-depth-2">
+      <div class="container">
+        <h4>User Profile {{ object.username }}</h4>
+
+        <div class="container-fluid right-align" style="margin: 2em;">
+          <a href="{% url 'password_change' %}" class="btn waves-effect waves-red btn-large">Change Password</a>
+        </div>
+
+        <form method="post" class="col s12" style="padding-bottom: 2em;">
+          {% csrf_token %}
+          <div class="row">
+            <div class="input-field col s12">
+              {{ form.username }}
+              <label for="username">{{ form.username.label }}</label>
+              {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              {{ form.first_name }}
+              <label for="first_name">{{ form.first_name.label }}</label>
+              {% if form.first_name.errors %}
+                {% for error in form.first_name.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              {{ form.last_name }}
+              <label for="last_name">{{ form.last_name.label }}</label>
+              {% if form.last_name.errors %}
+                {% for error in form.last_name.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              {{ form.telephone }}
+              <label for="telephone">{{ form.telephone.label }}</label>
+              {% if form.telephone.errors %}
+                {% for error in form.telephone.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              {{ form.image }}
+              <label for="image">{{ form.image.label }}</label>
+              {% if form.image.errors %}
+                {% for error in form.image.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+          <div class="col s12 right-align">
+            <a href="{% url 'accounts:profile-user' %}" class="btn waves-effect waves-red btn-large red">Cancel</a>
+            <button type="submit" class="waves-effect waves-light btn-large">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 {% endblock container %}

@@ -2,12 +2,11 @@
 
 # Libraries
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
 
 # Forms
-from .forms import UserForm
+from .forms import UserForm, RegisterForm
 
 # Models
 from .models import User
@@ -15,7 +14,7 @@ from .models import User
 
 class SignUpView(generic.CreateView):
     """Create View Sign Up of account"""
-    form_class = UserCreationForm
+    form_class = RegisterForm
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
 

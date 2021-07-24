@@ -1,10 +1,11 @@
-""" Models of Lists"""
+""" Models related with products management"""
 
 # Libraries
 from django.db import models
+from djmoney.models.fields import MoneyField
 
-class List(models.Model):
-    """Item List"""
+class Store(models.Model):
+    """Product Store"""
     title = models.CharField(
         max_length=60,
         blank=False,
@@ -15,9 +16,10 @@ class List(models.Model):
         blank=True,
         null=True
     )
-    creator = models.ForeignKey(
-        'auth.User',
-        on_delete=models.CASCADE,
+    address = models.CharField(
+        max_length=60,
+        blank=True,
+        null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -25,8 +27,8 @@ class List(models.Model):
     def __str__(self):
         return "title: {}".format(self.title)
 
-class Item(models.Model):
-    """List Items"""
+class Product(models.Model):
+    """Item Product"""
     title = models.CharField(
         max_length=60,
         blank=False,
@@ -37,32 +39,21 @@ class Item(models.Model):
         blank=True,
         null=True
     )
-    check = models.BooleanField(
-        "Item completed",
-        default=False
-    )
-    value = models.DecimalField(
-        max_digits=16,
-        decimal_places=4,
-        default=0
-    )
-    deadline = models.DateTimeField(
-        null=True,
-        blank=True
-    )
-    creator = models.ForeignKey(
-        'auth.User',
-        on_delete=models.CASCADE
-    )
-    responsible = models.ManyToManyField(
-        'auth.User',
-        verbose_name="responsibles related",
+    brand = models.CharField(
+        max_length=60,
         blank=True,
-        related_name="item_responsabilities"
+        null=True
     )
-    item_list = models.ForeignKey(
-        List,
-        on_delete=models.CASCADE
+    value = MoneyField(
+        max_digits=14, 
+        decimal_places=2, 
+        default_currency='CO'
+    )
+    store = models.ManyToManyField(
+        Store,
+        verbose_name="retail store",
+        blank=True,
+        related_name="retail_store"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

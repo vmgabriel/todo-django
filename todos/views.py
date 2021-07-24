@@ -105,7 +105,6 @@ class EditBoardView(generic.edit.UpdateView):
     fields = ['title']
     template_name = 'boards/create.html'
     success_url = 'todos:boards'
-
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(EditBoardView, self).get_context_data(**kwargs)

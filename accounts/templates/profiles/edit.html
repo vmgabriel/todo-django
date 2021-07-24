@@ -1,0 +1,14 @@
+{% extends 'content.html' %}
+
+{% block container %}
+  <div class="container" style="margin-bottom: 2em;">
+    <h4>
+      User Profile {{ object.username }}
+    </h4>
+
+    <form method="post">{% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Update">
+    </form>
+  </div>
+{% endblock container %}

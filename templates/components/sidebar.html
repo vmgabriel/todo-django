@@ -1,13 +1,30 @@
 <ul id="slide-out" class="sidenav">
-  <li>
-    <div class="user-view">
-      <div class="background">
-        <img src="https://lorempixel.com/500/500/nature/1">
+  {% if user.is_authenticated %}
+    <li>
+      <div class="user-view">
+        <div class="background">
+          <img src="https://lorempixel.com/500/500/nature/1">
+        </div>
+        <a href="#user"><img class="circle" src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50"></a>
+        <a href="#name"><span class="white-text name">{{ user.first_name }} {{ user.last_name }}</span></a>
+        <a href="#email"><span class="white-text email">{{ user.email }}</span></a>
       </div>
-      <a href="#user"><img class="circle" src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50"></a>
-      <a href="#name"><span class="white-text name">{{ user.first_name }} {{ user.last_name }}</span></a>
-      <a href="#email"><span class="white-text email">{{ user.email }}</span></a>
-    </div>
-  </li>
-  <li><a href="{% url 'todos:boards' %}"><i class="material-icons">cloud</i>Todo App</a></li>
+    </li>
+    <li><a href="{% url 'todos:boards' %}"><i class="material-icons">cloud</i>Todo App</a></li>
+    <li><a class="subheader">My Profile</a></li>
+    <li><a href="{% url 'accounts:profile-user' %}"><i class="material-icons">account_box</i>Profile</a></li>
+    <li><a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i>Logout</a></li>
+  {% else %}
+    <li>
+      <div class="user-view">
+        <div class="background">
+          <img src="https://lorempixel.com/500/500/nature/1">
+        </div>
+        <span class="white-text name">Logo</span>
+      </div>
+    </li>
+    <li><a class="subheader">Access</a></li>
+    <li><a href="{% url 'accounts:signup' %}"><i class="material-icons">account_box</i>SignUp</a></li>
+    <li><a href="{% url 'login' %}"><i class="material-icons">account_box</i>Login</a></li>
+  {% endif %}
 </ul>

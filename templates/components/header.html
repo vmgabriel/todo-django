@@ -7,11 +7,9 @@
 <nav>
   <div class="nav-wrapper">
     <div class="brand-logo">
-      {% if user.is_authenticated %}
-        <a href="#" data-target="slide-out" class="sidenav-trigger" style="display: block; margin-right: 0;">
-          <i class="material-icons">menu</i>
-        </a>
-      {% endif %}
+      <a href="#" data-target="slide-out" class="sidenav-trigger" style="display: block; margin-right: 0;">
+        <i class="material-icons">menu</i>
+      </a>
       <a href="{% url 'pages:home' %}">
         Logo
       </a>

@@ -23,5 +23,13 @@
      {% block js %}
      {% endblock js %}
     </script>
+
+    <script>
+     $(document).ready(() => {
+       $('.sidenav').sidenav();
+       $('.carousel').carousel();
+       $(".dropdown-trigger").dropdown();
+     });
+    </script>
   </body>
 </html>

@@ -29,9 +29,21 @@
                 <td>
                   <a class="btn-floating" href="{% url 'todos:board_detail' board.id %}"><i class="small material-icons">visibility</i></a>
                   <a class="btn-floating yellow" href="{% url 'todos:boards_edit' board.id %}"><i class="small material-icons">edit</i></a>
-                  <a class="btn-floating red" href="{% url 'todos:boards_delete' board.id %}"><i class="small material-icons">delete</i></a>
+                  <a class="btn-floating modal-trigger red" href="#delete-board-{{ board.id }}"><i class="small material-icons">delete</i></a>
                 </td>
               </tr>
+
+              <div id="delete-board-{{ board.id }}" class="modal">
+                <div class="modal-content">
+                  <h4>Delete Board #{{ board.id }}</h4>
+                  <p>Are you sure you want to delete Board with title {{board.title}}?</p>
+                </div>
+                <form method="post" action="{% url 'todos:boards_delete' pk=board.id %}">{% csrf_token %}
+                    <div class="modal-footer">
+                      <button type="submit" class="modal-close waves-effect waves-green btn-flat">Delete</button>
+                    </div>
+                </form>
+              </div>
             {% endfor %}
           </tbody>
         </table>
@@ -41,3 +53,10 @@
     </div>
   </div>
 {% endblock container %}
+
+
+{% block js %}
+  $(document).ready(function(){
+    $('.modal').modal();
+  });
+{% endblock js %}

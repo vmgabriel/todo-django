@@ -5,7 +5,7 @@
         <div class="background">
           <img src="https://lorempixel.com/500/500/nature/1">
         </div>
-        <a><img class="circle" src="{{ user.image.url }}" style="max-height: 100px"></a>
+        <a><img class="circle" src="{% if user.image %}{{ user.image.url }}{% else %}https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50{% endif %}" style="max-height: 100px"></a>
         <a><span class="white-text name">{{ user.first_name }} {{ user.last_name }}</span></a>
         <a><span class="white-text email">{{ user.email }}</span></a>
       </div>

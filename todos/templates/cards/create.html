@@ -2,12 +2,44 @@
 
 
 {% block container %}
-<a href="{% url 'todos:board_detail' board_id %}">back</a>
-<hr>
+  <div class="container" style="margin-top: 3em;">
+    <a href="{% url 'todos:board_detail' board_id %}"><i class="tiny material-icons">arrow_back</i> back</a>
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Save">
-</form>
+    <div class="card-panel">
+      <div class="row" style="display: inline-flex;">
+        <h2>Create Card</h2>
+      </div>
+
+      <form method="post" class="col s12" style="padding-bottom: 2em;">
+        {% csrf_token %}
+        <div class="row">
+            <div class="input-field col s12">
+              {{ form.title }}
+              <label for="title">{{ form.title.label }}</label>
+              {% if form.title.errors %}
+                {% for error in form.title.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+              {{ form.description }}
+              <label for="title">{{ form.description.label }}</label>
+              {% if form.description.errors %}
+                {% for error in form.description.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+        </div>
+
+        <div class="col s12 right-align">
+          <a href="{% url 'todos:boards_cards_new' pk=board_id  %}" class="btn waves-effect waves-red btn-large red">Cancel</a>
+          <button type="submit" class="waves-effect waves-light btn-large">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
 {% endblock container %}

@@ -13,15 +13,3 @@
 
   {% include 'components/footer.html' %}
 {% endblock content %}
-
-
-{% block js %}
-  $(document).ready(() => {
-      $('.sidenav').sidenav();
-      $('.carousel').carousel();
-      $(".dropdown-trigger").dropdown();
-  });
-
-  {% block javascript %}
-  {% endblock javascript %}
-{% endblock js %}

@@ -23,7 +23,7 @@
             <div class="input-field col s12">
               {{form.password}}
               <label for="password">{{form.password.label}}</label>
-              {% if form.username.errors %}
+              {% if form.password.errors %}
                 {% for error in form.password.errors %}
                   <p style="color: red">{{ error }}</p>
                 {% endfor %}

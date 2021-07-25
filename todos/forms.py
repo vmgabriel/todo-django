@@ -36,6 +36,10 @@ class CardForm(ModelForm):
             'description',
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["description"].widget.attrs["class"] = "materialize-textarea"
+
     def save(self, commit=True, **kwargs):
         """Save of Card with the form"""
         obj = super(CardForm, self).save(commit=False)

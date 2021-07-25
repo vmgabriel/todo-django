@@ -142,5 +142,9 @@ LOGIN_REDIRECT_URL = 'pages:home'
 LOGOUT_REDIRECT_URL = 'pages:home'
 
 
+# Media
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Static Settings
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

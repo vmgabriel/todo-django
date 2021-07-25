@@ -22,6 +22,7 @@ class SignUpView(generic.CreateView):
 class UpdateProfileView(LoginRequiredMixin, generic.edit.UpdateView):
     """Update profile view."""
     template_name = 'profiles/edit.html'
+    success_url = reverse_lazy('accounts:profile-user')
     form_class = UserForm
     model = User
 

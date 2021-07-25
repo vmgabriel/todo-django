@@ -71,7 +71,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     blocked_at = models.DateTimeField(blank=True, null=True)
     language_code = models.CharField(max_length=10, default=settings.LANGUAGE_CODE)
     image = VersatileImageField(
-        upload_to="users",
+        upload_to="images/users",
         ppoi_field="ppoi",
         blank=True,
         verbose_name="image"

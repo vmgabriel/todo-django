@@ -7,6 +7,7 @@ import os
 import environ
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
@@ -38,6 +39,7 @@ USER_APPLICATIONS = [
     'pages.apps.PagesConfig',
     'accounts.apps.AccountsConfig',
     'todos.apps.TodosConfig',
+    'socials.apps.SocialsConfig',
 ]
 
 EXTERNALS_APPLICATIONS = [
@@ -161,3 +163,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Static Settings
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Spotify connect
+SPOTIFY_CLIENT_ID = env("SPOTIFY_CLIENT_ID")
+SPOTIFY_CLIENT_SECRET = env("SPOTIFY_CLIENT_SECRET")
+SPOTIFY_REDIRECT_URI = env("SPOTIFY_REDIRECT_URI")

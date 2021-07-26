@@ -10,6 +10,7 @@ from .forms import UserForm, RegisterForm
 
 # Models
 from .models import User
+from socials.models import SocialConnection
 
 
 class SignUpView(generic.CreateView):
@@ -29,3 +30,10 @@ class UpdateProfileView(LoginRequiredMixin, generic.edit.UpdateView):
     def get_object(self):
         """Return user"""
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['has_spotify_connection'] = SocialConnection.objects.get(
+            user=context.get('user')
+        )
+        return context

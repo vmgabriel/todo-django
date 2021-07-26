@@ -9,6 +9,8 @@
 
         <div class="container-fluid right-align" style="margin: 2em;">
           <a href="{% url 'password_change' %}" class="btn waves-effect waves-red btn-large">Change Password</a>
+          {% if has_spotify_connection %}<a class="btn waves-effect waves-red btn-large">Connected Correctly to Spotify</a>{% else %}<a href="{% url 'social:spotify-redirect' %}" class="btn waves-effect waves-red btn-large">Connect to Spotify</a>{% endif %}
+          <a href="{% url 'social:spotify-redirect' %}" class="btn waves-effect waves-red btn-large">Connect to Spotify</a>
         </div>
 
         <form method="post" class="col s12" style="padding-bottom: 2em;" enctype="multipart/form-data">

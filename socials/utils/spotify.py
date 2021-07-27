@@ -15,6 +15,7 @@ def _bearer_auth(authorization: str) -> str:
 
 
 def _make_authorization_headers(client_id, client_secret):
+    """Generate a header content authorization"""
     auth_header = base64.b64encode(
         six.text_type(client_id + ":" + client_secret).encode("ascii")
     )
@@ -79,3 +80,16 @@ def regenerate_token(connection: SocialConnection):
     token_dict = refresh_token(connection.refresh_token)
     connection.access_token = token_dict.get("access_token")
     connection.save()
+
+
+def generate_content(connection: SocialConnection, func, *args, **kwargs) -> dict:
+    """Generate context if not exist"""
+    if not connection.access_token:
+        generate_token(connection)
+
+    data, status = func(authorization=connection.access_token, *args, **kwargs)
+    if status != 200:
+        regenerate_token(connection)
+        data, status = get_current_user(connection.access_token)
+
+    return data

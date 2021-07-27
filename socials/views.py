@@ -6,7 +6,7 @@ from django.conf import settings
 
 from .models import SocialConnection
 from . import SocialIntegration
-from .utils.spotify import get_current_user, get_token, generate_token, regenerate_token
+from .utils.spotify import get_current_user, generate_content
 
 
 def spotify_redirect(request):
@@ -43,18 +43,11 @@ def spotify_profile(request):
     """Get Info of spotify profile"""
     social_connect = SocialConnection.objects.get(user=request.user)
 
-    if not social_connect.access_token:
-        print('Regenero')
-        generate_token(social_connect)
-
-    current_user, status = get_current_user(social_connect.access_token)
-    print(f'Obteniendo datos - {current_user} - status: {status}')
-    if status != 200:
-        regenerate_token(social_connect)
-        current_user, status = get_current_user(social_connect.access_token)
+    current_user = generate_content(social_connect, get_current_user)
 
     ctx = {
         "current_user": current_user,
+        "image": current_user.get('images')[0].get('url'),
     }
 
     return render(request, "spotify/profile.html", ctx)

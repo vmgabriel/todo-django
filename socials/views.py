@@ -8,6 +8,7 @@ from django.conf import settings
 from .models import SocialConnection
 from . import SocialIntegration
 from .utils import spotify
+from django.urls import reverse
 
 
 def spotify_redirect(request):
@@ -27,10 +28,10 @@ def spotify_connect(request):
     code = request.GET["code"]
 
     if request.GET["code"]:
-        social_connection = SocialConnection.objects.get(
+        social_connection = SocialConnection.objects.filter(
             social_connect=SocialIntegration.SPOTIFY,
             user=request.user
-        )
+        ).exists()
         if social_connection:
             social_connection.code = code
         else:
@@ -54,30 +55,24 @@ def spotify_profile(request):
     return render(request, "spotify/profile.html", ctx)
 
 
-class SpotifyReproductorView(generic.TemplateView):
-    """The Main Page"""
-    template_name = 'spotify/reproductor.html'
+def spotify_reproductor(request):
+    social_connect = SocialConnection.objects.filter(user=request.user)
+    if not social_connect.exists() or not social_connect.first().code:
+        return redirect(reverse("social:spotify-redirect"))
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        social_connect = SocialConnection.objects.filter(user=self.request.user)
+    ctx = {}
 
-        if not social_connect or not social_connect.code:
-            return redirect("socials:spotify-redirect")
-
-        social_connect = social_connect.first()
-
-        playing_track = spotify.generate_content(social_connect, spotify.get_user_current_playing_track)
-
-        if "status" in playing_track and playing_track.get("status") == "no_playing":
-            context['has_playing'] = False
-        else:
-            context['has_playing'] = True
-            context['spotify-track'] = playing_track
-            context['image_album'] = playing_track.get("item").get("album").get("images")[0].get("url")
-            context['artists'] = playing_track.get("item").get("album").get("artists")
-            context['name_song'] = playing_track.get("item").get("name")
-        return context
+    social_connect = social_connect.first()
+    playing_track = spotify.generate_content(social_connect, spotify.get_user_current_playing_track)
+    if "status" in playing_track and playing_track.get("status") == "no_playing":
+        ctx['has_playing'] = False
+    else:
+        ctx['has_playing'] = True
+        ctx['spotify-track'] = playing_track
+        ctx['image_album'] = playing_track.get("item").get("album").get("images")[0].get("url")
+        ctx['artists'] = playing_track.get("item").get("album").get("artists")
+        ctx['name_song'] = playing_track.get("item").get("name")
+    return render(request, 'spotify/reproductor.html', ctx)
 
 
 def next_song_spotify(request):

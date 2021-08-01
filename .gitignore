@@ -189,4 +189,7 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Db
 db.sqlite3
+# Content of media
+media/

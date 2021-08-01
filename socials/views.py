@@ -60,10 +60,12 @@ class SpotifyReproductorView(generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        social_connect = SocialConnection.objects.get(user=self.request.user)
+        social_connect = SocialConnection.objects.filter(user=self.request.user)
 
-        if not social_connect.code:
+        if not social_connect or not social_connect.code:
             return redirect("socials:spotify-redirect")
+
+        social_connect = social_connect.first()
 
         playing_track = spotify.generate_content(social_connect, spotify.get_user_current_playing_track)
 

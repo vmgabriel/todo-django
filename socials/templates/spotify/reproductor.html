@@ -1,0 +1,50 @@
+{% extends 'content.html' %}
+
+{% block header %}
+  <style>
+    .content {
+      display: flex;
+      flex-direction: column;
+      margin-top: 2em;
+      margin-bottom: 2em;
+      background-color: #F2F0F0;
+    }
+    .img-play {
+      align-self: center;
+      max-width: 300px;
+      margin: 2em 2em 3em 3em;
+    }
+    .media-buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+    .volume-content {
+      margin-left: 4em;
+      margin-right: 4em;
+    }
+  </style>
+{% endblock header %}
+
+{% block container %}
+  <div class="container">
+    <div class="content">
+      {% if has_playing %}
+        <img class="img-play" alt="layer of album" src="{{ image_album }}" />
+        <p class="center-align">{% for artist in artists %}{{ artist.name }}{% if not loop.last %} - {% endif %}{% endfor %}</p>
+        <p class="center-align">{{ name_song }}</p>
+        <div class="media-buttons">
+          <a class="btn-floating btn-large waves-effect waves-light" href="{% url 'social:spotify-reproductor-previous' %}"><i class="material-icons">chevron_left</i></a>
+          <a class="btn-floating btn-large waves-effect waves-light" href="{% url 'social:spotify-reproductor-play-pause' %}"><i class="material-icons">play_arrow</i></a>
+          <a class="btn-floating btn-large waves-effect waves-light" href="{% url 'social:spotify-reproductor-next' %}"><i class="material-icons">chevron_right</i></a>
+        </div>
+        <div class="volume-content">
+          <input type="range" id="test5" min="0" max="100" />
+        </div>
+      {% else %}  
+        <p class="flow-text center-align">Not Play now.</p>
+      {% endif %}
+    </div>
+
+  </div>
+{% endblock container %}

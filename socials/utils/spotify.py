@@ -67,6 +67,61 @@ def get_current_user(authorization: str) -> Tuple[dict, int]:
     return response.json(), response.status_code
 
 
+def get_user_current_playing_track(authorization: str) -> Tuple[dict, int]:
+    """Get The Current Playing track user"""
+    url = "https://api.spotify.com/v1/me/player/currently-playing"
+    response = requests.get(url, headers={
+        "Authorization": _bearer_auth(authorization)
+    })
+    if response.status_code == 204:
+        return {"status": "no playing"}, 200
+    return response.json(), response.status_code
+
+
+def change_next_track(authorization: str) -> Tuple[dict, int]:
+    """Redirect to next song"""
+    url = "https://api.spotify.com/v1/me/player/next"
+    response = requests.post(url, headers={
+        "Authorization": _bearer_auth(authorization)
+    })
+    if response.status_code == 204:
+        return {}, 200
+    return response.json(), response.status_code
+
+
+def change_previous_track(authorization: str) -> Tuple[dict, int]:
+    """Redirect to previous song"""
+    url = "https://api.spotify.com/v1/me/player/previous"
+    response = requests.post(url, headers={
+        "Authorization": _bearer_auth(authorization)
+    })
+    if response.status_code == 204:
+        return {}, 200
+    return response.json(), response.status_code
+
+
+def start_track(authorization: str) -> Tuple[dict, int]:
+    """start the track"""
+    url = "https://api.spotify.com/v1/me/player/play"
+    response = requests.put(url, headers={
+        "Authorization": _bearer_auth(authorization)
+    })
+    if response.status_code == 204:
+        return {}, 200
+    return response.json(), response.status_code
+
+
+def pause_track(authorization: str) -> Tuple[dict, int]:
+    """pause the track"""
+    url = "https://api.spotify.com/v1/me/player/pause"
+    response = requests.put(url, headers={
+        "Authorization": _bearer_auth(authorization)
+    })
+    if response.status_code == 204:
+        return {}, 200
+    return response.json(), response.status_code
+
+
 def generate_token(connection: SocialConnection):
     """generate and save token"""
     token_dict, _ = get_token(connection.code)

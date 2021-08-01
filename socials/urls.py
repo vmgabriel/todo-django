@@ -15,4 +15,18 @@ urlpatterns = [
 
     # Profile
     path('spotify/profile', views.spotify_profile, name='spotify-profile'),
+
+    # Reproductor
+    path('spotify/reproductor', views.SpotifyReproductorView.as_view(), name='spotify-reproductor'),
+    path('spotify/reproductor/next', views.next_song_spotify, name='spotify-reproductor-next'),
+    path(
+        'spotify/reproductor/previous',
+        views.previous_song_spotify,
+        name='spotify-reproductor-previous'
+    ),
+    path(
+        'spotify/reproductor/play-pause',
+        views.play_pause_song_spotify,
+        name='spotify-reproductor-play-pause'
+    ),
 ]

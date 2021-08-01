@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block style %}
+  {% block header %}
+  {% endblock header %}
+{% endblock style %}
+
 {% block content %}
   {% include 'components/sidebar.html' %}
   {% include 'components/header.html' %}

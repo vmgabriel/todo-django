@@ -33,7 +33,7 @@ class UpdateProfileView(LoginRequiredMixin, generic.edit.UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['has_spotify_connection'] = SocialConnection.objects.get(
+        context['has_spotify_connection'] = SocialConnection.objects.filter(
             user=context.get('user')
-        )
+        ).exists()
         return context

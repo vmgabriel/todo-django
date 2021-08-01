@@ -13,6 +13,9 @@
         <div class="row center-align">
           <a href="{{ current_user.external_urls.spotify }}"><i class="material-icons">music_note</i>Spotify<i class="material-icons">music_note</i></a>
         </div>
+        <div class="row center-align">
+          <a class="waves-effect waves-light btn" href="{% url 'social:spotify-disconnect' %}"><i class="material-icons left">cloud</i>Dessasociate</a>
+        </div>
       </div>
     </div>
   </div>

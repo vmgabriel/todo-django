@@ -12,6 +12,7 @@ urlpatterns = [
     # Auth
     path('spotify/', views.spotify_redirect, name='spotify-redirect'),
     path('spotify/connect', views.spotify_connect, name='spotify-connect'),
+    path('spotify/disconnect', views.spotify_disconnect, name='spotify-disconnect'),
 
     # Profile
     path('spotify/profile', views.spotify_profile, name='spotify-profile'),

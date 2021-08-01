@@ -20,6 +20,7 @@ def spotify_redirect(request):
     auth_url += f"&client_id={settings.SPOTIFY_CLIENT_ID}"
     auth_url += f"&scope={scope}"
     auth_url += f"&redirect_uri={settings.SPOTIFY_REDIRECT_URI}"
+    auth_url += "&show_dialog=true"
     return redirect(auth_url)
 
 
@@ -27,16 +28,30 @@ def spotify_connect(request):
     """Connect and save data"""
     code = request.GET["code"]
 
-    if request.GET["code"]:
+    if code:
         social_connection = SocialConnection.objects.filter(
             social_connect=SocialIntegration.SPOTIFY,
             user=request.user
-        ).exists()
-        if social_connection:
+        )
+        if social_connection.exists():
+            social_connection = social_connection.first()
             social_connection.code = code
         else:
             social_connection = SocialConnection(code=code, user=request.user)
         social_connection.save()
+
+    return redirect("accounts:profile-user")
+
+
+def spotify_disconnect(request):
+    """discconect data"""
+    social_connection = SocialConnection.objects.filter(
+        social_connect=SocialIntegration.SPOTIFY,
+        user=request.user
+    )
+    if social_connection.exists():
+        social_connection = social_connection.first()
+        social_connection.delete()
 
     return redirect("accounts:profile-user")
 

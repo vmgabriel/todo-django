@@ -16,7 +16,9 @@ urlpatterns = [
 
     path('todos/', include('todos.urls')),
     path('socials/', include('socials.urls')),
+    path('buys/', include('to_buy.urls')),
+    path('products/', include('products.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:

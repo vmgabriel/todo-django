@@ -7,7 +7,6 @@ import os
 import environ
 from pathlib import Path
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
@@ -41,10 +40,13 @@ USER_APPLICATIONS = [
     "todos.apps.TodosConfig",
     "socials.apps.SocialsConfig",
     "manga_anime.apps.MangaAnimeConfig",
+    "to_buy.apps.ToBuyConfig",
+    "products.apps.ProductsConfig",
 ]
 
 EXTERNALS_APPLICATIONS = [
     "versatileimagefield",
+    "colorfield",
 ]
 
 
@@ -119,6 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+DEFAULT_HASHING_ALGORITHM="sha1"
 
 
 # Internationalization
@@ -164,3 +167,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 SPOTIFY_CLIENT_ID = env("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = env("SPOTIFY_CLIENT_SECRET")
 SPOTIFY_REDIRECT_URI = env("SPOTIFY_REDIRECT_URI")
+
+# Pagination
+PAGINATION_LIMIT = 10

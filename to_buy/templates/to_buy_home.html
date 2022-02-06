@@ -1,0 +1,19 @@
+{% extends 'clear-content.html' %}
+{% load static %}
+
+{% block container %}
+
+<div class="container" style="margin-top: 3em;">
+  <h1>TO BUY</h1>
+
+  <ul>
+    <li>
+      <a href="{% url 'products:list' %}">Products</a>
+    </li>
+    <li>
+      <a href="{% url 'products:list_categories' %}">Categories</a>
+    </li>
+  </ul>
+</div>
+
+{% endblock container %}

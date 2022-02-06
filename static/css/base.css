@@ -1,0 +1,15 @@
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked {
+  position: inherit;
+  opacity: 1;
+  pointer-events: inherit;
+
+}
+
+ul#id_categories {
+  padding-left: revert;
+}
+
+ul#id_categories, label {
+  font-size: 15px;
+}

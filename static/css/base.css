@@ -13,3 +13,8 @@ ul#id_categories {
 ul#id_categories, label {
   font-size: 15px;
 }
+
+
+select {
+  display: initial;
+}

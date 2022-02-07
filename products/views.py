@@ -110,7 +110,7 @@ class CategoryNewView(generic.edit.FormView):
 
 class CategoryEditView(generic.edit.UpdateView):
     model = models.Category
-    fields = ['name', 'description', 'color']
+    form_class = forms.CategoryForm
     template_name = 'categories/edit.html'
     success_url = 'products:list_categories'
 

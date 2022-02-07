@@ -4,16 +4,114 @@
 {% block container %}
 
 <div class="container" style="margin-top: 3em;">
-  <h1>TO BUY</h1>
+  <a href="{% url 'pages:home' %}">
+    <i class="tiny material-icons">arrow_back</i> back
+  </a>
 
-  <ul>
-    <li>
-      <a href="{% url 'products:list' %}">Products</a>
-    </li>
-    <li>
-      <a href="{% url 'products:list_categories' %}">Categories</a>
-    </li>
-  </ul>
+  <div class="card-panel">
+    <div class="row" style="display: inline-flex;">
+      <h2>To Buy</h2>
+    </div>
+
+    <ul>
+      <li>
+        <a href="{% url 'products:list' %}">Products</a>
+      </li>
+      <li>
+        <a href="{% url 'products:list_categories' %}">Categories</a>
+      </li>
+    </ul>
+
+    <div class="row">
+      <div class="col s6" style="display: inline-flex;">
+        <h4>My Lists</h4>
+        <a href="{% url 'to_buy:buys_create' %}" class="btn-floating green"><i class="material-icons">add</i></a>
+      </div>
+      <div class="col s6 right-align">
+        <h4>{{ count_my_lists }}</h4>
+      </div>
+    </div>
+
+    {% if my_lists %}
+    <table class="table" style="margin-bottom: 1em;">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Count</th>
+          <th>Priority</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for elem_list in my_lists %}
+          <tr>
+            <td>{{ elem_list.name }}</td>
+            <td>{{ elem_list.description }}</td>
+            <td>{{ elem_list.count }}</td>
+            <td>{{ elem_list.priority }}</td>
+            <td>
+              <a class="btn-floating red" href="{% url 'to_buy:buys_delete' elem_list.id %}">
+                <i class="small material-icons">delete</i>
+              </a>
+              <a class="btn-floating green" href="{% url 'to_buy:buys_show' elem_list.id %}">
+                <i class="small material-icons">visibility</i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="flow-text" style="margin-bottom: 1em;">Not List yet.</p>
+    {% endif %}
+
+      <div class="row">
+        <div class="col s6" style="display: inline-flex;">
+          <h4>Shared Lists</h4>
+          <a href="{% url 'to_buy:buys_create' %}" class="btn-floating green"><i class="material-icons">add</i></a>
+        </div>
+        <div class="col s6 right-align">
+          <h4>{{ count_shared_lists }}</h4>
+        </div>
+      </div>
+
+    {% if shared_lists %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Count</th>
+            <th>Priority</th>
+            <th>Created_by</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for elem_list in shared_lists %}
+          <tr>
+            <td>{{ elem_list.name }}</td>
+            <td>{{ elem_list.description }}</td>
+            <td>{{ elem_list.count }}</td>
+            <td>{{ elem_list.priority }}</td>
+            <td>{{ elem_list.created_by }}</td>
+            <td>
+              <a class="btn-floating red" href="{% url 'to_buy:buys_delete' elem_list.id %}"><i class="small material-icons">delete</i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="flow-text">Not List Shared yet.</p>
+    {% endif %}
+  </div>
 </div>
 
 {% endblock container %}
+
+{% block javascript %}
+
+{% endblock javascript %}

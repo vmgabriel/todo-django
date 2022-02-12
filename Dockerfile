@@ -11,10 +11,9 @@ COPY . /app
 WORKDIR /app
 EXPOSE 3030
 
-RUN apt-get --yes install libmagic-dev libjpeg-dev\
-    zlib1g-dev libjbig0 liblcms2-2 libopenjp2-7\
-    libtiff5 libwebp6 libwebpdemux2 libwebpmux3\
-    libjpeg62-turbo-dev
+RUN sudo apt-get --yes install libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev \
+    libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk \
+    libharfbuzz-dev libfribidi-dev libxcb1-dev
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade Pillow

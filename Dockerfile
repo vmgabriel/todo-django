@@ -11,7 +11,7 @@ COPY . /app
 WORKDIR /app
 EXPOSE 3030
 
-RUN apt-get --yes install libmagic-dev libjpeg-dev\
+RUN apt-get --yes install zlib libmagic-dev libjpeg-dev\
     zlib1g-dev libjbig0 liblcms2-2 libopenjp2-7\
     libtiff5 libwebp6 libwebpdemux2 libwebpmux3
 

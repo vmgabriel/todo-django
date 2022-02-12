@@ -1,5 +1,7 @@
-FROM python:3.9-alpine3.13
+FROM python:3.9.10-slim-buster
 LABEL maintainer="my_home.com"
+
+RUN apt-get update
 
 ENV PYTHONUNBUFFERED 1
 
@@ -9,14 +11,7 @@ COPY . /app
 WORKDIR /app
 EXPOSE 3030
 
-RUN apk update \
-    && apk add --virtual build-deps gcc python3-dev musl-dev \
-    && apk add postgresql \
-    && apk add postgresql-dev \
-    && pip install psycopg2 \
-    && apk add jpeg-dev zlib-dev libjpeg libmagic \
-    && pip install Pillow \
-    && apk del build-deps
+RUN apt-get --yes install libmagic-dev
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade Pillow

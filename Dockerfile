@@ -11,7 +11,7 @@ COPY . /app
 WORKDIR /app
 EXPOSE 3030
 
-RUN apt-get --yes install libmagic-dev
+RUN apt-get --yes install libmagic-dev libjpeg-dev zlib1g-dev
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade Pillow

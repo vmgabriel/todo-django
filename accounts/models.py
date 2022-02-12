@@ -43,7 +43,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(
-        self, email, password=None, first_name=None, last_name=None, groups=None, **kwargs
+            self, email, username, password=None, first_name=None, last_name=None, groups=None, **kwargs
     ):
         """Creation of superuser"""
         return self.create_user(
@@ -52,6 +52,7 @@ class UserManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             groups=groups,
+            username=username,
             is_staff=True,
             is_superuser=True,
             **kwargs
@@ -82,7 +83,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "telephone"]
+    REQUIRED_FIELDS = ["first_name", "telephone", "username"]
 
     class Meta:
         """Meta Class Intern"""

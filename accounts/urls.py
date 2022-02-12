@@ -20,4 +20,10 @@ urlpatterns = [
         views.UpdateProfileView.as_view(),
         name='profile-user',
     ),
+
+    path(
+        '',
+        views.UserListView.as_view(),
+        name='users',
+    ),
 ]

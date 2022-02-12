@@ -1,6 +1,7 @@
 FROM python:3.9.10-slim-bullseye
 LABEL maintainer="my_home.com"
 
+RUN apt-get install debian-keyring debian-archive-keyring
 RUN apt-get update --allow-releaseinfo-change
 
 ENV PYTHONUNBUFFERED 1

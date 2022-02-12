@@ -1,8 +1,7 @@
-FROM python:3.9.10-slim-bullseye
+FROM python:3.9.10-slim-buster
 LABEL maintainer="my_home.com"
 
-RUN apt-get install debian-keyring debian-archive-keyring
-RUN apt-get update --allow-releaseinfo-change
+RUN apt-get update
 
 ENV PYTHONUNBUFFERED 1
 
@@ -13,10 +12,8 @@ WORKDIR /app
 EXPOSE 3030
 
 RUN apt-get --yes install libmagic-dev libjpeg-dev\
-    zlib1g-dev libopenjp2-7 libopenjp2-7-dev\
-    libopenjp2-tools libwebp6 libtiff5 libjbig0\
-    liblcms2-2 libwebpmux3 libopenjp2-7 libzstd1\
-    libwebpdemux2
+    zlib1g-dev libjbig0 liblcms2-2 libopenjp2-7\
+    libtiff5 libwebp6 libwebpdemux2 libwebpmux3
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade Pillow

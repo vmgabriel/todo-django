@@ -26,4 +26,6 @@ urlpatterns = [
         views.UserListView.as_view(),
         name='users',
     ),
+    path('<int:pk>/delete', views.delete_user, name='delete_user'),
+    path("create", views.CreateAdminView.as_view(), name="create_user"),
 ]

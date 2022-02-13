@@ -2,20 +2,21 @@
 
 # Libraries
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.conf import settings
 
 # Forms
-from .forms import UserForm, RegisterForm
+from .forms import UserForm, RegisterForm, UserFormAdmin
 
 # Models
 from .models import User
 from socials.models import SocialConnection
 
 
-class SignUpView(generic.edit.FormView):
+class SignUpView(LoginRequiredMixin, generic.edit.FormView):
     """Create View Sign Up of account"""
     form_class = RegisterForm
     success_url = reverse_lazy('login')
@@ -25,7 +26,6 @@ class SignUpView(generic.edit.FormView):
         self.object = form.save(
             commit=False
         )
-        print("self object - ", self.object)
         self.object.save()
         return redirect(self.get_success_url())
 
@@ -49,7 +49,7 @@ class UpdateProfileView(LoginRequiredMixin, generic.edit.UpdateView):
         return context
 
 
-class UserListView(generic.list.ListView):
+class UserListView(LoginRequiredMixin, generic.list.ListView):
     model = User
     paginate_by = settings.PAGINATION_LIMIT
     template_name = 'users/index.html'
@@ -63,3 +63,27 @@ class UserListView(generic.list.ListView):
         context = super().get_context_data(*args, **kwargs)
         context['count'] = self.get_queryset().count()
         return context
+
+
+class CreateAdminView(LoginRequiredMixin, generic.edit.FormView):
+    """Create View Sign Up of account"""
+    form_class = UserFormAdmin
+    success_url = reverse_lazy('accounts:users')
+    template_name = 'users/edit.html'
+
+    def form_valid(self, form):
+        self.object = form.save(
+            commit=False
+        )
+        self.object.is_staff = self.object.is_superuser
+        self.object.save()
+        return redirect(self.get_success_url())
+
+
+@login_required
+def delete_user(request, pk):
+    model = User
+    user = get_object_or_404(model, pk=pk)
+    user.is_active = False
+    user.save()
+    return redirect("accounts:users")

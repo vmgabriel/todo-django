@@ -33,7 +33,7 @@ class ToBuyHomeView(generic.TemplateView):
 
     def shared_queryset(self, pk: int):
         query = self.queryset()
-        return query.filter(users__pk=pk)
+        return query.filter(users__id__in=[pk])
 
     def paginate(self, data: list):
         return Paginator(data, settings.PAGINATION_LIMIT)
@@ -45,6 +45,8 @@ class ToBuyHomeView(generic.TemplateView):
         shared_lists = self.paginate(self.shared_queryset(self.request.user.pk))
         count_shared_lists = shared_lists.count
         shared_lists = shared_lists.page(request.GET.get("page_shared_list") or 1)
+
+        print("shared_lists - ", shared_lists.object_list)
 
         args = {
             "my_lists": my_lists.object_list,
@@ -79,6 +81,8 @@ class ToBuyNewView(generic.edit.FormView):
             commit=False,
             **{"user": self.request.user},
         )
+        self.object.save()
+        self.object.users.set([x.pk for x in form.cleaned_data["users"]])
         self.object.save()
         return redirect(self.get_success_url())
 

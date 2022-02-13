@@ -2,6 +2,8 @@
 
 # Libraries
 from itertools import chain
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.conf import settings
@@ -10,7 +12,7 @@ from django.conf import settings
 from . import models, forms
 
 
-class ProductListView(generic.list.ListView):
+class ProductListView(LoginRequiredMixin, generic.list.ListView):
     model = models.Product
     paginate_by = settings.PAGINATION_LIMIT
     template_name = 'products/index.html'
@@ -26,7 +28,7 @@ class ProductListView(generic.list.ListView):
         return context
 
 
-class ProductNewView(generic.edit.FormView):
+class ProductNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = 'products/edit.html'
     form_class = forms.ProductForm
     success_url = 'products:list'
@@ -47,7 +49,7 @@ class ProductNewView(generic.edit.FormView):
         return redirect(self.get_success_url())
 
 
-class ProductEditView(generic.edit.UpdateView):
+class ProductEditView(LoginRequiredMixin, generic.edit.UpdateView):
     model = models.Product
     form_class = forms.ProductForm
     template_name = 'products/edit.html'
@@ -70,7 +72,7 @@ class ProductEditView(generic.edit.UpdateView):
         )
 
 
-class CategoryListView(generic.list.ListView):
+class CategoryListView(LoginRequiredMixin, generic.list.ListView):
     model = models.Category
     paginate_by = settings.PAGINATION_LIMIT
     context_object_name = 'categories'
@@ -88,7 +90,7 @@ class CategoryListView(generic.list.ListView):
         return context
 
 
-class CategoryNewView(generic.edit.FormView):
+class CategoryNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = 'categories/edit.html'
     form_class = forms.CategoryForm
     success_url = 'products:list_categories'
@@ -108,7 +110,7 @@ class CategoryNewView(generic.edit.FormView):
         return redirect(self.get_success_url())
 
 
-class CategoryEditView(generic.edit.UpdateView):
+class CategoryEditView(LoginRequiredMixin, generic.edit.UpdateView):
     model = models.Category
     form_class = forms.CategoryForm
     template_name = 'categories/edit.html'
@@ -129,6 +131,7 @@ class CategoryEditView(generic.edit.UpdateView):
         )
 
 
+@login_required
 def delete_category(request, pk):
     model = models.Category
     category = get_object_or_404(model, pk=pk)
@@ -137,6 +140,7 @@ def delete_category(request, pk):
     return redirect("products:list_categories")
 
 
+@login_required
 def delete_product(request, pk):
     model = models.Product
     product = get_object_or_404(model, pk=pk)

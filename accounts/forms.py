@@ -33,3 +33,29 @@ class UserForm(forms.ModelForm):
         fields = [
             "username", "first_name", "last_name", "telephone", "image"
         ]
+
+
+class UserFormAdmin(forms.ModelForm):
+    """User Admin Configuration Model"""
+    image = SizedImageCenterpointClickBootstrap3Field(required=False)
+
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "telephone",
+            "image",
+            "password",
+            "is_superuser",
+        ]
+
+    def save(self, commit=True, **kwargs):
+        obj = super(UserFormAdmin, self).save(commit=False)
+
+        if commit:
+            obj.save()
+
+        return obj

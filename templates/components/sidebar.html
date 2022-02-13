@@ -1,18 +1,20 @@
+{% load static %}
+
 <ul id="slide-out" class="sidenav">
   {% if user.is_authenticated %}
     <li>
       <div class="user-view">
         <div class="background">
-          <img src="https://lorempixel.com/500/500/nature/1">
+          <img src="{% static 'imgs/brands/w1-500.jpg' %}">
         </div>
         <a>
           <img class="circle" src="{% if user.image %}{{ user.image.url }}{% else %}https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50{% endif %}" style="max-height: 100px">
         </a>
         <a>
-          <span class="white-text name">{{ user.first_name }} {{ user.last_name }}</span>
+          <span class="black-text name">{{ user.first_name }} {{ user.last_name }}</span>
         </a>
         <a>
-          <span class="white-text email">{{ user.email }}</span>
+          <span class="black-text email">{{ user.email }}</span>
         </a>
       </div>
     </li>
@@ -25,9 +27,9 @@
     <li>
       <div class="user-view">
         <div class="background">
-          <img src="https://lorempixel.com/500/500/nature/1">
+          <img src="{% static 'imgs/brands/w1-500.jpg' %}">
         </div>
-        <span class="white-text name">Logo</span>
+        <span class="black-text name">Smart Home</span>
       </div>
     </li>
     <li>

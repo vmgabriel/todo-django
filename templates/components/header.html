@@ -1,3 +1,5 @@
+{% load static %}
+
 <!-- Dropdown Structure -->
 <ul id="dropdown1" class="dropdown-content">
   <li><a href="{% url 'accounts:profile-user' %}">profile</a></li>
@@ -11,16 +13,13 @@
         <i class="material-icons">menu</i>
       </a>
       <a href="{% url 'pages:home' %}">
-        Logo
+        <img alt="Home Icon" src="{% static 'imgs/brands/house.png' %}" width="30" /> Smart Home
       </a>
     </div>
 
     <ul id=nav-mobile class="right hide-on-med-and-down">
       <li><a href="#">Component</a></li>
       <li><a href="#">Descript</a></li>
-      {% if not user.is_authenticated %}
-        <li><a href="{% url 'accounts:signup' %}">SignUp</a></li>
-      {% endif %}
 
       <li>
         {% if user.is_authenticated %}

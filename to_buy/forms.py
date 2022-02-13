@@ -32,7 +32,6 @@ class ListToBuyForm(forms.ModelForm):
             self.fields['users'].queryset = queryset=models_accounts.User.objects.filter(is_active=True).exclude(pk=user_id)
 
 
-
     def save(self, commit=True, updated=False, **kwargs):
         """Save of Board with the form"""
         obj = super(ListToBuyForm, self).save(commit=False)

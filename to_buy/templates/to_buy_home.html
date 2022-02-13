@@ -1,4 +1,4 @@
-{% extends 'clear-content.html' %}
+{% extends 'content.html' %}
 {% load static %}
 
 {% block container %}
@@ -97,7 +97,11 @@
             <td>{{ elem_list.priority }}</td>
             <td>{{ elem_list.created_by }}</td>
             <td>
-              <a class="btn-floating red" href="{% url 'to_buy:buys_delete' elem_list.id %}"><i class="small material-icons">delete</i>
+              <a class="btn-floating red" href="{% url 'to_buy:buys_delete' elem_list.id %}">
+                <i class="small material-icons">delete</i>
+              </a>
+              <a class="btn-floating green" href="{% url 'to_buy:buys_show' elem_list.id %}">
+                <i class="small material-icons">visibility</i>
               </a>
             </td>
           </tr>

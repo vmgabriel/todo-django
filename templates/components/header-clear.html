@@ -1,8 +1,10 @@
+{% load static %}
+
 <nav>
   <div class="nav-wrapper">
     <div class="brand-logo">
       <a href="{% url 'pages:home' %}">
-        Logo
+        <img alt="Home Icon" src="{% static 'imgs/brands/house.png' %}" width="30" /> Smart Home
       </a>
     </div>
 

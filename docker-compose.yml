@@ -8,30 +8,11 @@ services:
       - 3030:3030
     volumes:
       - .:/app
-    depends_on:
-      - db
-    networks:
-      - home_red
     restart: always
     command: >
       sh -c "python manage.py makemigrations &&
              python manage.py migrate &&
              python manage.py runserver 0.0.0.0:3030"
-
-  db:
-    container_name: pg_container_smart_home
-    image: postgres:14.0-alpine
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_DB: ${DATABASE_NAME}
-    volumes:
-      - "./volumes/db/data:/var/lib/postgresql/data"
-    networks:
-      - home_red
-    ports:
-      - 5432:5432
 
 networks:
   home_red: {}

@@ -42,11 +42,14 @@ USER_APPLICATIONS = [
     "manga_anime.apps.MangaAnimeConfig",
     "to_buy.apps.ToBuyConfig",
     "products.apps.ProductsConfig",
+    "stores.apps.StoresConfig",
 ]
 
 EXTERNALS_APPLICATIONS = [
+    "django.contrib.gis",
     "versatileimagefield",
     "colorfield",
+    "location_field.apps.DefaultConfig",
 ]
 
 
@@ -77,6 +80,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "templates"),
+            os.path.join(BASE_DIR, 'django_admin_geomap', 'templates'),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -96,23 +100,23 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env("DATABASE_NAME"),
-        'USER': env("DATABASE_USER"),
-        'PASSWORD': env("DATABASE_PASSWORD"),
-        'HOST': env("DATABASE_HOST"),
-        'PORT': env("DATABASE_PORT"),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': env("DATABASE_NAME"),
+#         'USER': env("DATABASE_USER"),
+#         'PASSWORD': env("DATABASE_PASSWORD"),
+#         'HOST': env("DATABASE_HOST"),
+#         'PORT': env("DATABASE_PORT"),
+#     }
+# }
 
 
 # Password validation
@@ -187,3 +191,19 @@ TELEGRAM_API_ID = env("TELEGRAM_API_ID")
 TELEGRAM_API_HASH = env("TELEGRAM_API_HASH")
 TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
 PHONE_DEFAULT = "+573057882366"
+
+# Location
+LOCATION_FIELD_PATH = STATIC_URL + 'location_field'
+
+LOCATION_FIELD = {
+    'map.provider': 'openstreetmap',
+    'search.provider': 'nominatim',
+
+    'resources.root_path': LOCATION_FIELD_PATH,
+    'resources.media': {
+        'js': (
+            LOCATION_FIELD_PATH + '/js/form.js',
+        ),
+    },
+}
+INITIAL_LOCATION: list[float] = [4.599011638118746, -74.08252716064453]

@@ -18,6 +18,7 @@ urlpatterns = [
     path('socials/', include('socials.urls')),
     path('buys/', include('to_buy.urls')),
     path('products/', include('products.urls')),
+    path('stores/', include("stores.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

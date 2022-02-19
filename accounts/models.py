@@ -5,7 +5,9 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.utils import timezone
+from location_field.models.plain import PlainLocationField
 
+# Modules
 from versatileimagefield.fields import VersatileImageField, PPOIField
 
 
@@ -79,6 +81,12 @@ class User(PermissionsMixin, AbstractBaseUser):
     )
     ppoi = PPOIField(verbose_name="ppoi")
     groups = models.ManyToManyField(Group, verbose_name="Groups", related_name="user_groups", blank=True)
+    home_location = PlainLocationField(
+        based_fields=['city'],
+        default=",".join([str(x) for x in settings.INITIAL_LOCATION]),
+        zoom=3,
+        null=True,
+    )
 
     objects = UserManager()
 

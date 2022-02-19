@@ -76,6 +76,7 @@ class CreateAdminView(LoginRequiredMixin, generic.edit.FormView):
             commit=False
         )
         self.object.is_staff = self.object.is_superuser
+        self.object.set_password(self.object.password)
         self.object.save()
         return redirect(self.get_success_url())
 

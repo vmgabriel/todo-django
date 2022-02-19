@@ -22,4 +22,3 @@ urlpatterns = [
 
     path("<int:pk>/telegram-send", views.telegram_send_list, name="buys_send_telegram")
 ]
-

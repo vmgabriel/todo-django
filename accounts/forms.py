@@ -31,7 +31,12 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            "username", "first_name", "last_name", "telephone", "image"
+            "username",
+            "first_name",
+            "last_name",
+            "telephone",
+            "image",
+            "home_location",
         ]
 
 
@@ -56,6 +61,9 @@ class UserFormAdmin(forms.ModelForm):
         obj = super(UserFormAdmin, self).save(commit=False)
 
         if commit:
+            print("pass - ", obj.password)
+            obj.set_password(obj.password)
+            print("pass -", obj.password)
             obj.save()
 
         return obj

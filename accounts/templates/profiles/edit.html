@@ -1,5 +1,9 @@
 {% extends 'content.html' %}
 
+{% block header %}
+{{ form.media }}
+{% endblock header %}
+
 {% block container %}
   <div class="container" style="margin-bottom: 2em;">
 
@@ -69,6 +73,14 @@
               {% endif %}
             </div>
           </div>
+
+          <div class="row">
+            <div class="input-field col s12">
+              {{ form.home_location }}
+              <label for="home_location">{{ form.home_location.label }}</label>
+            </div>
+          </div>
+
           <div class="col s12 right-align">
             <a href="{% url 'accounts:profile-user' %}" class="btn waves-effect waves-red btn-large red">Cancel</a>
             <button type="submit" class="waves-effect waves-light btn-large">Update</button>

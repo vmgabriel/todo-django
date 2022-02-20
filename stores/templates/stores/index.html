@@ -40,6 +40,8 @@
                 </a>
                 <a class="btn-floating red" href="{% url 'stores:delete' pk=store.pk %}"><i class="small material-icons">delete</i>
                 </a>
+                <a class="btn-floating green" href="{% url 'stores:detail' pk=store.pk %}"><i class="small material-icons">visibility</i>
+                </a>
               </td>
             </tr>
             {% endfor %}

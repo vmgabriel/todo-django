@@ -1,6 +1,7 @@
 """Django Views"""
 
 # Libraries
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.db.models import Count, Q
@@ -46,8 +47,6 @@ class ToBuyHomeView(generic.TemplateView):
         count_shared_lists = shared_lists.count
         shared_lists = shared_lists.page(request.GET.get("page_shared_list") or 1)
 
-        print("shared_lists - ", shared_lists.object_list)
-
         args = {
             "my_lists": my_lists.object_list,
             "my_lists_paginator": my_lists,
@@ -87,7 +86,7 @@ class ToBuyNewView(generic.edit.FormView):
         return redirect(self.get_success_url())
 
 
-class DetailToBuyView(generic.detail.DetailView):
+class DetailToBuyView(LoginRequiredMixin, generic.detail.DetailView):
     """Detail Board View"""
     model = models.ListToBuy
     template_name = 'to_buy/detail.html'

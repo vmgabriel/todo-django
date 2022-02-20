@@ -2,7 +2,7 @@
 
 # Libraries
 from location_field.models.plain import PlainLocationField
-from django_prices.models import MoneyField
+from djmoney.models.fields import MoneyField
 from django.db import models
 from django.conf import settings
 
@@ -44,7 +44,7 @@ class StoreProduct(models.Model):
     )
 
     description = models.CharField(max_length=120)
-    price = MoneyField(amount_field="price_product", currency_field="currency")
+    price = MoneyField(max_digits=14, decimal_places=2, default_currency='USD')
 
     enabled = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

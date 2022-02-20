@@ -61,9 +61,7 @@ class UserFormAdmin(forms.ModelForm):
         obj = super(UserFormAdmin, self).save(commit=False)
 
         if commit:
-            print("pass - ", obj.password)
             obj.set_password(obj.password)
-            print("pass -", obj.password)
             obj.save()
 
         return obj

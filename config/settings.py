@@ -51,6 +51,7 @@ EXTERNALS_APPLICATIONS = [
     "colorfield",
     "location_field.apps.DefaultConfig",
     "django_prices",
+    "djmoney",
 ]
 
 
@@ -208,3 +209,9 @@ LOCATION_FIELD = {
     },
 }
 INITIAL_LOCATION: list[float] = [4.599011638118746, -74.08252716064453]
+
+DEFAULT_CURRENCIES: list[str] = [
+    "COP",
+    "USD",
+    "CAD"
+]

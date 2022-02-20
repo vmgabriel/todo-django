@@ -50,7 +50,6 @@ EXTERNALS_APPLICATIONS = [
     "versatileimagefield",
     "colorfield",
     "location_field.apps.DefaultConfig",
-    "django_prices",
     "djmoney",
 ]
 

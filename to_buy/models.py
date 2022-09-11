@@ -47,6 +47,11 @@ class ItemListToBuy(models.Model):
         #related_name='product',
     )
     quantity = models.PositiveIntegerField(default=1)
+    store = models.ForeignKey(
+        "stores.StoreProduct",
+        related_name="item_list_store_product",
+        on_delete=models.CASCADE
+    )
 
     enabled = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

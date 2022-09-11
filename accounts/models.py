@@ -5,6 +5,8 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.utils import timezone
+from djmoney.models.fields import MoneyField
+from djmoney.money import Money
 from location_field.models.plain import PlainLocationField
 
 # Modules
@@ -87,6 +89,20 @@ class User(PermissionsMixin, AbstractBaseUser):
         zoom=3,
         null=True,
     )
+    wallet = MoneyField(
+        default_currency=settings.DEFAULT_CURRENCIES[0],
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
+    alkali = MoneyField(
+        default_currency=settings.DEFAULT_CURRENCIES[0],
+        max_digits=11,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
 
     objects = UserManager()
 
@@ -98,3 +114,19 @@ class User(PermissionsMixin, AbstractBaseUser):
         verbose_name = "User"
         verbose_name_plural = "Users"
         db_table = "user"
+
+    def add_to_wallet(self, value: Money, is_plus: bool = True):
+        if self.wallet is None:
+            self.wallet = Money(0, value.currency)
+        if is_plus:
+            self.wallet += value
+        else:
+            self.wallet -= value
+
+    def add_to_alkali(self, value: Money, is_plus: bool = True):
+        if self.is_plus is None:
+            self.is_plus = Money(0, value.currency)
+        if is_plus:
+            self.alkali += value
+        else:
+            self.alkali -= value

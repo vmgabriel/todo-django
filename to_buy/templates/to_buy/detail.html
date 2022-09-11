@@ -179,6 +179,17 @@
                             {% endfor %}
                           {% endif %}
                         </div>
+
+                        <div class="row">
+                          {{ form_item.store }}
+                          <label for="store">{{ form_item.store.label }}</label>
+                          {% if form_item.store.errors %}
+                            {% for error in form_item.store.errors %}
+                              <p style="color: red">{{ error }}</p>
+                            {% endfor %}
+                          {% endif %}
+                        </div>
+
                         <div class="row">
                           <input id="id_product" name="product" type="hidden" value="{{ product.id }}"/>
                         </div>

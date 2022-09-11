@@ -7,6 +7,7 @@ from datetime import datetime
 # Models
 from . import models, enums
 from accounts import models as models_accounts
+from stores import models as models_stores
 
 
 class ListToBuyForm(forms.ModelForm):
@@ -54,7 +55,11 @@ class ItemListToBuyForm(forms.ModelForm):
             'list',
             'product',
             'quantity',
+            'store',
         ]
+
+    def queryset_store(self):
+        pass
 
     def __init__(self, list_id: int = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -71,6 +76,7 @@ class ItemListToBuyCompleteForm(forms.ModelForm):
             'list',
             'product',
             'quantity',
+            'store',
         ]
 
     def save(self, commit=True, updated=False, **kwargs):

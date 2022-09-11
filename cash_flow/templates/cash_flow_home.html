@@ -1,0 +1,164 @@
+{% extends 'content.html' %}
+{% load static %}
+{% load djmoney %}
+
+{% block container %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <div class="container" style="margin-top: 3em;">
+        <a href="{% url 'pages:home' %}">
+            <i class="tiny material-icons">arrow_back</i> back
+        </a>
+
+        <div class="card-panel">
+            <div class="row" style="display: inline-flex;">
+                <h2>Cash Flow</h2>
+                <a class="btn-floating btn-large waves-effect waves-light left-align" href="{% url 'cash_flow:money' %}">
+                    <i class="material-icons">add</i>
+                </a>
+            </div>
+
+            <div class="row">
+                <ul>
+                    <li><a href="{% url 'cash_flow:categories' %}">Categories</a></li>
+                </ul>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <div class="row" style="display: flex; align-items: center; justify-content: space-around;">
+                        <h4>Current Wallet: </h4>
+                        <p class="flow-text">{% money_localize wallet %}</p>
+                    </div>
+                    <div class="row" style="display: flex; align-items: center; justify-content: space-around;">
+                        <h4>Current Alkali: </h4>
+                        <p class="flow-text">{% money_localize alkali %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12" style="display: inline-flex;">
+                    <h4>Flows Currently</h4>
+                </div>
+                <div class="col" style="display: flex;overflow-x: auto;white-space: nowrap;flex-wrap: wrap; justify-content: space-between;width: 100%;">
+                    <div class="">
+                        <div class="card-panel red lighten-4" style="padding: 2px;">
+                            Passive Expenditure
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="card-panel yellow lighten-4" style="padding: 2px;">
+                            Active Expenditure
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="card-panel green lighten-4" style="padding: 2px;">
+                            Passive Income
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="card-panel blue lighten-4" style="padding: 2px;">
+                            Active Income
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12" style="display: inline-flex;">
+                    <h4>Flows This Week</h4>
+                </div>
+            </div>
+
+            <table class="table" style="margin-bottom: 1em;display: block;overflow-x: auto;white-space: nowrap;">
+                <tbody>
+                {% for money_flow_level in money_flow_week %}
+                    <tr>
+                        {% for money_flow in money_flow_level %}
+                            <td>
+                                {% if money_flow %}
+                                    <div class="card hoverable" style="background-color: {{ money_flow.category.color }}">
+                                        <a href="{% url 'cash_flow:money_edit' money_flow.pk %}">
+                                            <div class="card-content" style="white-space: break-spaces;">
+                                                {{ money_flow.description }}
+                                                <p class="right">{% money_localize money_flow.abs_amount %}</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                <tr>
+                    {% for flow_day in total_per_week %}
+                        <td>
+                            <p>Input Flow: {{ flow_day.positive }}</p>
+                            <p>Output Flow: {{ flow_day.negative }}</p>
+                        </td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+                <thead>
+                    <tr>
+                        {% for day in week %}
+                            <th>{{ day|date:"l (b d)" }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+            </table>
+
+            <div class="row">
+                <div class="col s12">
+                    <h4>Month Spend Chart</h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <canvas id="month-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <h4>Month Spend Chart By Categories</h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <canvas id="month-categories-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock container %}
+
+{% block javascript %}
+    const get_processed_data = (to_process) => (Object.entries(to_process).map(([label, value]) => ({
+        data: value["data"],
+        label: label,
+        fill: false,
+        borderColor: value["color"].startsWith("#") ? value["color"] : "#" + value["color"],
+        tension: 0.1
+    })));
+
+    const get_config = (data_procesed) => ({
+            type: "line",
+            data: {
+                datasets: data_procesed,
+                labels: {{ labels|safe }}
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+    window.onload = () => {
+        const ctxCategories = document.getElementById('month-categories-chart').getContext('2d');
+        const ctxSpend = document.getElementById("month-chart").getContext("2d");
+        window.myPie = new Chart(ctxCategories, get_config(get_processed_data({{ by_categories|safe }})));
+        window.myPie = new Chart(ctxSpend, get_config(get_processed_data({{ spend_by_month|safe }})));
+    };
+{% endblock javascript %}

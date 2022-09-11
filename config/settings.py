@@ -43,6 +43,7 @@ USER_APPLICATIONS = [
     "to_buy.apps.ToBuyConfig",
     "products.apps.ProductsConfig",
     "stores.apps.StoresConfig",
+    "cash_flow.apps.CashFlowConfig",
 ]
 
 EXTERNALS_APPLICATIONS = [

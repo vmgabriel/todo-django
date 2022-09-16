@@ -3,14 +3,6 @@
 
 {% block container %}
     <div class="container" style="margin-top: 3em;">
-        <h1>The New Home Page</h1>
-        <p>This is the home page, this is the  complete program urls</p>
-
-        <ul>
-            <li><a href="{% url 'todos:boards' %}">Todo App</a></li>
-            <li><a href="{% url 'to_buy:home_buys' %}">Buys App</a></li>
-            <li><a href="{% url 'accounts:users' %}">Users App</a></li>
-            <li><a href="{%  url 'cash_flow:home_cash_flow' %}">Cash Flow App</a></li>
-        </ul>
+        <h4>{{ user.first_name }} {{ user.last_name }}</h4>
     </div>
 {% endblock container %}

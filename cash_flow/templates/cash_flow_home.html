@@ -78,7 +78,7 @@
                             <td>
                                 {% if money_flow %}
                                     <div class="card hoverable" style="background-color: {{ money_flow.category.color }}">
-                                        <a href="{% url 'cash_flow:money_edit' money_flow.pk %}">
+                                        <a href="{% url 'cash_flow:money_edit' money_flow.pk %}" style="color: black;">
                                             <div class="card-content" style="white-space: break-spaces;">
                                                 {{ money_flow.description }}
                                                 <p class="right">{% money_localize money_flow.abs_amount %}</p>

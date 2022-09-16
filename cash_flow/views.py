@@ -55,9 +55,11 @@ class CashFlowHomeView(generic.TemplateView):
             year: int = datetime.now().year,
             month: int = datetime.now().month,
     ):
+        day = datetime.now().day
         query = self.queryset().filter(
             date_flow__year=year,
             date_flow__month=month,
+            category__parent_category__type_flow__in=models.TypeFlow.EXPENDITURE,
         ).annotate(
             main_category=F("category__parent_category__name")
         ).values("main_category").annotate(
@@ -71,7 +73,7 @@ class CashFlowHomeView(generic.TemplateView):
                 categories[x["main_category"]][x["day"]] = float(x["total"])
             else:
                 categories[x["main_category"]] = {x["day"]: float(x["total"])}
-        for counted in range(1, get_days_month(month=month, year=year)):
+        for counted in range(1, day):
             for x in categories.values():
                 if counted not in x:
                     x[counted] = 0
@@ -82,6 +84,7 @@ class CashFlowHomeView(generic.TemplateView):
             year: int = datetime.now().year,
             month: int = datetime.now().month
     ) -> list:
+        day = datetime.now().day
         query = self.queryset().filter(
             date_flow__year=year,
             date_flow__month=month,
@@ -90,10 +93,17 @@ class CashFlowHomeView(generic.TemplateView):
         ).values("day").annotate(
             total=Sum("amount"),
         ).values("day", "total")
-        definition = {x["day"]: float(x["total"]) for x in query}
-        for counted in range(1, get_days_month(month=month, year=year)):
+        previous_val = 0
+        definition = {}
+        for x in query:
+            definition[x["day"]] = previous_val + float(x["total"])
+            previous_val += float(x["total"])
+        previous_val = 0
+        for counted in range(1, day):
             if counted not in definition:
-                definition[counted] = 0
+                definition[counted] = previous_val
+            else:
+                previous_val = definition[counted]
         return sorted(definition.items(), key=lambda x: x[0])
 
     def queryset_sum_per_day_week(
@@ -246,7 +256,7 @@ class CategoryFlowListView(LoginRequiredMixin, generic.list.ListView):
 
     def get_queryset_primary(self, *args, **kwargs):
         queryset = super(CategoryFlowListView, self).get_queryset(*args, **kwargs)
-        queryset.filter(parent_category=None)
+        queryset = queryset.filter(parent_category__isnull=True)
         return queryset
 
     def get_context_data(self, *args, **kwargs):

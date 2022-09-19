@@ -127,10 +127,78 @@ class DetailToBuyView(LoginRequiredMixin, generic.detail.DetailView):
         context['items'] = items
         context['products'] = products
         context["count_products"] = count_products
-        context["form_item"] = forms.ItemListToBuyForm(context['listtobuy'])
         context["count_items"] = count_items
         context["search"] = query
         return context
+
+
+class ToBuyNewItemView(LoginRequiredMixin, generic.edit.FormView):
+    model = models.ItemListToBuy
+    template_name = "to_buy/item/edit.html"
+    form_class = forms.ItemListToBuyForm
+    success_url = 'to_buy:buys_add_product'
+    mode = "Save"
+
+    def form_valid(self, form):
+        self.object = form.save(
+            commit=False,
+            **{"user": self.request.user},
+        )
+        self.object.save()
+        return redirect(self.get_success_url(), pk=self.kwargs["pk"])
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["mode"] = self.mode
+        context["form"] = forms.ItemListToBuyForm(
+            list_id=self.kwargs["pk"],
+            product_id=self.kwargs["pk_item"]
+        )
+        context["list_id"] = self.kwargs["pk"]
+        context["product_id"] = self.kwargs["pk_item"]
+        context["product"] = product_models.Product.objects.filter(
+            pk=self.kwargs["pk_item"]
+        ).first()
+        return context
+
+
+class ToBuyEditItemView(LoginRequiredMixin, generic.edit.UpdateView):
+    model = models.ItemListToBuy
+    template_name = "to_buy/item/edit.html"
+    form_class = forms.ItemListToBuyForm
+    success_url = 'to_buy:buys_add_product'
+    mode = "Edit"
+
+    def get_object(self):
+        return self.model.objects.filter(
+            product__pk=self.kwargs["pk_item"],
+            list__pk=self.kwargs["pk"],
+            enabled=True,
+        ).first()
+
+    def form_valid(self, form):
+        self.object = form.save(
+            commit=False,
+            **{"user": self.request.user},
+        )
+        self.object.save()
+        return redirect(self.get_success_url(), pk=self.kwargs["pk"])
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["mode"] = self.mode
+        context["form"] = forms.ItemListToBuyForm(
+            list_id=self.kwargs["pk"],
+            product_id=self.kwargs["pk_item"],
+            instance=self.get_object()
+        )
+        context["list_id"] = self.kwargs["pk"]
+        context["product_id"] = self.kwargs["pk_item"]
+        context["product"] = product_models.Product.objects.filter(
+            pk=self.kwargs["pk_item"]
+        ).first()
+        return context
+
 
 
 def delete_list_to_but(request, pk):

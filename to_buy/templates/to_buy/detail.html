@@ -51,36 +51,13 @@
                   <td>{{ item.product.description }}</td>
                   <td>{{ item.quantity }}</td>
                   <td>
-                    <a class="btn-floating btn modal-trigger yellow" href="#modal_item{{ item.pk }}">
+                    <a class="btn-floating btn modal-trigger yellow" href="{% url 'to_buy:buys_edit_product' pk=object.pk pk_item=item.product.pk %}">
                       <i class="small material-icons">edit</i>
                     </a>
                     <a class="btn-floating btn modal-trigger red" href="{% url 'to_buy:buys_delete_product' pk=object.pk pk_item=item.pk %}">
                       <i class="small material-icons">delete</i>
                     </a>
                   </td>
-                  <div id="modal_item{{ item.pk }}" class="modal">
-                    <form method="post" action="{% url 'to_buy:buys_edit_product' pk=object.pk pk_item=item.pk %}">
-                    {% csrf_token %}
-                      <div class="modal-content">
-                        {% if item.product.image %}
-                        <img alt="{{ item.product.name }}" src="{{ item.product.image.url }}" width="100">
-                        {% else %}
-                        <img alt="{{ item.product.name }}" src="{% static 'imgs/open-box.png' %}" width="100">
-                        {% endif %}
-                        <h4>{{ item.product.name }}</h4>
-                        <p>{{ item.product.description }}</p>
-                      <div class="input-field row">
-                        <div class="row">
-                          <input id="id_quantity" name="quantity" min="0" type="number" value="{{ item.quantity }}" />
-                          <label for="id_quantity">Quantity</label>
-                        </div>
-                      </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="submit" class="modal-close waves-effect waves-green btn-flat">Update</button>
-                  </div>
-                    </form>
-                  </div>
                 </tr>
               {% endfor %}
             </tbody>
@@ -154,55 +131,10 @@
                   {% endfor %}
                 </td>
                 <td>
-                  <a class="btn-floating btn modal-trigger green" href="#modal{{ product.pk }}">
+                  <a class="btn-floating btn modal-trigger green" href="{% url 'to_buy:buys_add_item_product' pk=object.pk pk_item=product.pk  %}">
                     <i class="small material-icons">add</i>
                   </a>
                 </td>
-                <div id="modal{{ product.pk }}" class="modal">
-                  <form method="post" action="{% url 'to_buy:buys_add_product' pk=object.pk %}">
-                    {% csrf_token %}
-                    <div class="modal-content">
-                      {% if product.image %}
-                        <img alt="{{ product.name }}" src="{{ product.image.url }}" width="100">
-                      {% else %}
-                        <img alt="{{ product.name }}" src="{% static 'imgs/open-box.png' %}" width="100">
-                      {% endif %}
-                      <h4>{{ product.name }}</h4>
-                      <p>{{ product.description }}</p>
-                      <div class="input-field row">
-                        <div class="row">
-                          {{ form_item.quantity }}
-                          <label for="quantity">{{ form_item.quantity.label }}</label>
-                          {% if form_item.quantity.errors %}
-                            {% for error in form_item.quantity.errors %}
-                              <p style="color: red">{{ error }}</p>
-                            {% endfor %}
-                          {% endif %}
-                        </div>
-
-                        <div class="row">
-                          {{ form_item.store }}
-                          <label for="store">{{ form_item.store.label }}</label>
-                          {% if form_item.store.errors %}
-                            {% for error in form_item.store.errors %}
-                              <p style="color: red">{{ error }}</p>
-                            {% endfor %}
-                          {% endif %}
-                        </div>
-
-                        <div class="row">
-                          <input id="id_product" name="product" type="hidden" value="{{ product.id }}"/>
-                        </div>
-                        <div class="row">
-                          <input id="id_list" name="list" type="hidden" value="{{ object.id }}"/>
-                        </div>
-                      </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="submit" class="modal-close waves-effect waves-green btn-flat">ADD</button>
-                  </div>
-                  </form>
-                </div>
               </tr>
             {% endfor %}
           </tbody>

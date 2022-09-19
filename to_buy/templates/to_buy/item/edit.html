@@ -1,0 +1,71 @@
+{% extends 'content.html' %}
+{% load static %}
+
+{% block container %}
+    <div class="container" style="margin-top: 3em;">
+        <a href="{% url 'to_buy:buys_add_product' pk=list_id  %}">
+            <i class="material-icons">arrow_back</i>
+        </a>
+
+        <div class="card-panel">
+            <div class="row" style="display: inline-flex;">
+                <h2>New Item in List</h2>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    {% if product.image %}
+                        <img alt="{{ product.name }}" src="{{ product.image.url }}" width="100">
+                    {% else %}
+                        <img alt="{{ product.name }}" src="{% static 'imgs/open-box.png' %}" width="100">
+                    {% endif %}
+                    <h4>{{ product.name }}</h4>
+                    <p>{{ product.description }}</p>
+                    <div class="input-field row">
+                        <div class="row">
+                            {{ form.quantity }}
+                            <label for="quantity">{{ form.quantity.label }}</label>
+                            {% if form.quantity.errors %}
+                                {% for error in form.quantity.errors %}
+                                    <p style="color: red">{{ error }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            {{ form.store }}
+                            <label for="store">{{ form.store.label }}</label>
+                            {% if form.store.errors %}
+                                {% for error in form.store.errors %}
+                                    <p style="color: red">{{ error }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <input id="id_product" name="product" type="hidden" value="{{ product_id }}"/>
+                        </div>
+                        <div class="row">
+                            <input id="id_list" name="list" type="hidden" value="{{ list_id }}"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s12 right-align">
+                    <a class="btn waves-effect waves-red btn-large red">Cancel</a>
+                    <button type="submit" class="waves-effect waves-light btn-large">
+                        {% if mode == "Save" %}
+                            Create
+                        {% else %}
+                            Edit
+                        {% endif %}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock container %}
+
+{% block javascript %}
+{% endblock javascript %}

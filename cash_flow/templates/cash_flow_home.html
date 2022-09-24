@@ -133,6 +133,18 @@
                     <canvas id="month-categories-chart"></canvas>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <h4>Month Spend Chart By Categories Percent</h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <canvas id="month-categories-percent-chart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock container %}
@@ -155,12 +167,40 @@
             options: {
                 responsive: true
             }
-        });
+    });
+
+    const config_pie = {
+        type: 'doughnut',
+        data: {
+            labels: {{ categories|safe }},
+            datasets: [
+                {
+                    label: 'Dataset 1',
+                    data: {{ percent_categories|safe }},
+                    backgroundColor: {{ color_categories|safe }}
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Chart.js Doughnut Chart'
+                }
+            }
+        }
+    };
 
     window.onload = () => {
         const ctxCategories = document.getElementById('month-categories-chart').getContext('2d');
         const ctxSpend = document.getElementById("month-chart").getContext("2d");
+        const ctxCategoriesPercent = document.getElementById("month-categories-percent-chart").getContext("2d");
         window.myPie = new Chart(ctxCategories, get_config(get_processed_data({{ by_categories|safe }})));
         window.myPie = new Chart(ctxSpend, get_config(get_processed_data({{ spend_by_month|safe }})));
+        window.myPie = new Chart(ctxCategoriesPercent, config_pie);
     };
 {% endblock javascript %}

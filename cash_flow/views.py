@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F, Case, When, FloatField
 from django.views import generic
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import ExtractDay, Abs
 from django.utils.timezone import make_aware
@@ -16,7 +15,6 @@ from django.utils.timezone import make_aware
 from django.conf import settings
 from djmoney.money import Money
 
-from accounts.models import User
 from . import models, forms
 
 
@@ -27,13 +25,36 @@ def get_days_month(
     return calendar.monthrange(year, month)[1] + 1
 
 
+def flow_sync(user):
+    total_flow = models.FlowMoney.objects \
+        .filter(enabled=True, created_by=user) \
+        .aggregate(total_flow=Sum("amount"))["total_flow"]
+    user.wallet = total_flow
+    user.save()
+
+
+def order_by_levels(list_to_order: list) -> list:
+    completed = []
+    m = max([x.count() for x in list_to_order])
+    for x in range(m):
+        the_list = []
+        for y in list_to_order:
+            try:
+                the_list.append(y[x])
+            except IndexError:
+                the_list.append(None)
+        completed.append(the_list)
+    return completed
+
+
 def get_start_and_end_date_from_calendar_week(
         year: int,
         calendar_week: int
 ) -> list[datetime]:
     monday = datetime.strptime(f'{year}-{calendar_week}-1', "%Y-%W-%w")
     monday = make_aware(monday)
-    return  [monday] + [monday + timedelta(days=x) for x in range(1,7)]
+    return [monday] + [monday + timedelta(days=x) for x in range(1,7)]
+
 
 class CashFlowHomeView(generic.TemplateView):
     """The Main for to Cash Flow"""
@@ -124,7 +145,11 @@ class CashFlowHomeView(generic.TemplateView):
             total_positive=Sum(Case(When(amount__gt=0, then=F("amount")), default=0, output_field=FloatField())),
             total_negative=Sum(Case(When(amount__lt=0, then=Abs(F("amount"))), default=0, output_field=FloatField())),
         ).values("day", "total_positive", "total_negative")
-        definition = {x["day"]: {"positive": float(x["total_positive"]), "negative": float(x["total_negative"])} for x in query}
+        definition = {
+            x["day"]: {
+                "positive": float(x["total_positive"]), "negative": float(x["total_negative"])
+            } for x in query
+        }
         ordered = []
         for day in days_in_week:
             if day.day not in definition:
@@ -133,25 +158,11 @@ class CashFlowHomeView(generic.TemplateView):
             ordered.append(definition[day.day])
         return ordered
 
-
-    def order_by_levels(self, l: list) -> list:
-        completed = []
-        m = max([x.count() for x in l])
-        for x in range(m):
-            the_list = []
-            for y in l:
-                try:
-                    the_list.append(y[x])
-                except IndexError:
-                    the_list.append(None)
-            completed.append(the_list)
-        return completed
-
     def get(self, request):
         dt = datetime.now()
         week_in_year = dt.isocalendar().week
         week = get_start_and_end_date_from_calendar_week(dt.year, week_in_year)
-        money_flow_week = self.order_by_levels([self.queryset_per_day(day) for day in week])
+        money_flow_week = order_by_levels([self.queryset_per_day(day) for day in week])
         spend_by_month = {
             "Spend": {
                 "data": [x for _, x in self.queryset_sum_per_month(dt.year, dt.month)],
@@ -163,21 +174,35 @@ class CashFlowHomeView(generic.TemplateView):
                 "data": [x[1] for x in vals],
                 "color": models.CategoryFlow.objects.filter(name=k).first().color,
             }
-            for k,vals in self.queryset_sum_per_month_category(dt.year,dt.month).items()
+            for k, vals in self.queryset_sum_per_month_category(dt.year, dt.month).items()
         }
+        sum_by_categories = []
+        colors = []
+        categories = []
+        for category, values in by_categories.items():
+            sum_by_categories.append(sum(values["data"]))
+            colors.append(values["color"])
+            categories.append(category)
+        total_sum_by_categories = sum(sum_by_categories)
+        sum_by_categories = [100 * (x / total_sum_by_categories) for x in sum_by_categories]
+
 
         # DataSource object
         args = {
             # Personal User
             "wallet": self.request.user.wallet or Money(0, "COP"),
             "alkali": self.request.user.alkali or Money(0, "COP"),
-            "labels": list(range(1,get_days_month())),
+            "labels": list(range(1, get_days_month())),
 
             "by_categories": by_categories,
             "spend_by_month": spend_by_month,
             "week": week,
             "money_flow_week": money_flow_week,
             "total_per_week": self.queryset_sum_per_day_week(week_in_year),
+            # Chart Pie
+            "percent_categories": sum_by_categories,
+            "categories": categories,
+            "color_categories": colors,
         }
         return render(request, self.template_name, args)
 
@@ -200,16 +225,8 @@ class FlowMoneyNewView(LoginRequiredMixin, generic.edit.FormView):
         )
         self.object.save()
 
-        # Verify if these is increase o decrese
-        type_flow = self.object.category.type_flow
-        amount = self.object.amount
-        if type_flow == models.TypeFlow.INCOME:
-            # Increase
-            if self.object.category.parent_category.name.lower() == "saving":
-                self.request.user.add_to_alkali(amount)
-        self.request.user.add_to_wallet(amount)
-        self.request.user.save()
-
+        # Verify if This is increase o decrease
+        flow_sync(self.request.user)
         return redirect(self.get_success_url())
 
 
@@ -230,17 +247,10 @@ class FlowMoneyEditView(LoginRequiredMixin, generic.edit.UpdateView):
         self.object = form.save(commit=False, updated=True)
         self.object.save()
 
-        # Verify if these is increase o decrese
-        type_flow = self.object.category.type_flow
-        amount = self.object.amount
-        if type_flow == models.TypeFlow.INCOME:
-            # Increase
-            if self.object.category.parent_category.name.lower() == "saving":
-                self.request.user.add_to_alkali(amount)
-        self.request.user.add_to_wallet(amount)
-        self.request.user.save()
-
+        # Verify if This is increase o decrease
+        flow_sync(self.request.user)
         return redirect(self.get_success_url())
+
 
 
 class CategoryFlowListView(LoginRequiredMixin, generic.list.ListView):
@@ -249,13 +259,13 @@ class CategoryFlowListView(LoginRequiredMixin, generic.list.ListView):
     context_object_name = 'categories_flow'
     template_name = 'categories_flow/index.html'
 
-    def get_queryset(self, *args, **kwargs):
-        queryset = super(CategoryFlowListView, self).get_queryset(*args, **kwargs)
+    def get_queryset(self):
+        queryset = super(CategoryFlowListView, self).get_queryset()
         queryset = queryset.filter(enabled=True, parent_category__isnull=False)
         return queryset
 
-    def get_queryset_primary(self, *args, **kwargs):
-        queryset = super(CategoryFlowListView, self).get_queryset(*args, **kwargs)
+    def get_queryset_primary(self):
+        queryset = super(CategoryFlowListView, self).get_queryset()
         queryset = queryset.filter(parent_category__isnull=True)
         return queryset
 

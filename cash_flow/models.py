@@ -8,11 +8,13 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.conf import settings
 from djmoney.money import Money
+from django.contrib.postgres.fields import ArrayField
 
 
 class TypeFlow(models.TextChoices):
     EXPENDITURE = 'E', _('Expenditure')
     INCOME = 'I', _('Income')
+
 
 class StateFlow(models.TextChoices):
     ACTIVE = "A", _("Active")
@@ -48,8 +50,8 @@ class FlowMoney(models.Model):
         default_currency=settings.DEFAULT_CURRENCIES[0],
         max_digits=11,
         decimal_places=2,
-        blank=True,
-        null=True,
+        blank=False,
+        null=False,
     )
     date_flow = models.DateTimeField(default=datetime.now, blank=True)
 
@@ -64,3 +66,32 @@ class FlowMoney(models.Model):
     @property
     def abs_amount(self) -> Money:
         return abs(self.amount)
+
+
+class FlowMoneyHistory(models.Model):
+    """Flow Money History Context"""
+    initial_amount = MoneyField(
+        default_currency=settings.DEFAULT_CURRENCIES[0],
+        max_digits=11,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
+    final_amount = MoneyField(
+        default_currency=settings.DEFAULT_CURRENCIES[0],
+        max_digits=11,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
+    labels = ArrayField(models.CharField(max_length=512))
+    values = ArrayField(models.CharField(max_length=512))
+    month = models.DateField(blank=False, null=False)
+    category = models.ForeignKey(CategoryFlow, on_delete=models.CASCADE, null=True, blank=True)
+    enabled = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        'accounts.User',
+        on_delete=models.CASCADE,
+    )

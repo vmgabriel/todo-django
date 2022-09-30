@@ -2,6 +2,7 @@
 
 # Libraries
 import calendar
+from decimal import Decimal
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F, Case, When, FloatField
@@ -10,12 +11,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import ExtractDay, Abs
 from django.utils.timezone import make_aware
+from django.http import JsonResponse
 
 # Modules
 from django.conf import settings
 from djmoney.money import Money
 
 from . import models, forms
+from accounts import models as account_models
 
 
 def get_days_month(
@@ -31,6 +34,73 @@ def flow_sync(user):
         .aggregate(total_flow=Sum("amount"))["total_flow"]
     user.wallet = total_flow
     user.save()
+
+
+def queryset_sum_per_month(
+    user: account_models.User,
+    year: int = datetime.now().year,
+    month: int = datetime.now().month,
+) -> list:
+    day = datetime.now().day
+    query = models.FlowMoney.objects.filter(
+        date_flow__year=year,
+        date_flow__month=month,
+    ).annotate(
+        day=ExtractDay("date_flow"),
+    ).values("day").annotate(
+        total=Sum("amount"),
+    ).values("day", "total")
+
+    previous_val = 0
+    previous_month = datetime.now().replace(day=1) - timedelta(days=1)
+    previous_history = models.FlowMoneyHistory.objects.filter(
+        category__isnull=True,
+        enabled=True,
+        month__month=previous_month.month
+    ).first()
+    if previous_history:
+        previous_val = previous_history.final_amount
+
+    definition = {}
+    for x in query:
+        definition[x["day"]] = Decimal(previous_val) + Decimal(x["total"])
+        previous_val += definition[x["day"]]
+    previous_val = 0
+    for counted in range(1, day):
+        if counted not in definition:
+            definition[counted] = previous_val
+        else:
+            previous_val = definition[counted]
+    return sorted(definition.items(), key=lambda x: x[0])
+
+
+def queryset_sum_per_month_category(
+    year: int = datetime.now().year,
+    month: int = datetime.now().month,
+):
+    day = datetime.now().day
+    query = models.FlowMoney.objects.filter(
+        date_flow__year=year,
+        date_flow__month=month,
+        category__parent_category__type_flow__in=models.TypeFlow.EXPENDITURE,
+    ).annotate(
+        main_category=F("category__parent_category__name")
+    ).values("main_category").annotate(
+        day=ExtractDay("date_flow"),
+    ).values("day", "main_category").annotate(
+        total=Sum(Abs("amount")),
+    ).values("day", "total", "main_category")
+    categories = {}
+    for x in query:
+        if x["main_category"] in categories:
+            categories[x["main_category"]][x["day"]] = float(x["total"])
+        else:
+            categories[x["main_category"]] = {x["day"]: float(x["total"])}
+    for counted in range(1, day):
+        for x in categories.values():
+            if counted not in x:
+                x[counted] = 0
+    return {k: sorted(x.items(), key=lambda x: x[0]) for k, x in categories.items()}
 
 
 def order_by_levels(list_to_order: list) -> list:
@@ -71,62 +141,6 @@ class CashFlowHomeView(generic.TemplateView):
         query = self.queryset()
         return query.filter(date_flow__date=day)
 
-    def queryset_sum_per_month_category(
-            self,
-            year: int = datetime.now().year,
-            month: int = datetime.now().month,
-    ):
-        day = datetime.now().day
-        query = self.queryset().filter(
-            date_flow__year=year,
-            date_flow__month=month,
-            category__parent_category__type_flow__in=models.TypeFlow.EXPENDITURE,
-        ).annotate(
-            main_category=F("category__parent_category__name")
-        ).values("main_category").annotate(
-            day=ExtractDay("date_flow"),
-        ).values("day", "main_category").annotate(
-            total=Sum(Abs("amount")),
-        ).values("day", "total", "main_category")
-        categories = {}
-        for x in query:
-            if x["main_category"] in categories:
-                categories[x["main_category"]][x["day"]] = float(x["total"])
-            else:
-                categories[x["main_category"]] = {x["day"]: float(x["total"])}
-        for counted in range(1, day):
-            for x in categories.values():
-                if counted not in x:
-                    x[counted] = 0
-        return {k: sorted(x.items(), key=lambda x: x[0]) for k, x in categories.items()}
-
-    def queryset_sum_per_month(
-            self,
-            year: int = datetime.now().year,
-            month: int = datetime.now().month
-    ) -> list:
-        day = datetime.now().day
-        query = self.queryset().filter(
-            date_flow__year=year,
-            date_flow__month=month,
-        ).annotate(
-            day=ExtractDay("date_flow"),
-        ).values("day").annotate(
-            total=Sum("amount"),
-        ).values("day", "total")
-        previous_val = 0
-        definition = {}
-        for x in query:
-            definition[x["day"]] = previous_val + float(x["total"])
-            previous_val += float(x["total"])
-        previous_val = 0
-        for counted in range(1, day):
-            if counted not in definition:
-                definition[counted] = previous_val
-            else:
-                previous_val = definition[counted]
-        return sorted(definition.items(), key=lambda x: x[0])
-
     def queryset_sum_per_day_week(
             self,
             week: int,
@@ -165,7 +179,7 @@ class CashFlowHomeView(generic.TemplateView):
         money_flow_week = order_by_levels([self.queryset_per_day(day) for day in week])
         spend_by_month = {
             "Spend": {
-                "data": [x for _, x in self.queryset_sum_per_month(dt.year, dt.month)],
+                "data": [float(x) for _, x in queryset_sum_per_month(self.request.user, dt.year, dt.month)],
                 "color": "04aa6d",
             }
         }
@@ -174,7 +188,7 @@ class CashFlowHomeView(generic.TemplateView):
                 "data": [x[1] for x in vals],
                 "color": models.CategoryFlow.objects.filter(name=k).first().color,
             }
-            for k, vals in self.queryset_sum_per_month_category(dt.year, dt.month).items()
+            for k, vals in queryset_sum_per_month_category(dt.year, dt.month).items()
         }
         sum_by_categories = []
         colors = []
@@ -186,8 +200,6 @@ class CashFlowHomeView(generic.TemplateView):
         total_sum_by_categories = sum(sum_by_categories)
         sum_by_categories = [100 * (x / total_sum_by_categories) for x in sum_by_categories]
 
-
-        # DataSource object
         args = {
             # Personal User
             "wallet": self.request.user.wallet or Money(0, "COP"),
@@ -324,3 +336,44 @@ def delete_category(request, pk):
     category.enabled = False
     category.save()
     return redirect("cash_flow:categories")
+
+
+def save_history(request):
+    """Save Spend and categories in month per user"""
+    for user in account_models.User.objects.filter(enabled=True).all():
+        # Save Spend
+        spend = queryset_sum_per_month(user)
+        category_to_save = models.FlowMoneyHistory(
+            initial_amount=Money(float(spend[1][1]), "COP"),
+            final_amount=Money(float(spend[-1][1]), "COP"),
+            labels=[x for x, _ in spend],
+            values=[x for _, x in spend],
+            month=datetime.now().date(),
+            category=None,
+            enabled=True,
+            created_by=user,
+        )
+        category_to_save.save()
+        # Select all Categories
+        spend_categories = queryset_sum_per_month_category()
+        for category in models.CategoryFlow.objects.filter(
+                enabled=True,
+                parent_category__isnull=True
+        ).all():
+            selected_category = spend_categories.get(category.name)
+            if not selected_category:
+                selected_category = [(x, 0) for x in range(1, get_days_month())]
+            sum_spend_category = sum([x for _, x in selected_category])
+            category_to_save = models.FlowMoneyHistory(
+                initial_amount=Money(0, "COP"),
+                final_amount=Money(sum_spend_category, "COP"),
+                labels=[x for x, _ in selected_category],
+                values=[x for _, x in selected_category],
+                month=datetime.now().date(),
+                category=category,
+                enabled=True,
+                created_by=user,
+            )
+            category_to_save.save()
+
+    return JsonResponse({"status": "ok"})

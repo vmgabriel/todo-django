@@ -104,15 +104,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 
 MODE = env("MODE", default="test")
-if MODE == "test":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
-else:
-    DATABASES = {
+DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': env("DATABASE_NAME"),

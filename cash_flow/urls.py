@@ -17,4 +17,5 @@ urlpatterns: list[path] = [
     path("categories/new", views.CategoryFlowNewView.as_view(), name="new_category"),
     path("categories/edit/<int:pk>", views.CategoryFlowEditView.as_view(), name="edit_category"),
     path("categories/delete/<int:pk>", views.delete_category, name="delete_category"),
+    path("save_month", views.save_history, name="save_month"),
 ]

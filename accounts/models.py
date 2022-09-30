@@ -103,6 +103,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         blank=True,
         null=True,
     )
+    enabled = models.BooleanField(default=True)
 
     objects = UserManager()
 

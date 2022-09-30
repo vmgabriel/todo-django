@@ -126,7 +126,7 @@ def get_start_and_end_date_from_calendar_week(
     return [monday] + [monday + timedelta(days=x) for x in range(1,7)]
 
 
-class CashFlowHomeView(generic.TemplateView):
+class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
     """The Main for to Cash Flow"""
     template_name = 'cash_flow_home.html'
 

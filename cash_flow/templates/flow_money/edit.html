@@ -43,9 +43,10 @@
                             {% endfor %}
                         {% endif %}
                     </div>
-                    <div class="input-field col s12">
+                    <div class="col s12">
                         {{ form.date_flow }}
                         <label for="date_flow">{{ form.date_flow.label }}</label>
+                        <input type="text" class="datepicker" name="date_flow" value="{{ form.date_flow.value }}">
                         {% if form.date_flow.errors %}
                             {% for error in form.date_flow.errors %}
                                 <p style="color: red">{{ error }}</p>
@@ -53,6 +54,15 @@
                         {% endif %}
                     </div>
                 </div>
+                
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                    const elems = document.querySelectorAll('.datepicker');
+                    const instances = M.Datepicker.init(elems, {
+                        format: "yyyy-mm-dd"
+                    });
+                    });
+                </script>
                 <div class="col s12 right-align">
                     <a href="{% url 'cash_flow:new_category'  %}" class="btn waves-effect waves-red btn-large red">Cancel</a>
                     <button type="submit" class="waves-effect waves-light btn-large">

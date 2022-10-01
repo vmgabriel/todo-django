@@ -53,7 +53,8 @@ class FlowMoney(models.Model):
         blank=False,
         null=False,
     )
-    date_flow = models.DateTimeField(default=datetime.now, blank=True)
+    date_flow = models.DateField(default=datetime.today().strftime('%Y-%m-%d')
+, blank=True)
 
     enabled = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

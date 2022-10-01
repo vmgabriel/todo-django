@@ -12,7 +12,7 @@
 
     <div class="card-panel">
       <div class="row" style="display: inline-flex;">
-        <h2>New Store</h2>
+        <h2>{% if mode == "Save" %}New{% else %}Edit{% endif %} Store</h2>
       </div>
 
       <form method="post" enctype="multipart/form-data" class="col s12" style="padding-bottom: 2em;">

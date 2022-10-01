@@ -52,6 +52,7 @@ EXTERNALS_APPLICATIONS = [
     "colorfield",
     "location_field.apps.DefaultConfig",
     "djmoney",
+    "django_filters",
 ]
 
 

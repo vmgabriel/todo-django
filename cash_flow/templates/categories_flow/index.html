@@ -21,6 +21,40 @@
                 <div class="row">
                     <h4>Categories</h4>
                 </div>
+
+                <ul class="collapsible">
+                    <li>
+                        <div class="collapsible-header">
+                            <i class="material-icons">search</i>Filters
+                        </div>
+                        <div class="collapsible-body">
+                            <form method="get">
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        {{ filter.form.name }}
+                                        <label for="name">{{ filter.form.name.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col s6">
+                                        {{ filter.form.type_flow }}
+                                        <label for="type_flow">{{ filter.form.type_flow.label }}</label>
+                                    </div>
+                                    <div class="input-field col s6">
+                                        {{ filter.form.state_flow }}
+                                        <label for="state_flow">{{ filter.form.state_flow.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <button class="btn waves-effect waves-light" type="submit" name="action" style="width: 100%;">
+                                        <i class="material-icons">search</i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+
                 <div class="" style="display: flex; justify-content: space-between;">
                     <h6>{{ count }}</h6>
                     <h6>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h6>
@@ -52,21 +86,21 @@
                 </table>
                 <ul class="pagination" style="font-size: 11px;">
                     {% if page_obj.has_previous %}
-                        <li class="waves-effect"><a href="?page=1"><i class="material-icons">first_page</i></a></li>
-                        <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
-                        <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=1 %}"><i class="material-icons">first_page</i></a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.previous_page_number %}"><i class="material-icons">chevron_left</i></a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a></li>
                     {% else %}
-                        <li class="disabled"><a href="?page=1"><i class="material-icons">first_page</i></a></li>
+                        <li class="disabled"><a href="?{% param_replace page=1 %}"><i class="material-icons">first_page</i></a></li>
                         <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
                     {% endif %}
                     <li class="active"><a href="">{{ page_obj.number }}</a></li>
                     {% if page_obj.has_next %}
-                        <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
-                        <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
-                        <li class="waves-effect"><a href="?page={{ page_obj.paginator.num_pages }}"><i class="material-icons">last_page</i></a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.next_page_number %}"><i class="material-icons">chevron_right</i></a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.paginator.num_pages %}"><i class="material-icons">last_page</i></a></li>
                     {% else %}
                         <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
-                        <li class="disabled"><a href="?page={{ page_obj.paginator }}"><i class="material-icons">last_page</i></a></li>
+                        <li class="disabled"><a href=""><i class="material-icons">last_page</i></a></li>
                     {% endif %}
                 </ul>
             {% else %}

@@ -8,7 +8,7 @@
 
     <div class="card-panel">
       <div class="row" style="display: inline-flex;">
-        <h2>New Flow Category</h2>
+        <h2>{% if mode == "Save" %}New{% else %}Edit{% endif %} Flow Category</h2>
       </div>
 
       <form method="post" class="col s12" style="padding-bottom: 2em;">
@@ -70,14 +70,16 @@
             </div>
         </div>
         <div class="col s12 right-align">
-          <a href="{% url 'cash_flow:new_category'  %}" class="btn waves-effect waves-red btn-large red">Cancel</a>
-          <button type="submit" class="waves-effect waves-light btn-large">
-            {% if mode == "Save" %}
-            Create
-            {% else %}
-            Edit
-            {% endif %}
-          </button>
+            <a href={% if mode == "Save" %}"{% url 'cash_flow:new_category'  %}"{% else %}"{% url 'cash_flow:edit_category' pk=object.pk  %}"{% endif %} class="btn waves-effect waves-red btn-large blue">
+                <i class="material-icons">cancel</i>
+            </a>
+            <button type="submit" class="waves-effect waves-light btn-large">
+                {% if mode == "Save" %}
+                    <i class="material-icons">save</i>
+                {% else %}
+                    <i class="material-icons">edit</i>
+                {% endif %}
+            </button>
         </div>
       </form>
     </div>

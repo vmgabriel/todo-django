@@ -37,14 +37,15 @@ def flow_sync(user):
 
 
 def queryset_sum_per_month(
-    user: account_models.User,
-    year: int = datetime.now().year,
-    month: int = datetime.now().month,
+        user: account_models.User,
+        year: int = datetime.now().year,
+        month: int = datetime.now().month,
 ) -> list:
     day = datetime.now().day
     query = models.FlowMoney.objects.filter(
         date_flow__year=year,
         date_flow__month=month,
+        created_by=user,
     ).annotate(
         day=ExtractDay("date_flow"),
     ).values("day").annotate(
@@ -56,7 +57,8 @@ def queryset_sum_per_month(
     previous_history = models.FlowMoneyHistory.objects.filter(
         category__isnull=True,
         enabled=True,
-        month__month=previous_month.month
+        month__month=previous_month.month,
+        created_by=user,
     ).first()
     if previous_history:
         previous_val = previous_history.final_amount
@@ -75,14 +77,16 @@ def queryset_sum_per_month(
 
 
 def queryset_sum_per_month_category(
-    year: int = datetime.now().year,
-    month: int = datetime.now().month,
+        user: account_models.User,
+        year: int = datetime.now().year,
+        month: int = datetime.now().month,
 ):
     day = datetime.now().day
     query = models.FlowMoney.objects.filter(
         date_flow__year=year,
         date_flow__month=month,
         category__parent_category__type_flow__in=models.TypeFlow.EXPENDITURE,
+        created_by=user,
     ).annotate(
         main_category=F("category__parent_category__name")
     ).values("main_category").annotate(
@@ -123,7 +127,7 @@ def get_start_and_end_date_from_calendar_week(
 ) -> list[datetime]:
     monday = datetime.strptime(f'{year}-{calendar_week}-1', "%Y-%W-%w")
     monday = make_aware(monday)
-    return [monday] + [monday + timedelta(days=x) for x in range(1,7)]
+    return [monday] + [monday + timedelta(days=x) for x in range(1, 7)]
 
 
 class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
@@ -188,7 +192,7 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
                 "data": [x[1] for x in vals],
                 "color": models.CategoryFlow.objects.filter(name=k).first().color,
             }
-            for k, vals in queryset_sum_per_month_category(dt.year, dt.month).items()
+            for k, vals in queryset_sum_per_month_category(self.request.user, dt.year, dt.month).items()
         }
         sum_by_categories = []
         colors = []
@@ -262,7 +266,6 @@ class FlowMoneyEditView(LoginRequiredMixin, generic.edit.UpdateView):
         # Verify if This is increase o decrease
         flow_sync(self.request.user)
         return redirect(self.get_success_url())
-
 
 
 class CategoryFlowListView(LoginRequiredMixin, generic.list.ListView):
@@ -340,36 +343,66 @@ def delete_category(request, pk):
 
 def save_history(request):
     """Save Spend and categories in month per user"""
+    dt = datetime.now().replace(day=1) - timedelta(days=1)
     for user in account_models.User.objects.filter(enabled=True).all():
         # Save Spend
-        spend = queryset_sum_per_month(user)
+        spend = queryset_sum_per_month(user, dt.year, dt.month)
+        defined_spend = []
+        for x in range(1, get_days_month(dt.month, dt.year)):
+            temporal_spend = list(filter(lambda z: z[0] == x, spend))
+            if not temporal_spend:
+                defined_spend.append((x, 0))
+            else:
+                temporal_spend = temporal_spend[0]
+                defined_spend.append(temporal_spend)
+        spend = defined_spend
+        previous_value = models.FlowMoneyHistory.objects.filter(
+            enabled=True,
+            created_by=user,
+            month__month=dt.month
+        ).first()
+        if previous_value:
+            previous_value = previous_value.final_amount
+        else:
+            previous_value = Money(0, "COP")
         category_to_save = models.FlowMoneyHistory(
-            initial_amount=Money(float(spend[1][1]), "COP"),
-            final_amount=Money(float(spend[-1][1]), "COP"),
+            initial_amount=previous_value,
+            final_amount=user.wallet,
             labels=[x for x, _ in spend],
             values=[x for _, x in spend],
-            month=datetime.now().date(),
+            month=dt.date(),
             category=None,
             enabled=True,
             created_by=user,
         )
         category_to_save.save()
         # Select all Categories
-        spend_categories = queryset_sum_per_month_category()
+        spend_categories = queryset_sum_per_month_category(user, dt.year, dt.month)
         for category in models.CategoryFlow.objects.filter(
                 enabled=True,
                 parent_category__isnull=True
         ).all():
             selected_category = spend_categories.get(category.name)
             if not selected_category:
-                selected_category = [(x, 0) for x in range(1, get_days_month())]
+                selected_category = [(x, 0) for x in range(1, get_days_month(dt.month, dt.year))]
+            else:
+                temporal_categories = []
+                for xm in range(1, get_days_month(dt.month, dt.year)):
+                    temporal_category = list(filter(lambda x: x[0] == xm, selected_category))
+                    if not temporal_category:
+                        temporal_categories.append((xm, 0))
+                    else:
+                        temporal_category = temporal_category[0]
+                        temporal_categories.append(temporal_category)
+                selected_category = temporal_categories
+
             sum_spend_category = sum([x for _, x in selected_category])
             category_to_save = models.FlowMoneyHistory(
                 initial_amount=Money(0, "COP"),
                 final_amount=Money(sum_spend_category, "COP"),
                 labels=[x for x, _ in selected_category],
                 values=[x for _, x in selected_category],
-                month=datetime.now().date(),
+                month=dt.date(),
                 category=category,
                 enabled=True,
                 created_by=user,

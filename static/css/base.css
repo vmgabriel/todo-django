@@ -18,6 +18,13 @@ select {
   display: initial;
 }
 
+/* Materialize CSS */
 .datepicker-select {
   display: none;
+}
+
+/* Maps */
+.map-widget {
+  display: flex;
+  align-items: center;
 }

@@ -45,7 +45,11 @@
                     </div>
                     <div class="col s12">
                         <label for="date_flow">{{ form.date_flow.label }}</label>
-                        <input type="text" class="datepicker" name="date_flow" value="{{ form.date_flow.value|date:'Y-m-d' }}">
+                        {% if mode == "Save" %}
+                        <input type="text" class="datepicker" name="date_flow" value="{{ form.date_flow.value }}">
+                        {% else %}
+                            <input type="text" class="datepicker" name="date_flow" value="{{ form.date_flow.value|date:'Y-m-d' }}">
+                        {% endif %}
                         {% if form.date_flow.errors %}
                             {% for error in form.date_flow.errors %}
                                 <p style="color: red">{{ error }}</p>

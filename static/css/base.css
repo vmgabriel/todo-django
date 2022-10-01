@@ -18,6 +18,53 @@ select {
   display: initial;
 }
 
+
+/** Header **/
+.short-title-header { 
+  display: none; 
+}
+
+@media (max-width: 500px) {
+  .short-title-header { 
+    display: inline-block;
+  }
+  .full-title-header { 
+    display: none; 
+  }
+}
+
+@media (max-width: 390px) {
+  .short-title-header { 
+    display: none; 
+  }
+}
+
+/** Profile **/
+.profile-button-icon {
+  display: none;
+}
+@media (max-width: 700px) {
+  .profile-button {
+    padding: initial;
+  }
+  .profile-button-icon { 
+    display: inline-flex;
+    padding-left: 5px;
+    padding-right: 5px;
+    line-height: unset;
+  }
+  .profile-button-text { 
+    display: none; 
+  }
+}
+
+/* Materialize CSS */
 .datepicker-select {
   display: none;
+}
+
+/* Maps */
+.map-widget {
+  display: flex;
+  align-items: center;
 }

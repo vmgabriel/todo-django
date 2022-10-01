@@ -18,6 +18,19 @@ select {
   display: initial;
 }
 
+
+/** Header **/
+.short-title-header { display: none; }
+
+@media (max-width: 500px) {
+    .short-title-header { display: inline-block; }
+    .full-title-header { display: none; }
+}
+
+@media (max-width: 390px) {
+  .short-title-header { display: none; }
+}
+
 /* Materialize CSS */
 .datepicker-select {
   display: none;

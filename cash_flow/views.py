@@ -46,6 +46,7 @@ def queryset_sum_per_month(
         date_flow__year=year,
         date_flow__month=month,
         created_by=user,
+        enabled=True,
     ).annotate(
         day=ExtractDay("date_flow"),
     ).values("day").annotate(
@@ -87,6 +88,7 @@ def queryset_sum_per_month_category(
         date_flow__month=month,
         category__parent_category__type_flow__in=models.TypeFlow.EXPENDITURE,
         created_by=user,
+        enabled=True,
     ).annotate(
         main_category=F("category__parent_category__name")
     ).values("main_category").annotate(
@@ -157,6 +159,7 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
             date_flow__month=month,
             date_flow__gt=days_in_week[0],
             date_flow__lt=days_in_week[-1],
+            enabled=True,
         ).annotate(
             day=ExtractDay("date_flow"),
         ).values("day").annotate(
@@ -342,6 +345,19 @@ def delete_category(request, pk):
     category.enabled = False
     category.save()
     return redirect("cash_flow:categories")
+
+
+@login_required
+def delete_flow_money(request, pk):
+    model = models.FlowMoney
+    flow = get_object_or_404(model, pk=pk)
+    flow.enabled = False
+    flow.save()
+
+    # Verify if This is increase o decrease
+    flow_sync(request.user)
+
+    return redirect("cash_flow:home_cash_flow")
 
 
 def save_history(request):

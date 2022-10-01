@@ -10,7 +10,8 @@ urlpatterns: list[path] = [
 
     # Money Flow
     path("money/new", views.FlowMoneyNewView.as_view(), name="money"),
-    path("money/edit/<int:pk>", views.FlowMoneyEditView.as_view(), name="money_edit"),
+    path("money/<int:pk>/edit", views.FlowMoneyEditView.as_view(), name="money_edit"),
+    path("money/<int:pk>/delete", views.delete_flow_money, name="money_delete"),
 
     # Categories
     path("categories", views.CategoryFlowListView.as_view(), name="categories"),

@@ -156,7 +156,6 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
         days_in_week = get_start_and_end_date_from_calendar_week(year, week)
         query = self.queryset().filter(
             date_flow__year=year,
-            date_flow__month=month,
             date_flow__gt=days_in_week[0],
             date_flow__lt=days_in_week[-1],
             enabled=True,

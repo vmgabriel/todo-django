@@ -61,7 +61,7 @@ def queryset_sum_per_month(
         created_by=user,
     ).first()
     if previous_history:
-        previous_val = previous_history.final_amount
+        previous_val = previous_history.final_amount.amount
 
     definition = {}
     for x in query:
@@ -202,7 +202,10 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
             colors.append(values["color"])
             categories.append(category)
         total_sum_by_categories = sum(sum_by_categories)
-        sum_by_categories = [100 * (x / total_sum_by_categories) for x in sum_by_categories]
+        if total_sum_by_categories == 0:
+            sum_by_categories = 0
+        else:
+            sum_by_categories = [100 * (x / total_sum_by_categories) for x in sum_by_categories]
 
         args = {
             # Personal User
@@ -408,5 +411,14 @@ def save_history(request):
                 created_by=user,
             )
             category_to_save.save()
+        flow_money = models.FlowMoney(
+            description="Month_reset",
+            category=models.CategoryFlow.objects.last(),
+            amount=Money(0, "COP"),
+            date_flow=datetime.now().date(),
+            enabled=True,
+            created_by=user,
+        )
+        flow_money.save()
 
     return JsonResponse({"status": "ok"})

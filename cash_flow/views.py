@@ -145,7 +145,7 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
 
     def queryset_per_day(self, day: datetime.date) -> list[models.FlowMoney]:
         query = self.queryset()
-        return query.filter(date_flow__date=day)
+        return query.filter(date_flow=day)
 
     def queryset_sum_per_day_week(
             self,

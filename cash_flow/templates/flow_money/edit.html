@@ -43,9 +43,13 @@
                             {% endfor %}
                         {% endif %}
                     </div>
-                    <div class="input-field col s12">
-                        {{ form.date_flow }}
+                    <div class="col s12">
                         <label for="date_flow">{{ form.date_flow.label }}</label>
+                        {% if mode == "Save" %}
+                        <input type="text" class="datepicker" name="date_flow" value="{{ form.date_flow.value }}">
+                        {% else %}
+                            <input type="text" class="datepicker" name="date_flow" value="{{ form.date_flow.value|date:'Y-m-d' }}">
+                        {% endif %}
                         {% if form.date_flow.errors %}
                             {% for error in form.date_flow.errors %}
                                 <p style="color: red">{{ error }}</p>
@@ -76,4 +80,10 @@
 {% endblock container %}
 
 {% block javascript %}
+document.addEventListener('DOMContentLoaded', () => {
+    const elems = document.querySelectorAll('.datepicker');
+    const instances = M.Datepicker.init(elems, {
+        format: "yyyy-mm-dd",
+    });
+});
 {% endblock javascript %}

@@ -46,6 +46,7 @@ def queryset_sum_per_month(
         date_flow__year=year,
         date_flow__month=month,
         created_by=user,
+        enabled=True,
     ).annotate(
         day=ExtractDay("date_flow"),
     ).values("day").annotate(
@@ -87,6 +88,7 @@ def queryset_sum_per_month_category(
         date_flow__month=month,
         category__parent_category__type_flow__in=models.TypeFlow.EXPENDITURE,
         created_by=user,
+        enabled=True,
     ).annotate(
         main_category=F("category__parent_category__name")
     ).values("main_category").annotate(
@@ -143,7 +145,7 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
 
     def queryset_per_day(self, day: datetime.date) -> list[models.FlowMoney]:
         query = self.queryset()
-        return query.filter(date_flow__date=day)
+        return query.filter(date_flow=day)
 
     def queryset_sum_per_day_week(
             self,
@@ -154,9 +156,9 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
         days_in_week = get_start_and_end_date_from_calendar_week(year, week)
         query = self.queryset().filter(
             date_flow__year=year,
-            date_flow__month=month,
             date_flow__gt=days_in_week[0],
             date_flow__lt=days_in_week[-1],
+            enabled=True,
         ).annotate(
             day=ExtractDay("date_flow"),
         ).values("day").annotate(
@@ -278,20 +280,21 @@ class CategoryFlowListView(LoginRequiredMixin, generic.list.ListView):
     template_name = 'categories_flow/index.html'
 
     def get_queryset(self):
-        queryset = super(CategoryFlowListView, self).get_queryset()
+        queryset = super().get_queryset()
         queryset = queryset.filter(enabled=True, parent_category__isnull=False)
         return queryset
 
     def get_queryset_primary(self):
-        queryset = super(CategoryFlowListView, self).get_queryset()
+        queryset = super().get_queryset()
         queryset = queryset.filter(parent_category__isnull=True)
         return queryset
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(CategoryFlowListView, self).get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        primary = self.get_queryset_primary()
         context['count'] = self.get_queryset().count()
-        context["primary"] = self.get_queryset_primary()
-        context["count_primary"] = context["primary"].count()
+        context["primary"] = primary
+        context["count_primary"] = primary.count()
 
         return context
 
@@ -342,6 +345,19 @@ def delete_category(request, pk):
     category.enabled = False
     category.save()
     return redirect("cash_flow:categories")
+
+
+@login_required
+def delete_flow_money(request, pk):
+    model = models.FlowMoney
+    flow = get_object_or_404(model, pk=pk)
+    flow.enabled = False
+    flow.save()
+
+    # Verify if This is increase o decrease
+    flow_sync(request.user)
+
+    return redirect("cash_flow:home_cash_flow")
 
 
 def save_history(request):

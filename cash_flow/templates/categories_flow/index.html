@@ -21,9 +21,9 @@
                 <div class="row">
                     <h4>Categories</h4>
                 </div>
-                <div class="row" style="display: flex; justify-content: space-between;">
+                <div class="" style="display: flex; justify-content: space-between;">
                     <h6>{{ count }}</h6>
-                    <h6>{{page_obj.number}} of {{ page_obj.paginator.num_pages }}</h6>
+                    <h6>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h6>
                 </div>
                 <table class="table" style="margin-bottom: 1em;display: block;overflow-x: auto;white-space: nowrap;">
                     <thead>
@@ -36,7 +36,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for category in categories_flow %}
+                        {% for category in object_list %}
                             <tr>
                                 <td>{{ category.name }}</td>
                                 <td>{{ category.description }}</td>
@@ -50,19 +50,25 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <div class="pagination">
-                    <span class="step-links">
-                        {% if page_obj.has_previous %}
-                            <a href="?page=1">&laquo; first</a>
-                            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                        {% endif %}
-
-                        {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}">next</a>
-                            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                        {% endif %}
-                    </span>
-                </div>
+                <ul class="pagination" style="font-size: 11px;">
+                    {% if page_obj.has_previous %}
+                        <li class="waves-effect"><a href="?page=1"><i class="material-icons">first_page</i></a></li>
+                        <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+                        <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+                    {% else %}
+                        <li class="disabled"><a href="?page=1"><i class="material-icons">first_page</i></a></li>
+                        <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+                    {% endif %}
+                    <li class="active"><a href="">{{ page_obj.number }}</a></li>
+                    {% if page_obj.has_next %}
+                        <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+                        <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+                        <li class="waves-effect"><a href="?page={{ page_obj.paginator.num_pages }}"><i class="material-icons">last_page</i></a></li>
+                    {% else %}
+                        <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+                        <li class="disabled"><a href="?page={{ page_obj.paginator }}"><i class="material-icons">last_page</i></a></li>
+                    {% endif %}
+                </ul>
             {% else %}
                 <p class="flow-text">Not Flow Categories yet.</p>
             {% endif %}

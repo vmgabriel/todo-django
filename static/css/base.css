@@ -14,7 +14,10 @@ ul#id_categories, label {
   font-size: 15px;
 }
 
-
 select {
   display: initial;
+}
+
+.datepicker-select {
+  display: none;
 }

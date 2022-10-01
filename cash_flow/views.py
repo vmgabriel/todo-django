@@ -12,12 +12,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import ExtractDay, Abs
 from django.utils.timezone import make_aware
 from django.http import JsonResponse
+from django_filters.views import FilterView
 
 # Modules
 from django.conf import settings
 from djmoney.money import Money
 
-from . import models, forms
+from . import models, forms, filters
 from accounts import models as account_models
 
 
@@ -273,26 +274,31 @@ class FlowMoneyEditView(LoginRequiredMixin, generic.edit.UpdateView):
         return redirect(self.get_success_url())
 
 
-class CategoryFlowListView(LoginRequiredMixin, generic.list.ListView):
+class CategoryFlowListView(LoginRequiredMixin, FilterView):
     model = models.CategoryFlow
     paginate_by = settings.PAGINATION_LIMIT
     context_object_name = 'categories_flow'
     template_name = 'categories_flow/index.html'
+    filterset_class = filters.CategoryFlowFilter
+
+    def enabled_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(enabled=True)
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(enabled=True, parent_category__isnull=False)
-        return queryset
+        return self.enabled_queryset().filter(parent_category__isnull=False)
+
+    def get_queryset_with_filter(self):
+        queryset = self.get_queryset()
+        return self.filterset_class(self.request.GET, queryset=queryset).qs
 
     def get_queryset_primary(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(parent_category__isnull=True)
-        return queryset
+        return self.enabled_queryset().filter(parent_category__isnull=True)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         primary = self.get_queryset_primary()
-        context['count'] = self.get_queryset().count()
+        context['count'] = self.get_queryset_with_filter().count()
         context["primary"] = primary
         context["count_primary"] = primary.count()
 

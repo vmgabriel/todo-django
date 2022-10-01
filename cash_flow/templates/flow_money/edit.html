@@ -44,9 +44,8 @@
                         {% endif %}
                     </div>
                     <div class="col s12">
-                        {{ form.date_flow }}
                         <label for="date_flow">{{ form.date_flow.label }}</label>
-                        <input type="text" class="datepicker" name="date_flow" value="{{ form.date_flow.value }}">
+                        <input type="text" class="datepicker" name="date_flow" value="{{ form.date_flow.value|date:'Y-m-d' }}">
                         {% if form.date_flow.errors %}
                             {% for error in form.date_flow.errors %}
                                 <p style="color: red">{{ error }}</p>
@@ -59,7 +58,7 @@
                     document.addEventListener('DOMContentLoaded', () => {
                     const elems = document.querySelectorAll('.datepicker');
                     const instances = M.Datepicker.init(elems, {
-                        format: "yyyy-mm-dd"
+                        format: "yyyy-mm-dd",
                     });
                     });
                 </script>

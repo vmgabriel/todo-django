@@ -12,8 +12,8 @@
         <h4>User Profile {{ object.username }}</h4>
 
         <div class="container-fluid right-align" style="margin: 2em;">
-          <a href="{% url 'password_change' %}" class="btn waves-effect waves-red btn-large">Change Password</a>
-          {% if has_spotify_connection %}<a class="btn waves-effect waves-red btn-large" href="{% url 'social:spotify-profile' %}">Spotify Profile</a>{% else %}<a href="{% url 'social:spotify-redirect' %}" class="btn waves-effect waves-red btn-large">Connect to Spotify</a>{% endif %}
+          <a href="{% url 'password_change' %}" class="btn waves-effect waves-red btn-large profile-button"><span class="material-icons profile-button-icon">settings_suggest</span><span class="profile-button-text">Change Password</span></a>
+          {% if has_spotify_connection %}<a class="btn waves-effect waves-red btn-large" href="{% url 'social:spotify-profile' %}">Spotify Profile</a>{% else %}<a href="{% url 'social:spotify-redirect' %}" class="btn waves-effect waves-red btn-large profile-button"><span class="material-icons profile-button-icon">headset</span><span class="profile-button-text">Connect to Spotify</span></a>{% endif %}
         </div>
 
         <form method="post" class="col s12" style="padding-bottom: 2em;" enctype="multipart/form-data">

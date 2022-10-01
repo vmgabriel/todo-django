@@ -69,6 +69,10 @@ class StoreEditView(LoginRequiredMixin, generic.edit.UpdateView):
     def form_valid(self, form, *args, **kwargs):
         """Get Form Valid"""
         self.object = form.save(commit=False, updated=True)
+        self.object = form.save(
+            commit=False,
+            **{'user': self.request.user}
+        )
         self.object.save()
 
         return redirect(

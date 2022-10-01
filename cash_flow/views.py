@@ -280,20 +280,21 @@ class CategoryFlowListView(LoginRequiredMixin, generic.list.ListView):
     template_name = 'categories_flow/index.html'
 
     def get_queryset(self):
-        queryset = super(CategoryFlowListView, self).get_queryset()
+        queryset = super().get_queryset()
         queryset = queryset.filter(enabled=True, parent_category__isnull=False)
         return queryset
 
     def get_queryset_primary(self):
-        queryset = super(CategoryFlowListView, self).get_queryset()
+        queryset = super().get_queryset()
         queryset = queryset.filter(parent_category__isnull=True)
         return queryset
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(CategoryFlowListView, self).get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        primary = self.get_queryset_primary()
         context['count'] = self.get_queryset().count()
-        context["primary"] = self.get_queryset_primary()
-        context["count_primary"] = context["primary"].count()
+        context["primary"] = primary
+        context["count_primary"] = primary.count()
 
         return context
 

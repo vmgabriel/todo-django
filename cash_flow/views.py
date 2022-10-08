@@ -52,7 +52,7 @@ def queryset_sum_per_month(
         day=ExtractDay("date_flow"),
     ).values("day").annotate(
         total=Sum("amount"),
-    ).values("day", "total")
+    ).values("day", "total").order_by("day")
 
     previous_val = 0
     previous_month = datetime.now().replace(day=1) - timedelta(days=1)
@@ -60,6 +60,7 @@ def queryset_sum_per_month(
         category__isnull=True,
         enabled=True,
         month__month=previous_month.month,
+        month__year=previous_month.year,
         created_by=user,
     ).first()
     if previous_history:
@@ -68,7 +69,7 @@ def queryset_sum_per_month(
     definition = {}
     for x in query:
         definition[x["day"]] = Decimal(previous_val) + Decimal(x["total"])
-        previous_val += definition[x["day"]]
+        previous_val = definition[x["day"]]
     previous_val = 0
     for counted in range(1, day):
         if counted not in definition:

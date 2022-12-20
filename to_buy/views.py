@@ -241,7 +241,15 @@ def convert_item(data):
     name: {}
     description: {}
     quantity: {}
-    """.format(data.product.name, data.product.description, data.quantity)
+    store: {}
+    price: {}
+    """.format(
+        data.product.name,
+        data.product.description,
+        data.quantity,
+        data.store.store.name,
+        data.store.price,
+    )
 
 
 def convert_list_to_message(dataquery) -> str:
@@ -255,5 +263,8 @@ def convert_list_to_message(dataquery) -> str:
 
 def telegram_send_list(request, pk):
     items = models.ItemListToBuy.objects.filter(enabled=True, list=pk)
-    telegram.send_message(convert_list_to_message(items), "+573125086310")
+    telegram.send_message(
+        convert_list_to_message(items),
+        "+573125086310"
+    )
     return redirect("to_buy:buys_show", pk=pk)

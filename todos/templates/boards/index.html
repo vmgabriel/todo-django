@@ -1,57 +1,63 @@
 {% extends 'content.html' %}
 
 {% block container %}
-  <div class="container" style="margin-top: 3em;">
-    <a href="{% url 'pages:home' %}"><i class="tiny material-icons">arrow_back</i> back</a>
+    <div class="container" style="margin-top: 3em;">
+        <a href="{% url 'pages:home' %}">
+            <i class="material-icons">arrow_back</i>
+        </a>
 
-    <div class="card-panel">
-      <div class="row" style="display: inline-flex;">
-        <h2>Boards</h2>
-        <a class="btn-floating btn-large waves-effect waves-light left-align" href="{% url 'todos:boards_new' %}"><i class="material-icons">add</i></a>
-      </div>
+        <div class="card-panel">
+            <div class="row right-align">
+                <a class="btn-floating btn-large waves-effect waves-light left-align" href="{% url 'todos:boards_new' %}">
+                    <i class="material-icons">add</i>
+                </a>
+            </div>
+            <div class="row" style="display: inline-flex;">
+                <h2>Boards</h2>
+            </div>
 
-      {% if object_list %}
-        <table class="responsive-table highlight">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Cards</th>
-              <th>Created At</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for board in object_list %}
-              <tr>
-                <td>{{ board.title }}</td>
-                <td>{{ board.len_cards }}</td>
-                <td>{{ board.created_at }}</td>
-                <td>
-                  <a class="btn-floating" href="{% url 'todos:board_detail' board.id %}"><i class="small material-icons">visibility</i></a>
-                  <a class="btn-floating yellow" href="{% url 'todos:boards_edit' board.id %}"><i class="small material-icons">edit</i></a>
-                  <a class="btn-floating modal-trigger red" href="#delete-board-{{ board.id }}"><i class="small material-icons">delete</i></a>
-                </td>
-              </tr>
+            {% if object_list %}
+                <table class="responsive-table highlight">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Cards</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for board in object_list %}
+                        <tr>
+                            <td>{{ board.title }}</td>
+                            <td>{{ board.len_cards }}</td>
+                            <td>{{ board.created_at }}</td>
+                            <td>
+                                <a class="btn-floating" href="{% url 'todos:board_detail' board.id %}"><i class="small material-icons">visibility</i></a>
+                                <a class="btn-floating yellow" href="{% url 'todos:boards_edit' board.id %}"><i class="small material-icons">edit</i></a>
+                                <a class="btn-floating modal-trigger red" href="#delete-board-{{ board.id }}"><i class="small material-icons">delete</i></a>
+                            </td>
+                        </tr>
 
-              <div id="delete-board-{{ board.id }}" class="modal">
-                <div class="modal-content">
-                  <h4>Delete Board #{{ board.id }}</h4>
-                  <p>Are you sure you want to delete Board with title {{board.title}}?</p>
-                </div>
-                <form method="post" action="{% url 'todos:boards_delete' pk=board.id %}">{% csrf_token %}
-                    <div class="modal-footer">
-                      <button type="submit" class="modal-close waves-effect waves-green btn-flat">Delete</button>
-                    </div>
-                </form>
-              </div>
-            {% endfor %}
-          </tbody>
-        </table>
-      {% else %}
-        <p class="flow-text">Not Boards yet.</p>
-      {% endif %}
+                        <div id="delete-board-{{ board.id }}" class="modal">
+                            <div class="modal-content">
+                                <h4>Delete Board #{{ board.id }}</h4>
+                                <p>Are you sure you want to delete Board with title {{board.title}}?</p>
+                            </div>
+                            <form method="post" action="{% url 'todos:boards_delete' pk=board.id %}">{% csrf_token %}
+                                <div class="modal-footer">
+                                    <button type="submit" class="modal-close waves-effect waves-green btn-flat">Delete</button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="flow-text">Not Boards yet.</p>
+            {% endif %}
+        </div>
     </div>
-  </div>
 {% endblock container %}
 
 

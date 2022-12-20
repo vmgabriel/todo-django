@@ -12,17 +12,25 @@
                 <h2>To Buy</h2>
             </div>
 
-            <ul>
-                <li>
-                    <a href="{% url 'products:list' %}">Products</a>
-                </li>
-                <li>
-                    <a href="{% url 'products:list_categories' %}">Categories</a>
-                </li>
-                <li>
-                    <a href="{% url 'stores:list' %}">Stores</a>
-                </li>
-            </ul>
+            <div class="row" style="display: flex;justify-content: right;">
+                <ul style="display: flex;justify-content: space-between;">
+                    <li>
+                        <a class="waves-effect waves-light btn" href="{% url 'products:list' %}">
+                            <i class="material-icons left">inventory_2</i>Products
+                        </a>
+                    </li>
+                    <li>
+                        <a class="waves-effect waves-light btn" href="{% url 'products:list_categories' %}">
+                            <i class="material-icons left">category</i>Categories
+                        </a>
+                    </li>
+                    <li>
+                        <a class="waves-effect waves-light btn" href="{% url 'stores:list' %}">
+                            <i class="material-icons left">storefront</i>Stores
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
             <div class="row right-align">
                 <a class="btn-floating btn-large waves-effect waves-light left-align" href="{% url 'to_buy:buys_create' %}">

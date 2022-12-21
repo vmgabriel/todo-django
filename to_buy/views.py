@@ -145,6 +145,8 @@ class ToBuyNewItemView(LoginRequiredMixin, generic.edit.FormView):
             **{"user": self.request.user},
         )
         self.object.save()
+        self.object.users.add(self.request.user)  # Add to Stakeholders
+        self.object.save()
         return redirect(self.get_success_url(), pk=self.kwargs["pk"])
 
     def get_context_data(self, *args, **kwargs):

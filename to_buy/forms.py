@@ -14,7 +14,8 @@ class ListToBuyForm(forms.ModelForm):
     """Product Form Control for Generate Model"""
     users = forms.ModelMultipleChoiceField(
         queryset=models_accounts.User.objects.filter(is_active=True),
-        widget=forms.CheckboxSelectMultiple()
+        widget=forms.CheckboxSelectMultiple(),
+        required=False,
     )
     priority = forms.ChoiceField(choices=enums.Priority.choices)
     class Meta:
@@ -38,7 +39,7 @@ class ListToBuyForm(forms.ModelForm):
         obj = super(ListToBuyForm, self).save(commit=False)
 
         if not updated:
-            obj.created_by = kwargs.get('user')
+            obj.created_by = kwargs.get("user")
         #obj.updated_by = kwargs.get('user')
 
         if commit:

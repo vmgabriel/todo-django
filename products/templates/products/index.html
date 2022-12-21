@@ -19,6 +19,44 @@
                 <h2>Products</h2>
             </div>
 
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header">
+                        <i class="material-icons">search</i>Filters
+                    </div>
+                    <div class="collapsible-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    {{ filter.form.name }}
+                                    <label for="name">{{ filter.form.name.label }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <label for="categories">{{ filter.form.categories.label }}</label>
+                                </div>
+                                <div class="input-field col s12">
+                                    {{ filter.form.categories }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    {{ filter.form.ordering }}
+                                    <label for="ordering">{{ filter.form.ordering.label }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <button class="btn waves-effect waves-light" type="submit" name="action"
+                                        style="width: 100%;">
+                                    <i class="material-icons">search</i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+
             <div class="" style="display: flex; justify-content: space-between;">
                 <h6>{{ count }}</h6>
                 <h6>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h6>
@@ -90,3 +128,6 @@
         </div>
     </div>
 {% endblock container %}
+
+{% block javascript %}
+{% endblock javascript %}

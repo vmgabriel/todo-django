@@ -7,15 +7,21 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.conf import settings
+from django_filters.views import FilterView
 
 # Modules
-from . import models, forms
+from . import models, forms, filters
 
 
-class ProductListView(LoginRequiredMixin, generic.list.ListView):
+class ProductListView(LoginRequiredMixin, FilterView):
     model = models.Product
     paginate_by = settings.PAGINATION_LIMIT
     template_name = 'products/index.html'
+    filterset_class = filters.ProductFilter
+
+    def get_queryset_with_filter(self):
+        queryset = self.get_queryset()
+        return self.filterset_class(self.request.GET, queryset=queryset).qs
 
     def get_queryset(self, *args, **kwargs):
         queryset = super(ProductListView, self).get_queryset(*args, **kwargs)

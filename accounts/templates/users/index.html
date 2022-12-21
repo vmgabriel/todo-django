@@ -37,22 +37,22 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for user in object_list %}
+                    {% for account in object_list %}
                         <tr>
                             <td>
-                                {% if user.image %}
-                                    <img alt="{{ user.username }}" src="{{ user.image.url }}" width="32">
+                                {% if account.image %}
+                                    <img alt="{{ account.username }}" src="{{ account.image.url }}" width="32">
                                 {% else %}
-                                    <img alt="{{ user.username }}" src="{% static 'imgs/user.png' %}" width="32">
+                                    <img alt="{{ account.username }}" src="{% static 'imgs/user.png' %}" width="32">
                                 {% endif %}
                             </td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.first_name }}</td>
-                            <td>{{ user.last_name }}</td>
-                            <td>{{ user.telephone }}</td>
+                            <td>{{ account.email }}</td>
+                            <td>{{ account.first_name }}</td>
+                            <td>{{ account.last_name }}</td>
+                            <td>{{ account.telephone }}</td>
                             <td>
                                 {% if user.is_superuser %}
-                                    <a class="btn-floating red" href="{% url 'accounts:delete_user' pk=user.pk %}">
+                                    <a class="btn-floating red" href="{% url 'accounts:delete_user' pk=account.pk %}">
                                         <i class="small material-icons">delete</i>
                                     </a>
                                 {% endif %}

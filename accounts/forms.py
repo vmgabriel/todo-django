@@ -43,6 +43,7 @@ class UserForm(forms.ModelForm):
 class UserFormAdmin(forms.ModelForm):
     """User Admin Configuration Model"""
     image = SizedImageCenterpointClickBootstrap3Field(required=False)
+    password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = User

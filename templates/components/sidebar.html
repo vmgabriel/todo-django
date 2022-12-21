@@ -8,7 +8,9 @@
                     <img src="{% static 'imgs/brands/w1-500.jpg' %}">
                 </div>
                 <a>
-                    <img class="circle" src="{% if user.image %}{{ user.image.url }}{% else %}https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50{% endif %}" style="max-height: 100px">
+                    <img class="circle" src="
+                            {% if user.image %}{{ user.image.url }}{% else %}https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50{% endif %}"
+                         style="max-height: 100px">
                 </a>
                 <a>
                     <span class="black-text name">{{ user.first_name }} {{ user.last_name }}</span>
@@ -21,8 +23,8 @@
         <li><a href="{% url 'todos:boards' %}"><i class="material-icons">playlist_add_check</i>Todo App</a></li>
         <li><a href="{% url 'to_buy:home_buys' %}"><i class="material-icons">kitchen</i>Buys App</a></li>
         <li><a href="{% url 'accounts:users' %}"><i class="material-icons">group</i>Users App</a></li>
-        <li><a href="{%  url 'cash_flow:home_cash_flow' %}"><i class="material-icons">local_atm</i>Cash Flow App</a></li>
-{#        <li><a href="{% url 'social:spotify-reproductor' %}"><i class="material-icons">headset</i>Spotify Reproductor App</a></li>#}
+        <li><a href="{% url 'cash_flow:home_cash_flow' %}"><i class="material-icons">local_atm</i>Cash Flow App</a></li>
+        {#        <li><a href="{% url 'social:spotify-reproductor' %}"><i class="material-icons">headset</i>Spotify Reproductor App</a></li>#}
         <li><a href="{% url 'accounts:profile-user' %}"><i class="material-icons">account_box</i>Profile</a></li>
         <li><a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i>Logout</a></li>
     {% else %}

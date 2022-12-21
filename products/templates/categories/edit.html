@@ -1,58 +1,59 @@
 {% extends 'content.html' %}
 
 {% block container %}
-  <div class="container" style="margin-top: 3em;">
-    <a href="{% url 'products:list_categories'  %}">
-      <i class="tiny material-icons">arrow_back</i> back
-    </a>
+    <div class="container" style="margin-top: 3em;">
+        <a href="{% url 'products:list_categories' %}">
+            <i class="material-icons">arrow_back</i>
+        </a>
 
-    <div class="card-panel">
-      <div class="row" style="display: inline-flex;">
-        <h2>New Category</h2>
-      </div>
+        <div class="card-panel">
+            <div class="row" style="display: inline-flex;">
+                <h2>New Category</h2>
+            </div>
 
-      <form method="post" class="col s12" style="padding-bottom: 2em;">
-        {% csrf_token %}
-        <div class="row">
-          <div class="input-field col s12">
-            {{ form.name }}
-            <label for="name">{{ form.name.label }}</label>
-            {% if form.name.errors %}
-              {% for error in form.name.errors %}
-                <p style="color: red">{{ error }}</p>
-              {% endfor %}
-            {% endif %}
-          </div>
-          <div class="input-field col s12">
-            {{ form.description }}
-            <label for="description">{{ form.description.label }}</label>
-            {% if form.description.errors %}
-              {% for error in form.description.errors %}
-                <p style="color: red">{{ error }}</p>
-              {% endfor %}
-            {% endif %}
-          </div>
-          <div class="input-field col s12">
-            {{ form.color }}
-            <label for="color">{{ form.color.label }}</label>
-            {% if form.color.errors %}
-              {% for error in form.imagcolor.errors %}
-                <p style="color: red">{{ error }}</p>
-              {% endfor %}
-            {% endif %}
-          </div>
+            <form method="post" class="col s12" style="padding-bottom: 2em;">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s12">
+                        {{ form.name }}
+                        <label for="name">{{ form.name.label }}</label>
+                        {% if form.name.errors %}
+                            {% for error in form.name.errors %}
+                                <p style="color: red">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="input-field col s12">
+                        {{ form.description }}
+                        <label for="description">{{ form.description.label }}</label>
+                        {% if form.description.errors %}
+                            {% for error in form.description.errors %}
+                                <p style="color: red">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="input-field col s12">
+                        {{ form.color }}
+                        <label for="color">{{ form.color.label }}</label>
+                        {% if form.color.errors %}
+                            {% for error in form.imagcolor.errors %}
+                                <p style="color: red">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col s12 right-align">
+                    <a href="{% url 'products:new_category' %}" class="btn waves-effect waves-red btn-large blue"><i
+                            class="material-icons">cancel</i></a>
+                    <button type="submit" class="waves-effect waves-light btn-large">
+                        {% if mode == "Save" %}
+                            <i class="material-icons">save</i>
+                        {% else %}
+                            <i class="material-icons">edit</i>
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="col s12 right-align">
-          <a href="{% url 'products:new_category'  %}" class="btn waves-effect waves-red btn-large blue"><i class="material-icons">cancel</i></a>
-          <button type="submit" class="waves-effect waves-light btn-large">
-            {% if mode == "Save" %}
-              <i class="material-icons">save</i>
-            {% else %}
-              <i class="material-icons">edit</i>
-            {% endif %}
-          </button>
-        </div>
-      </form>
     </div>
-  </div>
-  {% endblock container %}
+{% endblock container %}

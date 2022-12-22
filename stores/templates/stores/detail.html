@@ -1,297 +1,411 @@
 {% extends 'content.html' %}
 {% load static %}
 {% load djmoney %}
+{% load my_tags %}
 
 {% block container %}
-<div class="container" style="margin-top: 3em;">
-  <a href="{% url 'stores:list'  %}">
-    <i class="tiny material-icons">arrow_back</i> back
-  </a>
+    <div class="container" style="margin-top: 3em;">
+        <a href="{% url 'stores:list' %}">
+            <i class="material-icons">arrow_back</i>
+        </a>
 
-  <div class="card-panel">
-    <div class="row" style="display: inline-flex;">
-      <h2>{{ object.name }}</h2>
-    </div>
-    <div class="row">
-      <p>{{ object.description }}</p>
-    </div>
-  </div>
-
-  <div class="card-panel">
-    <div class="row">
-      <div class="col s6">
-        <h5>Products of Stores</h5>
-      </div>
-      <div class="col s6 right-align">
-        <h6>{{ count_items }}</h6>
-      </div>
-    </div>
-
-    <div class="row">
-        {% if items %}
-          <table class="table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Quantity</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for item in items %}
-                <tr>
-                  <td>
-                    {% if item.product.image %}
-                      <img alt="{{ item.product.name }}" src="{{ item.product.image.url }}" width="32">
-                    {% else %}
-                      <img alt="{{ item.product.name }}" src="{% static 'imgs/open-box.png' %}" width="32">
-                    {% endif %}
-                  </td>
-                  <td>{{ item.product.name }}</td>
-                  <td>{{ item.description }}</td>
-                  <td>{% money_localize item.price %}</td>
-                  <td>
-                    <a class="btn-floating btn modal-trigger yellow" href="#modal_item{{ item.pk }}">
-                      <i class="small material-icons">edit</i>
-                    </a>
-                    <a class="btn-floating btn modal-trigger red" href="{% url 'stores:delete_product' pk=object.pk pk_item=item.pk %}">
-                      <i class="small material-icons">delete</i>
-                    </a>
-                  </td>
-                  <div id="modal_item{{ item.pk }}" class="modal">
-                    <form method="post" action="{% url 'stores:edit_product' pk=object.pk pk_item=item.pk %}">
-                    {% csrf_token %}
-                    <div class="modal-content">
-                      {% if item.product.image %}
-                        <img alt="{{ item.product.name }}" src="{{ item.product.image.url }}" width="100">
-                      {% else %}
-                        <img alt="{{ item.product.name }}" src="{% static 'imgs/open-box.png' %}" width="100">
-                      {% endif %}
-                      <h4>{{ item.product.name }}</h4>
-                      <p>{{ item.product.description }}</p>
-
-                      <div class="input-field row">
-                        <div class="row">
-                          <input id="id_description" name="description" type="text" value="{{ item.description }}" />
-                          <label for="id_description">Description</label>
-                        </div>
-                      </div>
-
-                      <div class="input-field row">
-                        <div class="row">
-                          {{ form_item.price }}
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <input id="id_store" name="store" type="hidden" value="{{ object.pk }}"/>
-                      </div>
-                      <div class="row">
-                        <input id="id_product" name="product" type="hidden" value="{{ product.pk }}"/>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="submit" class="modal-close waves-effect waves-green btn-flat">Edit</button>
-                    </div>
-                    </form>
-                  </div>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          <div class="pagination">
-            <span class="step-links">
-              {% if items.has_previous %}
-              <a href="?page_items=1">&laquo; first</a>
-              <a href="?page_items={{ page_items.previous_page_number }}">previous</a>
-              {% endif %}
-
-              {% if items.has_next %}
-              <a href="?page_items={{ items.next_page_number }}">next</a>
-              <a href="?page_items={{ items.paginator.num_pages }}">last &raquo;</a>
-              {% endif %}
-            </span>
-          </div>
-        {% else %}
-          <p class="flow-text">Not Items yet.</p>
-          {% endif %}
-    </div>
-  </div>
-
-  <div class="card-panel">
-    <div class="row">
-        <div class="col s10">
-          <div class="input-field row">
-            <input id="id_search" name="search" type="text" value="{% if search %}{{ search }}{% endif %}" onkeyup="enter_key_event_search(event, change_search_element)" />
-            <label for="id_search">Search Product</label>
-          </div>
+        <div class="card-panel">
+            <div class="row" style="display: inline-flex;">
+                <h2>{{ object.name }}</h2>
+            </div>
+            <div class="row">
+                <p>{{ object.description }}</p>
+            </div>
         </div>
-        <div class="col s1">
-          <a class="waves-effect waves-light btn modal-trigger" onclick="change_search_element()">Search</a>
-        </div>
-      </div>
 
-      <div class="row">
-        {% if products %}
-        <table class="table">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Categories</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for product in products %}
-              <tr>
-                <td>
-                  {% if product.image %}
-                    <img alt="{{ product.name }}" src="{{ product.image.url }}" width="32">
-                  {% else %}
-                    <img alt="{{ product.name }}" src="{% static 'imgs/open-box.png' %}" width="32">
-                  {% endif %}
-                </td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.description }}</td>
-                <td>
-                  {% for category in product.categories.all %}
-                    <span class="badge" style="background-color: {{ category.color }}; color: black;">{{ category.name }}</span>
-                  {% endfor %}
-                </td>
-                <td>
-                  <a class="btn-floating btn modal-trigger green" href="#modal{{ product.pk }}">
-                    <i class="small material-icons">add</i>
-                  </a>
-                </td>
-                <div id="modal{{ product.pk }}" class="modal">
-                  <form method="post" action="{% url 'stores:add_product' pk=object.pk %}">
-                    {% csrf_token %}
-                    <div class="modal-content">
-                      {% if product.image %}
-                        <img alt="{{ product.name }}" src="{{ product.image.url }}" width="100">
-                      {% else %}
-                        <img alt="{{ product.name }}" src="{% static 'imgs/open-box.png' %}" width="100">
-                      {% endif %}
-                      <h4>{{ product.name }}</h4>
-                      <p>{{ product.description }}</p>
-
-                      <div class="input-field row">
-                        <div class="row">
-                          {{ form_item.description }}
-                          <label for="description">{{ form_item.description.label }}</label>
-                          {% if form_item.description.errors %}
-                            {% for error in form_item.description.errors %}
-                              <p style="color: red">{{ error }}</p>
-                            {% endfor %}
-                          {% endif %}
-                        </div>
-                      </div>
-
-                      <div class="input-field row">
-                        <div class="row">
-                          {{ form_item.price }}
-                          <label for="price">{{ form_item.price.label }}</label>
-                          {% if form_item.price.errors %}
-                            {% for error in form_item.price.errors %}
-                              <p style="color: red">{{ error }}</p>
-                            {% endfor %}
-                          {% endif %}
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <input id="id_store" name="store" type="hidden" value="{{ object.pk }}"/>
-                      </div>
-                      <div class="row">
-                        <input id="id_product" name="product" type="hidden" value="{{ product.pk }}"/>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="submit" class="modal-close waves-effect waves-green btn-flat">ADD</button>
-                    </div>
-                  </form>
+        <div class="card-panel">
+            <div class="row">
+                <div class="col s6">
+                    <h5>Products of Stores({{ count_items }})</h5>
                 </div>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        <div class="pagination">
-          <span class="step-links">
-            {% if products.has_previous %}
-            <a href="?page_products=1">&laquo; first</a>
-            <a href="?page_products={{ page_products.previous_page_number }}">previous</a>
-            {% endif %}
+            </div>
 
-            {% if products.has_next %}
-            <a href="?page_products={{ products.next_page_number }}">next</a>
-            <a href="?page_products={{ products.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
-          </span>
+            <div class="" style="display: flex; justify-content: space-between;">
+                <h6>{{ count_items }}</h6>
+                <h6>{{ items.number }} of {{ items.paginator.num_pages }}</h6>
+            </div>
+
+            <div class="row">
+                {% if items %}
+                    <table class="table" style="margin-bottom: 1em;display: block;overflow-x: auto;white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>
+                                    {% if item.product.image %}
+                                        <img alt="{{ item.product.name }}" src="{{ item.product.image.url }}"
+                                             width="32">
+                                    {% else %}
+                                        <img alt="{{ item.product.name }}" src="{% static 'imgs/open-box.png' %}"
+                                             width="32">
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.description }}</td>
+                                <td>{% money_localize item.price %}</td>
+                                <td>
+                                    <a class="btn-floating btn modal-trigger yellow" href="#modal_item{{ item.pk }}">
+                                        <i class="small material-icons">edit</i>
+                                    </a>
+                                    <a class="btn-floating btn modal-trigger red"
+                                       href="{% url 'stores:delete_product' pk=object.pk pk_item=item.pk %}">
+                                        <i class="small material-icons">delete</i>
+                                    </a>
+                                </td>
+                                <div id="modal_item{{ item.pk }}" class="modal">
+                                    <form method="post"
+                                          action="{% url 'stores:edit_product' pk=object.pk pk_item=item.pk %}">
+                                        {% csrf_token %}
+                                        <div class="modal-content">
+                                            {% if item.product.image %}
+                                                <img alt="{{ item.product.name }}" src="{{ item.product.image.url }}"
+                                                     width="100">
+                                            {% else %}
+                                                <img alt="{{ item.product.name }}"
+                                                     src="{% static 'imgs/open-box.png' %}" width="100">
+                                            {% endif %}
+                                            <h4>{{ item.product.name }}</h4>
+                                            <p>{{ item.product.description }}</p>
+
+                                            <div class="input-field row">
+                                                <div class="row">
+                                                    <input id="id_description" name="description" type="text"
+                                                           value="{{ item.description }}"/>
+                                                    <label for="id_description">Description</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-field row">
+                                                <div class="row">
+                                                    {{ form_item.price }}
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <input id="id_store" name="store" type="hidden"
+                                                       value="{{ object.pk }}"/>
+                                            </div>
+                                            <div class="row">
+                                                <input id="id_product" name="product" type="hidden"
+                                                       value="{{ product.pk }}"/>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="modal-close waves-effect waves-green btn-flat">
+                                                Edit
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <ul class="pagination" style="font-size: 11px;display: flex; justify-content: center;">
+                        {% if page_obj.has_previous %}
+                            <li class="waves-effect"><a href="?{% param_replace page_items=1 %}"><i class="material-icons">first_page</i></a>
+                            </li>
+                            <li class="waves-effect"><a
+                                    href="?{% param_replace page_items=items.previous_page_number %}"><i
+                                    class="material-icons">chevron_left</i></a></li>
+                            <li class="waves-effect"><a
+                                    href="?{% param_replace page_items=items.previous_page_number %}">{{ items.previous_page_number }}</a>
+                            </li>
+                        {% else %}
+                            <li class="disabled"><a href="?{% param_replace page_items=1 %}"><i class="material-icons">first_page</i></a>
+                            </li>
+                            <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+                        {% endif %}
+                        <li class="active"><a href="">{{ items.number }}</a></li>
+                        {% if items.has_next %}
+                            <li class="waves-effect"><a
+                                    href="?{% param_replace page_items=items.next_page_number %}">{{ items.next_page_number }}</a>
+                            </li>
+                            <li class="waves-effect"><a href="?{% param_replace page_items=items.next_page_number %}"><i
+                                    class="material-icons">chevron_right</i></a></li>
+                            <li class="waves-effect"><a href="?{% param_replace page_items=items.paginator.num_pages %}"><i
+                                    class="material-icons">last_page</i></a></li>
+                        {% else %}
+                            <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+                            <li class="disabled"><a href=""><i class="material-icons">last_page</i></a></li>
+                        {% endif %}
+                    </ul>
+                {% else %}
+                    <p class="flow-text">Not Items yet.</p>
+                {% endif %}
+            </div>
         </div>
-        {% else %}
-        <p class="flow-text">All products selected</p>
-        {% endif %}
-      </div>
-  </div>
-</div>
+
+        <div class="card-panel">
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header">
+                        <i class="material-icons">search</i>Filters
+                    </div>
+                    <div class="collapsible-body">
+                        <div class="row">
+                            <div class="col m12">
+                                <div class="input-field row">
+                                    <input id="id_search" name="search" type="text"
+                                           value="{% if search %}{{ search }}{% endif %}"
+                                           onkeyup="enter_key_event_search(event, change_search_element)"/>
+                                    <label for="id_search">Search Product</label>
+                                </div>
+                            </div>
+                            <div class="col m12">
+                                <label for="categories">Categories</label>
+                                <div class="col m12">
+                                    <div class="chips chips-autocomplete"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn modal-trigger" onclick="change_search_element()" style="width: 100%;">
+                                <i class="material-icons">search</i>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="" style="display: flex; justify-content: space-between;">
+                <h6>{{ count_products }}</h6>
+                <h6>{{ products.number }} of {{ products.paginator.num_pages }}</h6>
+            </div>
+
+            <div class="row">
+                {% if products %}
+                    <table class="table" style="margin-bottom: 1em;display: block;overflow-x: auto;white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Categories</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for product in products %}
+                            <tr>
+                                <td>
+                                    {% if product.image %}
+                                        <img alt="{{ product.name }}" src="{{ product.image.url }}" width="32">
+                                    {% else %}
+                                        <img alt="{{ product.name }}" src="{% static 'imgs/open-box.png' %}" width="32">
+                                    {% endif %}
+                                </td>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.description }}</td>
+                                <td>
+                                    {% for category in product.categories.all %}
+                                        <span class="badge"
+                                              style="background-color: {{ category.color }}; color: black;">{{ category.name }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <a class="btn-floating btn modal-trigger green" href="#modal{{ product.pk }}">
+                                        <i class="small material-icons">add</i>
+                                    </a>
+                                </td>
+                                <div id="modal{{ product.pk }}" class="modal">
+                                    <form method="post" action="{% url 'stores:add_product' pk=object.pk %}">
+                                        {% csrf_token %}
+                                        <div class="modal-content">
+                                            {% if product.image %}
+                                                <img alt="{{ product.name }}" src="{{ product.image.url }}" width="100">
+                                            {% else %}
+                                                <img alt="{{ product.name }}" src="{% static 'imgs/open-box.png' %}"
+                                                     width="100">
+                                            {% endif %}
+                                            <h4>{{ product.name }}</h4>
+                                            <p>{{ product.description }}</p>
+
+                                            <div class="input-field row">
+                                                <div class="row">
+                                                    {{ form_item.description }}
+                                                    <label for="description">{{ form_item.description.label }}</label>
+                                                    {% if form_item.description.errors %}
+                                                        {% for error in form_item.description.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="input-field row">
+                                                <div class="row">
+                                                    {{ form_item.price }}
+                                                    <label for="price">{{ form_item.price.label }}</label>
+                                                    {% if form_item.price.errors %}
+                                                        {% for error in form_item.price.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <input id="id_store" name="store" type="hidden"
+                                                       value="{{ object.pk }}"/>
+                                            </div>
+                                            <div class="row">
+                                                <input id="id_product" name="product" type="hidden"
+                                                       value="{{ product.pk }}"/>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="modal-close waves-effect waves-green btn-flat">
+                                                ADD
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <ul class="pagination" style="font-size: 11px;display: flex; justify-content: center;">
+                        {% if products.has_previous %}
+                            <li class="waves-effect"><a href="?{% param_replace page_products=1 %}"><i class="material-icons">first_page</i></a>
+                            </li>
+                            <li class="waves-effect"><a
+                                    href="?{% param_replace page_products=products.previous_page_number %}"><i
+                                    class="material-icons">chevron_left</i></a></li>
+                            <li class="waves-effect"><a
+                                    href="?{% param_replace page_products=products.previous_page_number %}">{{ products.previous_page_number }}</a>
+                            </li>
+                        {% else %}
+                            <li class="disabled"><a href="?{% param_replace page_products=1 %}"><i class="material-icons">first_page</i></a>
+                            </li>
+                            <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+                        {% endif %}
+                        <li class="active"><a href="">{{ products.number }}</a></li>
+                        {% if products.has_next %}
+                            <li class="waves-effect"><a
+                                    href="?{% param_replace page_products=products.next_page_number %}">{{ products.next_page_number }}</a>
+                            </li>
+                            <li class="waves-effect"><a href="?{% param_replace page_products=products.next_page_number %}"><i
+                                    class="material-icons">chevron_right</i></a></li>
+                            <li class="waves-effect"><a href="?{% param_replace page_products=products.paginator.num_pages %}"><i
+                                    class="material-icons">last_page</i></a></li>
+                        {% else %}
+                            <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+                            <li class="disabled"><a href=""><i class="material-icons">last_page</i></a></li>
+                        {% endif %}
+                    </ul>
+                {% else %}
+                    <p class="flow-text">All products selected</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock container %}
 
 
 {% block javascript %}
 
-const get_element_document = data => document.getElementById(data);
-const get_element_of_elem = data => elem_data => get_element_document(data).querySelector(`#${elem_data}`);
-const search_element = get_element_document("id_search");
+    const get_element_of_elem = data => elem_data => get_element_document(data).querySelector(`#${elem_data}`);
+    let chips_categories = {{ selected_categories|safe }};
+    const chip_to_include = document.querySelectorAll('.chips');
+    const get_element_document = data => document.getElementById(data);
+    const search_element = get_element_document("id_search");
+    const str_is_not_clear = x => x != "";
+    const not_in_array = arr => elem => arr.includes(elem);
+    const categories = {{ categories|safe }};
 
-const get_data = { {% for item in items  %}"{{ item.pk }}": {"currency": "{{ item.price.currency }}", "value": {{ item.price.amount }}},{% endfor %}};
+    const get_data = {
+        {% for item in items %}
+            "{{ item.pk }}": {"currency": "{{ item.price.currency }}",
+            "value": {{ item.price.amount }}},
+        {% endfor %}
+    };
 
-function search_url(key, value) {
-  let search = window.location.search
-  if (search != "") {
-    search = search.substr(1, search.lenght);
-  }
-  let keys = search.split("&");
+    function search_url(url, payload) {
+        let search = window.location.search || "";
+        if (search != "") {
+          search = search.substr(1, search.length);
+        }
+        let keys = search.split("&");
+        keys = keys.filter(str_is_not_clear);
+        keys = keys.map(x => x.split("="));
+        keys = keys.filter(not_in_array(Object.keys(payload)));
+        keys = keys.concat(Object.entries(payload));
+        keys = keys.map(x => `${x[0]}=${x[1]}`);
+        return `${url}?${keys.join("&")}`;
+    }
 
-  keys = keys.map(x => x.split("="));
-  keys = keys.filter(x => x[0] != key);
-  keys = keys.concat([[key, value]]);
-  keys = keys.map(x => `${x[0]}=${x[1]}`)
-  keys_data = keys.join("&")
-  return `?${keys_data}`;
-}
+    function change_search_element() {
+        let filters = {}
+        if (search_element.value.length > 0) {
+            filters.to_include_name = search_element.value;
+            filters.page_products = "1";
+        }
+        if (chips_categories.length > 0) {
+            filters.to_include_categories = chips_categories.join(",");
+            filters.page_products = "1";
+        }
+        window.location = search_url(`${window.location.origin}${window.location.pathname}`, filters);
+    }
 
-function change_search_element() {
-  const search = search_element.value;
-  let route = `${window.location.origin}${window.location.pathname}`;
-  route += search_url("q", search);
-  window.location = route;
-}
+    function enter_key_event_search(key) {
+        if (key.key == "Enter") {
+            change_search_element();
+        }
+    }
 
-function enter_key_event_search(key) {
-  if (key.key == "Enter") {
-    change_search_element();
-  }
-}
+    function update_fields(key, values) {
+        const price_quantity = get_element_of_elem(`modal_item${key}`)("id_price_0")
+        const price_select = get_element_of_elem(`modal_item${key}`)("id_price_1")
+        price_quantity.value = values.value;
+        price_select.value = values.currency;
+    }
 
-function update_fields(key, values) {
-  const price_quantity = get_element_of_elem(`modal_item${key}`)("id_price_0")
-  const price_select = get_element_of_elem(`modal_item${key}`)("id_price_1")
-  price_quantity.value = values.value;
-  price_select.value = values.currency;
-}
+    function getter_update_data() {
+        for (i in get_data) {
+            update_fields(i, get_data[i]);
+        }
+    }
 
-function getter_update_data() {
-  for (i in get_data) {
-    update_fields(i, get_data[i]);
-  }
-}
+    function set_categories_to_include(data) {
+        chips_categories = data[0].M_Chips.chipsData.map(x => x.tag).map(x => categories[x]);
+    }
 
-$(document).ready(() => {
-  getter_update_data();
-});
+    document.addEventListener("DOMContentLoaded", () => {
+        const chipCategory = M.Chips.init(chip_to_include, {
+            data: chips_categories.map(x => Object.entries(categories)
+                .filter(([category, id_category]) => id_category == x)
+                .map(([category, id_category]) => ({tag: category}))
+                .pop()
+            ),
+            autocompleteOptions: {
+                data: Object.entries(categories).map(([key, value]) => ({[key]: null})).reduce((acc, ref) => ({...acc, ...ref}), {}),
+                limit: Infinity,
+                minLength: 1
+            },
+            onChipAdd: set_categories_to_include,
+            onChipDelete: set_categories_to_include
+        });
+
+        for (i in get_data) {
+            update_fields(i, get_data[i]);
+        }
+    });
 {% endblock javascript %}
 

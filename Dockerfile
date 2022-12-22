@@ -1,7 +1,7 @@
 FROM python:3.9.10-slim-buster
 LABEL maintainer="my_home.com"
 
-RUN apt-get update
+RUN apt-get update --fix-missing && apt-get upgrade -y
 
 ENV PYTHONUNBUFFERED 1
 

@@ -23,6 +23,7 @@ env.read_env(
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
 
@@ -53,6 +54,7 @@ EXTERNALS_APPLICATIONS = [
     "location_field.apps.DefaultConfig",
     "djmoney",
     "django_filters",
+    "pwa",
 ]
 
 
@@ -163,6 +165,8 @@ STATICFILES_DIRS = (
   os.path.join(BASE_DIR, "static/"),
 )
 
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, "static/js", "serviceworker.js")
+
 # Redirect when i can load
 AUTH_USER_MODEL = "accounts.User"
 LOGIN_REDIRECT_URL = "pages:home"
@@ -211,3 +215,34 @@ DEFAULT_CURRENCIES: list[str] = [
     "USD",
     "CAD"
 ]
+
+# PWA
+PWA_APP_NAME = "Smart Home DG"
+PWA_APP_DESCRIPTION = "Smart Home DG"
+PWA_APP_THEME_COLOR = "#000000"
+PWA_APP_BACKGROUND_COLOR = "#ffffff"
+PWA_APP_DISPLAY = "standalone"
+PWA_APP_SCOPE = "/"
+PWA_APP_ORIENTATION = "any"
+PWA_APP_START_URL = "/"
+PWA_APP_STATUS_BAR_COLOR = "default"
+PWA_APP_ICONS = [
+    {
+        "src": "static/imgs/brands/house.png",
+        "sizes": "160x160"
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        "src": "static/imgs/brands/house.png",
+        "sizes": "160x160"
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        "src": "static/imgs/brands/house.png",
+        "media": "(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+    }
+]
+PWA_APP_DIR = "ltr"
+PWA_APP_LANG = "en-US"

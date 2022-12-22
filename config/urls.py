@@ -8,18 +8,19 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('', include('pages.urls')),
-    path('admin/', admin.site.urls),
+    path("", include("pages.urls")),
+    path("", include("pwa.urls")),
+    path("admin/", admin.site.urls),
 
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/', include('accounts.urls')),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("accounts/", include("accounts.urls")),
 
-    path('todos/', include('todos.urls')),
-    path('socials/', include('socials.urls')),
-    path('buys/', include('to_buy.urls')),
-    path('products/', include('products.urls')),
-    path('stores/', include("stores.urls")),
-    path('cash_flows/', include("cash_flow.urls")),
+    path("todos/", include("todos.urls")),
+    path("socials/", include("socials.urls")),
+    path("buys/", include("to_buy.urls")),
+    path("products/", include("products.urls")),
+    path("stores/", include("stores.urls")),
+    path("cash_flows/", include("cash_flow.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -180,7 +180,7 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
         query = self.queryset().filter(
             date_flow__day__in=[x.day for x in days_in_week],
             date_flow__month__in=[x.month for x in days_in_week],
-            date_flow__year__in=list[set([x.year for x in days_in_week])],
+            date_flow__year__in=list(set([x.year for x in days_in_week])),
             enabled=True,
         ).annotate(
             day=ExtractDay("date_flow"),

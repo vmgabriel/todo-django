@@ -75,7 +75,7 @@
                             <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
                         {% endif %}
                         <li class="active"><a href="">{{ items.number }}</a></li>
-                        {% if page_obj.has_next %}
+                        {% if items.has_next %}
                             <li class="waves-effect"><a href="?{% param_replace page_items=items.next_page_number %}">{{ items.next_page_number }}</a></li>
                             <li class="waves-effect"><a href="?{% param_replace page_items=items.next_page_number %}"><i class="material-icons">chevron_right</i></a></li>
                             <li class="waves-effect"><a href="?{% param_replace page_items=items.paginator.num_pages %}"><i class="material-icons">last_page</i></a></li>

@@ -117,7 +117,7 @@
                     </table>
 
                     <ul class="pagination" style="font-size: 11px;display: flex; justify-content: center;">
-                        {% if page_obj.has_previous %}
+                        {% if items.has_previous %}
                             <li class="waves-effect"><a href="?{% param_replace page_items=1 %}"><i class="material-icons">first_page</i></a>
                             </li>
                             <li class="waves-effect"><a

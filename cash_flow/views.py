@@ -4,6 +4,8 @@
 import calendar
 from decimal import Decimal
 from datetime import datetime, timedelta
+
+import django.utils.timezone
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F, Case, When, FloatField
 from django.views import generic
@@ -22,6 +24,9 @@ from . import models, forms, filters
 from accounts import models as account_models
 
 
+SAVING_CATEGORY = "Saving"
+
+
 def get_days_month(
         month: int = datetime.now().month,
         year: int = datetime.now().year
@@ -30,10 +35,26 @@ def get_days_month(
 
 
 def flow_sync(user):
-    total_flow = models.FlowMoney.objects \
-        .filter(enabled=True, created_by=user) \
+    previous_flow_money = models.FlowMoneyHistory.objects.filter(
+        enabled=True,
+        created_by=user,
+        category=None,
+    ).order_by("-created_at").first()
+    total_flow_wallet = models.FlowMoney.objects \
+        .filter(
+            enabled=True,
+            created_by=user,
+        ) \
         .aggregate(total_flow=Sum("amount"))["total_flow"]
-    user.wallet = total_flow
+    total_flow_alkali = models.FlowMoney.objects \
+        .filter(
+            enabled=True,
+            created_by=user,
+            category__parent_category__name=SAVING_CATEGORY
+        ) \
+        .aggregate(total_flow=Sum("amount"))["total_flow"]
+    user.wallet = total_flow_wallet
+    user.alkali = previous_flow_money.final_alkali + Money(abs(total_flow_alkali) or 0, "COP")
     user.save()
 
 
@@ -157,9 +178,9 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
     ):
         days_in_week = get_start_and_end_date_from_calendar_week(year, week)
         query = self.queryset().filter(
+            date_flow__day__in=[x.day for x in days_in_week],
+            date_flow__month__in=[x.month for x in days_in_week],
             date_flow__year=year,
-            date_flow__gt=days_in_week[0],
-            date_flow__lt=days_in_week[-1],
             enabled=True,
         ).annotate(
             day=ExtractDay("date_flow"),
@@ -387,13 +408,17 @@ def save_history(request):
             created_by=user,
             month__month=dt.month
         ).first()
+        previous_alkali = Money(0, "COP")
         if previous_value:
             previous_value = previous_value.final_amount
+            previous_alkali = previous_value.final_alkali
         else:
             previous_value = Money(0, "COP")
         category_to_save = models.FlowMoneyHistory(
             initial_amount=previous_value,
             final_amount=user.wallet,
+            initial_alkali=previous_alkali,
+            final_alkali=user.alkali,
             labels=[x for x, _ in spend],
             values=[x for _, x in spend],
             month=dt.date(),

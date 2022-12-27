@@ -85,6 +85,20 @@ class FlowMoneyHistory(models.Model):
         blank=True,
         null=True,
     )
+    initial_alkali = MoneyField(
+        default_currency=settings.DEFAULT_CURRENCIES[0],
+        max_digits=11,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
+    final_alkali = MoneyField(
+        default_currency=settings.DEFAULT_CURRENCIES[0],
+        max_digits=11,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
     labels = ArrayField(models.CharField(max_length=512))
     values = ArrayField(models.CharField(max_length=512))
     month = models.DateField(blank=False, null=False)

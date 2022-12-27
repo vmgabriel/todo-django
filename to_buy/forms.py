@@ -60,7 +60,6 @@ class ItemListToBuyForm(forms.ModelForm):
         ]
 
     def __init__(self, list_id: int = None, product_id: int = None, *args, **kwargs):
-        #print("instance - ", instance.quantity)
         super().__init__(*args, **kwargs)
         if list_id:
             self.fields["list"] = forms.ModelChoiceField(

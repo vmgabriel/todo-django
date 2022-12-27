@@ -68,10 +68,9 @@ class FlowMoneyForm(forms.ModelForm):
         obj = super(FlowMoneyForm, self).save(commit=False)
 
         type_flow = obj.category.type_flow
-        if type_flow == models.TypeFlow.EXPENDITURE:
-            if obj.amount < Money(0, "COP"):
-                obj.amount = abs(obj.amount)
-            obj.amount = -obj.amount
+        if obj.amount < Money(0, "COP"):
+            obj.amount = abs(obj.amount)
+        obj.amount = -obj.amount
 
         if not updated:
             obj.created_by = kwargs.get('user')

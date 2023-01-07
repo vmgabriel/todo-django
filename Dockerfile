@@ -5,7 +5,6 @@ RUN apt-get update --fix-missing && apt-get --yes upgrade
 
 ENV PYTHONUNBUFFERED 1
 
-COPY ./requirements/base.txt /requirements.txt
 COPY . /app
 
 WORKDIR /app
@@ -17,6 +16,6 @@ RUN apt-get --yes install libtiff5-dev libjpeg-dev libopenjp2-7-dev zlib1g-dev \
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade Pillow
-RUN python3 -m pip install -r /requirements.txt
+RUN python3 -m pip install -r requirements/base.txt
 
 

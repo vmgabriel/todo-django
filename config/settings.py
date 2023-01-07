@@ -45,6 +45,7 @@ USER_APPLICATIONS = [
     "products.apps.ProductsConfig",
     "stores.apps.StoresConfig",
     "cash_flow.apps.CashFlowConfig",
+    "library.apps.LibraryConfig",
 ]
 
 EXTERNALS_APPLICATIONS = [

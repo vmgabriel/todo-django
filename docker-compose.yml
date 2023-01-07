@@ -10,6 +10,27 @@ services:
       - .:/app
     restart: always
     command: >
-      sh -c "python manage.py makemigrations &&
-             python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:3030"
+      sh -c "python manage.py runserver 0.0.0.0:3030"
+    depends_on:
+      - celery
+
+  redis:
+    image: "redis:alpine"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - cache-network
+
+  celery:
+    image: todo-django-app
+    networks:
+      - cache-network
+    depends_on:
+      - redis
+    command: >
+      sh -c "python -m celery -A config worker -l INFO"
+
+
+networks:
+  cache-network:
+    driver: bridge

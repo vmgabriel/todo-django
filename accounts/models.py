@@ -70,7 +70,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     first_name = models.CharField("First Name", max_length=256)
     last_name = models.CharField("Last Name", max_length=256, blank=True)
     is_staff = models.BooleanField("Staff Status", default=False)
-    is_active = models.BooleanField("IS Active", default=True)
+    is_active = models.BooleanField("Is Active", default=True)
     date_joined = models.DateTimeField("Date Joined", default=timezone.now, editable=False)
     telephone = models.CharField("Phone Number", max_length=30, blank=True, null=True)
     blocked_at = models.DateTimeField(blank=True, null=True)
@@ -81,6 +81,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         blank=True,
         verbose_name="image"
     )
+    kindle_email = models.EmailField("Kindle Email", blank=True, null=True)
     ppoi = PPOIField(verbose_name="ppoi")
     groups = models.ManyToManyField(Group, verbose_name="Groups", related_name="user_groups", blank=True)
     home_location = PlainLocationField(

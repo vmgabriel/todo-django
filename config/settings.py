@@ -45,6 +45,7 @@ USER_APPLICATIONS = [
     "products.apps.ProductsConfig",
     "stores.apps.StoresConfig",
     "cash_flow.apps.CashFlowConfig",
+    "library.apps.LibraryConfig",
 ]
 
 EXTERNALS_APPLICATIONS = [
@@ -55,6 +56,7 @@ EXTERNALS_APPLICATIONS = [
     "djmoney",
     "django_filters",
     "pwa",
+    "django_celery_results",
 ]
 
 
@@ -246,3 +248,13 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 PWA_APP_DIR = "ltr"
 PWA_APP_LANG = "en-US"
+
+# Celery Configuration Options
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+CELERY_TIMEZONE = "America/Bogota"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'

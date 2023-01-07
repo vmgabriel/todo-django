@@ -37,6 +37,7 @@ class UserForm(forms.ModelForm):
             "telephone",
             "image",
             "home_location",
+            "kindle_email",
         ]
 
 

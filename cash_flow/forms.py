@@ -53,7 +53,6 @@ class FlowMoneyForm(forms.ModelForm):
             parent_category=None
         )
 
-
     class Meta:
         """Meta Category Form"""
         model = models.FlowMoney
@@ -70,7 +69,9 @@ class FlowMoneyForm(forms.ModelForm):
         type_flow = obj.category.type_flow
         if obj.amount < Money(0, "COP"):
             obj.amount = abs(obj.amount)
-        obj.amount = -obj.amount
+        if type_flow != models.TypeFlow.INCOME:
+            # this is for exit of money
+            obj.amount = -obj.amount
 
         if not updated:
             obj.created_by = kwargs.get('user')

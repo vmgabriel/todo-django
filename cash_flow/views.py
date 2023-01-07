@@ -204,11 +204,13 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
     def get(self, request):
         dt = datetime.now()
         week_in_year = dt.isocalendar().week
-        week = get_start_and_end_date_from_calendar_week(dt.year, week_in_year)
+        year = dt.isocalendar().year
+        week = get_start_and_end_date_from_calendar_week(year, week_in_year)
+        month = week[0].month
         money_flow_week = order_by_levels([self.queryset_per_day(day) for day in week])
         spend_by_month = {
             "Spend": {
-                "data": [float(x) for _, x in queryset_sum_per_month(self.request.user, dt.year, dt.month)],
+                "data": [float(x) for _, x in queryset_sum_per_month(self.request.user, year, month)],
                 "color": "04aa6d",
             }
         }
@@ -217,7 +219,7 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
                 "data": [x[1] for x in vals],
                 "color": models.CategoryFlow.objects.filter(name=k).first().color,
             }
-            for k, vals in queryset_sum_per_month_category(self.request.user, dt.year, dt.month).items()
+            for k, vals in queryset_sum_per_month_category(self.request.user, year, month).items()
         }
         sum_by_categories = []
         colors = []
@@ -242,7 +244,7 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
             "spend_by_month": spend_by_month,
             "week": week,
             "money_flow_week": money_flow_week,
-            "total_per_week": self.queryset_sum_per_day_week(week_in_year),
+            "total_per_week": self.queryset_sum_per_day_week(week_in_year, year),
             # Chart Pie
             "percent_categories": sum_by_categories,
             "categories": categories,

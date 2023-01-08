@@ -272,3 +272,11 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 BOOK_SEND_EMAIL_SUBJECT = "Smart Home Sync Send Book"
 BOOK_SEND_EMAIL_BODY = "The current content is sended based Smart Home DyG"
 PATH_BOOKS = BASE_DIR / "media" / "books"
+
+# System Providers
+SYSTEM_PROVIDER = "os"
+PDF_TO_EPUB_PROVIDER = "os"
+EPUB_TO_PDF_PROVIDER = "os"
+EPUB_TO_MOBI_PROVIDER = "os"
+MOBI_TO_PDF_PROVIDER = "os"
+PDF_TO_MOBI_PROVIDER = "os"

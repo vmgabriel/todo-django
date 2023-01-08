@@ -37,10 +37,10 @@ class AuthorForm(forms.ModelForm):
         model = models.Authors
         fields = [
             'name',
+            'image',
             'description',
-            'image'
         ]
-    
+
     def save(self, commit=True, updated=False, **kwargs):
         """Save of Author with the form"""
         obj = super(AuthorForm, self).save(commit=False)
@@ -51,6 +51,7 @@ class AuthorForm(forms.ModelForm):
 
         if commit:
             obj.save()
+            
         return obj
     
 class BookForm(forms.ModelForm):
@@ -64,7 +65,7 @@ class BookForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple()
     )
     class Meta:
-        """Meta Board Form"""
+        """Meta Book Form"""
         model = models.Books
         fields = [
             'name',

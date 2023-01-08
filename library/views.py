@@ -32,7 +32,7 @@ class LibraryView(LoginRequiredMixin, FilterView):
 class BookNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = 'library/book/edit.html'
     form_class = forms.BookForm
-    success_url = "library:new_book"
+    success_url = "library:home"
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(BookNewView, self).get_context_data(**kwargs)
@@ -93,7 +93,7 @@ class BookGenresListView(LoginRequiredMixin, generic.list.ListView):
 class BookGenreNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = 'library/genre/edit.html'
     form_class = forms.BookGenreForm
-    success_url = "library:new_genre"
+    success_url = "library:list_genres"
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(BookGenreNewView, self).get_context_data(**kwargs)
@@ -153,7 +153,7 @@ class AuthorsListView(LoginRequiredMixin, FilterView):
 class AuthorNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = 'library/author/edit.html'
     form_class = forms.AuthorForm
-    success_url = "library:new_author"
+    success_url = "library:list_authors"
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(AuthorNewView, self).get_context_data(**kwargs)

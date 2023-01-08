@@ -1,5 +1,6 @@
 {% extends 'content.html' %}
 {% load static %}
+{% load my_tags %}
 
 {% block container %}
     <div class="container" style="margin-top: 3em;">
@@ -82,59 +83,74 @@
             </div>
 
             {% if object_list %}
-                <table class="table" style="margin-bottom: 1em;display: block;overflow-x: auto;white-space: nowrap;">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Genres</th>
-                        <th>Authors</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                <div class="row">
                     {% for book in object_list %}
-                        <tr>
-                            <td>
-                                {% if book.image %}
-                                    <img alt="{{ book.name }}" src="{{ book.image.url }}" width="32">
+                        <div class="card col s12 m6 l3 medium" style="margin: 1em;">
+                            <div class="card-image waves-effect waves-block waves-light">
+                            {% if book.image %}
+                                    <img class="activator" alt="{{ book.name }}" src="{{ book.image.url }}" width="32">
                                 {% else %}
-                                    <img alt="{{ book.name }}" src="{% static 'imgs/open-box.png' %}" width="32">
+                                    <img class="activator" alt="{{ book.name }}" src="{% static 'imgs/open-box.png' %}" width="32">
                                 {% endif %}
-                            </td>
-                            <td>{{ book.name }}</td>
-                            <td>{{ book.description }}</td>
-                            <td>
-                                {% for genre in book.genres.all %}
-                                    <span class="badge"
-                                          style="background-color: {{ genre.color }}; color: black;">{{ genre.name }}</span>
-                                {% endfor %}
-                            </td>
-                            <td>
-                                {% for author in book.authors.all %}
-                                    <span class="badge"
-                                          style="color: black;">{{ author.name }}</span>
-                                {% endfor %}
-                            </td>
-                            <td>
-                                <a class="btn-floating blue" href="{% url 'library:send_to_kindle' book.id %}">
-                                    <i class ="small material-icons">forward_to_inbox</i>
+                            </div>
+                            <div class="card-content">
+                            <div class="card-title activator grey-text text-darken-4 row" style="display: flex; align-items: center;">
+                                <span class="flow-text s8 m4 l8" >{{ book.name }}</span>
+                                <i class="material-icons right s12 m4 l2">more_vert</i>
+                            </div>
+                            {% for author in book.authors.all %}
+                                <p>{{ author.name }}</p>
+                            {% endfor %}
+                            </div>
+                            <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4">{{ book.name }}<i class="material-icons right">close</i></span>
+                            <p>{{ book.description }}</p>
+                            {% for author in book.authors.all %}
+                                <span class="badge"
+                                    style="color: black;">{{ author.name }}</span>
+                            {% endfor %}
+                            {% for genre in book.genres.all %}
+                                <i
+                                style="background-color: {{ genre.color }}; color: black;">{{ genre.name }}</i>
+                            {% endfor %}
+                            <div class="col" style="margin-top: 20px">
+                                <a class="row" style="color: black; display: flex; align-items: center; margin-bottom: 10px;" href="{% url 'library:send_to_kindle' book.id %}">
+                                    <i class ="small material-icons">forward_to_inbox</i> Sent to Kindle
                                 </a>
-                                <a class="btn-floating yellow" href="{% url 'library:edit_book' book.id %}"><i
-                                        class="small material-icons">edit</i>
+                                <a class="row" style="color: black; display: flex; align-items: center; margin-bottom: 10px;" href="{% url 'library:edit_book' book.id %}"><i
+                                        class="small material-icons">edit</i>Edit
                                 </a>
-                                <a class="btn-floating red" href="{% url 'library:delete_book' book.id %}"><i
-                                        class="small material-icons">delete</i>
+                                <a class="row" style="color: black; display: flex; align-items: center; margin-bottom: 10px;" href="{% url 'library:delete_book' book.id %}"><i
+                                        class="small material-icons">delete</i> Delete
                                 </a>
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
+                            
+                        </div>
                     {% endfor %}
-                    </tbody>
-                </table>
+                </div>
+                <ul class="pagination" style="font-size: 11px;display: flex; justify-content: center;">
+                    {% if page_obj.has_previous %}
+                        <li class="waves-effect"><a href="?{% param_replace page=1 %}"><i class="material-icons">first_page</i></a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.previous_page_number %}"><i class="material-icons">chevron_left</i></a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a></li>
+                    {% else %}
+                        <li class="disabled"><a href="?{% param_replace page=1 %}"><i class="material-icons">first_page</i></a></li>
+                        <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+                    {% endif %}
+                    <li class="active"><a href="">{{ page_obj.number }}</a></li>
+                    {% if page_obj.has_next %}
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.next_page_number %}"><i class="material-icons">chevron_right</i></a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.paginator.num_pages %}"><i class="material-icons">last_page</i></a></li>
+                    {% else %}
+                        <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+                        <li class="disabled"><a href=""><i class="material-icons">last_page</i></a></li>
+                    {% endif %}
+                </ul>
             {% else %}
-                <p class="flow-text">Not Books yet.</p>
-            {% endif %}
+              <p class="flow-text">Not Books yet.</p>
+          {% endif %}
         </div>
     </div>
 {% endblock container %}

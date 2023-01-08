@@ -25,6 +25,8 @@ services:
 
   celery:
     image: todo-django-app
+    volumes:
+      - .:/app
     networks:
       - cache-network
     depends_on:

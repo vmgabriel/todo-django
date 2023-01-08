@@ -2,10 +2,16 @@
 
 # Libraries
 from django.db import models
+from django.utils.translation import gettext_lazy
 from versatileimagefield.fields import VersatileImageField
 from colorfield.fields import ColorField
 
-# Modules
+
+class ProgressConversion(models.TextChoices):
+    NOT_EXECUTED = "ne", gettext_lazy("No Executed")
+    IN_PROGRESS = "p", gettext_lazy("In Progress")
+    SUCCESS = "s", gettext_lazy("Success")
+    FAIL = "f", gettext_lazy("Fail")
 
 class BookGenres(models.Model):
     """Genres of Books"""
@@ -54,6 +60,15 @@ class Books(models.Model):
     authors = models.ManyToManyField(Authors, blank=True, null=True)
     
     file = models.FileField(upload_to=f"books", null=False, blank=False)
+    file_epub = models.FileField(upload_to=f"books", null=True, blank=True)
+    file_mobi = models.FileField(upload_to=f"books", null=True, blank=True)
+    progress_conversion = models.CharField(
+        max_length=3,
+        choices=ProgressConversion.choices,
+        default=ProgressConversion.NOT_EXECUTED,
+        blank=True,
+        null=True
+    )
     published_on = models.DateTimeField(blank=True, null=True)
     raiting = models.PositiveIntegerField(default=0)
     

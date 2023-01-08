@@ -271,4 +271,4 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 # BOOkS
 BOOK_SEND_EMAIL_SUBJECT = "Smart Home Sync Send Book"
 BOOK_SEND_EMAIL_BODY = "The current content is sended based Smart Home DyG"
-PATH_BOOKS = BASE_DIR / "books"
+PATH_BOOKS = BASE_DIR / "media" / "books"

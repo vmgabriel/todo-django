@@ -258,3 +258,17 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
+
+# Configuration of Sending of Email
+EMAIL_PROVIDER = "django_email"
+EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+
+# BOOkS
+BOOK_SEND_EMAIL_SUBJECT = "Smart Home Sync Send Book"
+BOOK_SEND_EMAIL_BODY = "The current content is sended based Smart Home DyG"
+PATH_BOOKS = BASE_DIR / "books"

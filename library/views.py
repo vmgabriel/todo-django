@@ -33,6 +33,7 @@ class BookNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = 'library/book/edit.html'
     form_class = forms.BookForm
     success_url = "library:new_book"
+
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(BookNewView, self).get_context_data(**kwargs)
@@ -45,9 +46,9 @@ class BookNewView(LoginRequiredMixin, generic.edit.FormView):
             **{'user': self.request.user}
         )
         self.object.save()
-
         self.object.genres.set(form.cleaned_data['genres'])
         self.object.authors.set(form.cleaned_data['authors'])
+        tasks.conversion_book.apply_async(args=(self.object.pk,))
         return redirect(self.get_success_url())
 
 class BookEditView(LoginRequiredMixin, generic.edit.UpdateView):
@@ -222,9 +223,9 @@ def send_to_kindle(request, pk: int):
     model = models.Books
     book: model = get_object_or_404(model, pk=pk)
     user = request.user
-    if user.kindle_email is not None:
+    if user.kindle_email is not None and book.file_mobi is not None:
         tasks.send_book.apply_async(args=(
             [user.kindle_email],
-            book.file.name.split("/")[-1]
+            book.file_mobi.name.split("/")[-1]
         ))
     return redirect("library:home")

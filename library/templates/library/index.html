@@ -6,14 +6,132 @@
         <a href="{% url 'pages:home' %}">
             <i class="material-icons">arrow_back</i>
         </a>
-
         <div class="card-panel">
             <div class="row" style="display: inline-flex;">
                 <h2>Library</h2>
-                <a class="btn-floating btn-large waves-effect waves-light left-align" href="{% url 'library:new_book' %}">
-                    <i class="material-icons">add</i>
-                </a>
+                <div class="row right-align">
+                    <a class="btn-floating btn-large waves-effect waves-light left-align" href="{% url 'library:new_book' %}">
+                        <i class="material-icons">add</i>
+                    </a>
+                </div>
             </div>
+            <div class="row" style="display: flex;justify-content: right;">
+                <ul style="display: flex;justify-content: space-between;">
+                    <li>
+                        <a class="waves-effect waves-light btn" href="{% url 'library:list_authors' %}">
+                            <i class="material-icons left">group_add</i>Authors
+                        </a>
+                    </li>
+                    <li>
+                        <a class="waves-effect waves-light btn" href="{% url 'library:list_genres' %}">
+                            <i class="material-icons left">switch_access_shortcut_add</i>Genres
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header">
+                        <i class="material-icons">search</i>Filters
+                    </div>
+                    <div class="collapsible-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    {{ filter.form.name }}
+                                    <label for="name">{{ filter.form.name.label }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <label for="genres">{{ filter.form.genres.label }}</label>
+                                </div>
+                                <div class="input-field col s12">
+                                    {{ filter.form.genres }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <label for="authors">{{ filter.form.authors.label }}</label>
+                                </div>
+                                <div class="input-field col s12">
+                                    {{ filter.form.authors }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    {{ filter.form.ordering }}
+                                    <label for="ordering">{{ filter.form.ordering.label }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <button class="btn waves-effect waves-light" type="submit" name="action"
+                                        style="width: 100%;">
+                                    <i class="material-icons">search</i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="" style="display: flex; justify-content: space-between;">
+                <h6>{{ count }}</h6>
+                <h6>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h6>
+            </div>
+
+            {% if object_list %}
+                <table class="table" style="margin-bottom: 1em;display: block;overflow-x: auto;white-space: nowrap;">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Genres</th>
+                        <th>Authors</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for book in object_list %}
+                        <tr>
+                            <td>
+                                {% if book.image %}
+                                    <img alt="{{ book.name }}" src="{{ book.image.url }}" width="32">
+                                {% else %}
+                                    <img alt="{{ book.name }}" src="{% static 'imgs/open-box.png' %}" width="32">
+                                {% endif %}
+                            </td>
+                            <td>{{ book.name }}</td>
+                            <td>{{ book.description }}</td>
+                            <td>
+                                {% for genre in book.genres.all %}
+                                    <span class="badge"
+                                          style="background-color: {{ genre.color }}; color: black;">{{ genre.name }}</span>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for author in book.authors.all %}
+                                    <span class="badge"
+                                          style="color: black;">{{ author.name }}</span>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <a class="btn-floating yellow" href="{% url 'library:edit_book' book.id %}"><i
+                                        class="small material-icons">edit</i>
+                                </a>
+                                <a class="btn-floating red" href="{% url 'library:delete_book' book.id %}"><i
+                                        class="small material-icons">delete</i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="flow-text">Not Books yet.</p>
+            {% endif %}
         </div>
     </div>
 {% endblock container %}

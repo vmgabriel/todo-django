@@ -113,18 +113,18 @@
                                 <i
                                 style="background-color: {{ genre.color }}; color: black;">{{ genre.name }}</i>
                             {% endfor %}
-                            <div>
-                                <a class="btn-floating blue" href="{% url 'library:send_to_kindle' book.id %}">
-                                    <i class ="small material-icons">forward_to_inbox</i>
+                            <div class="col" style="margin-top: 20px">
+                                <a class="row" style="color: black; display: flex; align-items: center; margin-bottom: 10px;" href="{% url 'library:send_to_kindle' book.id %}">
+                                    <i class ="small material-icons">forward_to_inbox</i> Sent to Kindle
                                 </a>
-                                <a class="btn-floating yellow" href="{% url 'library:edit_book' book.id %}"><i
-                                        class="small material-icons">edit</i>
+                                <a class="row" style="color: black; display: flex; align-items: center; margin-bottom: 10px;" href="{% url 'library:edit_book' book.id %}"><i
+                                        class="small material-icons">edit</i>Edit
                                 </a>
-                                <a class="btn-floating red" href="{% url 'library:delete_book' book.id %}"><i
-                                        class="small material-icons">delete</i>
+                                <a class="row" style="color: black; display: flex; align-items: center; margin-bottom: 10px;" href="{% url 'library:delete_book' book.id %}"><i
+                                        class="small material-icons">delete</i> Delete
                                 </a>
                             </div>
-                            </div>
+                        </div>
                             
                         </div>
                     {% endfor %}

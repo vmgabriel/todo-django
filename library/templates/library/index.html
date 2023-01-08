@@ -1,5 +1,6 @@
 {% extends 'content.html' %}
 {% load static %}
+{% load my_tags %}
 
 {% block container %}
     <div class="container" style="margin-top: 3em;">
@@ -128,6 +129,25 @@
                         </div>
                     {% endfor %}
                 </div>
+                <ul class="pagination" style="font-size: 11px;display: flex; justify-content: center;">
+                    {% if page_obj.has_previous %}
+                        <li class="waves-effect"><a href="?{% param_replace page=1 %}"><i class="material-icons">first_page</i></a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.previous_page_number %}"><i class="material-icons">chevron_left</i></a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a></li>
+                    {% else %}
+                        <li class="disabled"><a href="?{% param_replace page=1 %}"><i class="material-icons">first_page</i></a></li>
+                        <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+                    {% endif %}
+                    <li class="active"><a href="">{{ page_obj.number }}</a></li>
+                    {% if page_obj.has_next %}
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.next_page_number %}"><i class="material-icons">chevron_right</i></a></li>
+                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.paginator.num_pages %}"><i class="material-icons">last_page</i></a></li>
+                    {% else %}
+                        <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+                        <li class="disabled"><a href=""><i class="material-icons">last_page</i></a></li>
+                    {% endif %}
+                </ul>
             {% else %}
               <p class="flow-text">Not Books yet.</p>
           {% endif %}

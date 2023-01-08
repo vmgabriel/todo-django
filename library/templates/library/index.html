@@ -94,9 +94,9 @@
                                 {% endif %}
                             </div>
                             <div class="card-content">
-                            <div class="card-title activator grey-text text-darken-4 row" style="display: flex; align-items: center;">
-                                <span class="flow-text s8 m4 l8" >{{ book.name }}</span>
-                                <i class="material-icons right s12 m4 l2">more_vert</i>
+                            <div class="card-title grey-text text-darken-4 row" style="display: flex; align-items: center;">
+                                <span class="flow-text activator s8 m4 l8" >{{ book.name }}</span>
+                                <i class="material-icons activator right s12 m4 l2">more_vert</i>
                             </div>
                             {% for author in book.authors.all %}
                                 <p>{{ author.name }}</p>
@@ -122,6 +122,9 @@
                                 </a>
                                 <a class="row" style="color: black; display: flex; align-items: center; margin-bottom: 10px;" href="{% url 'library:delete_book' book.id %}"><i
                                         class="small material-icons">delete</i> Delete
+                                </a>
+                                <a class="row" style="color: black; display: flex; align-items: center; margin-bottom: 10px;" href="{% url 'library:download_file' book.id %}"><i
+                                    class="small material-icons">file_download</i> Download
                                 </a>
                             </div>
                         </div>

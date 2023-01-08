@@ -8,6 +8,8 @@ services:
       - 3030:3030
     volumes:
       - .:/app
+    networks:
+      - cache-network
     restart: always
     command: >
       sh -c "python manage.py runserver 0.0.0.0:3030"

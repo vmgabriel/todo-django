@@ -12,7 +12,7 @@ urlpatterns = [
     path('', views.LibraryView.as_view(), name='home'),
     path("books/new", views.BookNewView.as_view(), name="new_book"),
     path('books/<int:pk>/edit', views.BookEditView.as_view(), name='edit_book'),
-    path('books/<int:pk>/delete', views.delete_author, name='delete_book'),
+    path('books/<int:pk>/delete', views.delete_book, name='delete_book'),
     path("books/<int:pk>/send_to_kindle", views.send_to_kindle, name="send_to_kindle"),
 
     path("genres", views.BookGenresListView.as_view(), name="list_genres"),

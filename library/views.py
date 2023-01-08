@@ -32,8 +32,7 @@ class LibraryView(LoginRequiredMixin, FilterView):
 class BookNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = 'library/book/edit.html'
     form_class = forms.BookForm
-    success_url = "library:new_book"
-
+    success_url = "library:home"
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(BookNewView, self).get_context_data(**kwargs)

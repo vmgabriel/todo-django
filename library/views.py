@@ -1,4 +1,8 @@
 # Libraries
+import os
+import mimetypes
+
+from django.http.response import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views import generic
@@ -193,7 +197,7 @@ class AuthorEditView(LoginRequiredMixin, generic.edit.UpdateView):
 @login_required
 def delete_book_genre(request, pk):
     model = models.BookGenres
-    genre = get_object_or_404(model, pk=pk)
+    genre: model = get_object_or_404(model, pk=pk)
     genre.enabled = False
     genre.save()
     return redirect("library:list_genres")
@@ -202,7 +206,7 @@ def delete_book_genre(request, pk):
 @login_required
 def delete_author(request, pk):
     model = models.Authors
-    author = get_object_or_404(model, pk=pk)
+    author: model = get_object_or_404(model, pk=pk)
     author.enabled = False
     author.save()
     return redirect("library:list_authors")
@@ -211,7 +215,7 @@ def delete_author(request, pk):
 @login_required
 def delete_book(request, pk):
     model = models.Books
-    book = get_object_or_404(model, pk=pk)
+    book: model = get_object_or_404(model, pk=pk)
     book.enabled = False
     book.save()
     return redirect("library:home")
@@ -228,3 +232,15 @@ def send_to_kindle(request, pk: int):
             book.file_mobi.name.split("/")[-1]
         ))
     return redirect("library:home")
+
+@login_required
+def download_file(request, pk: int):
+    model = models.Books
+    book: model = get_object_or_404(model, pk=pk)
+    file_path = os.path.join(settings.MEDIA_ROOT, book.file.name)
+    mime_type, _ = mimetypes.guess_type(file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type=mime_type)
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response

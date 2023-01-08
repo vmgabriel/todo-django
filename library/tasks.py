@@ -9,14 +9,13 @@ logger = get_task_logger(__name__)
 
 def get_mimetype(name_file: str) -> str:
     mime: str = ""
-    format = name_file.split(".")[-1].lower()
-    match format:
-        case "pdf":
-            mime = "application/pdf"
-        case "mobi":
-            mime = "application/x-mobipocket-ebook"
-        case "epub":
-            mime = "application/epub+zip"
+    frm = name_file.split(".")[-1].lower()
+    if frm == "pdf":
+        mime = "application/pdf"
+    if frm == "mobi":
+        mime = "application/x-mobipocket-ebook"
+    if frm == "epub":
+        mime = "application/epub+zip"
     if not mime:
         raise Exception("Format Not Valid")
     return mime

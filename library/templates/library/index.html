@@ -118,6 +118,9 @@
                                 {% endfor %}
                             </td>
                             <td>
+                                <a class="btn-floating blue" href="{% url 'library:send_to_kindle' book.id %}">
+                                    <i class ="small material-icons">forward_to_inbox</i>
+                                </a>
                                 <a class="btn-floating yellow" href="{% url 'library:edit_book' book.id %}"><i
                                         class="small material-icons">edit</i>
                                 </a>

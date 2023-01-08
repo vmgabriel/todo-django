@@ -5,7 +5,7 @@ from django.views import generic
 from django.shortcuts import render, redirect, get_object_or_404
 from django_filters.views import FilterView
 from django.conf import settings
-from . import models, filters, forms
+from . import models, filters, forms, tasks
 
 # Books
 class LibraryView(LoginRequiredMixin, FilterView):
@@ -188,6 +188,7 @@ class AuthorEditView(LoginRequiredMixin, generic.edit.UpdateView):
             self.get_success_url()
         )
 
+
 # Removal methods
 @login_required
 def delete_book_genre(request, pk):
@@ -197,6 +198,7 @@ def delete_book_genre(request, pk):
     genre.save()
     return redirect("library:list_genres")
 
+
 @login_required
 def delete_author(request, pk):
     model = models.Authors
@@ -205,10 +207,24 @@ def delete_author(request, pk):
     author.save()
     return redirect("library:list_authors")
 
+
 @login_required
 def delete_book(request, pk):
     model = models.Books
     book = get_object_or_404(model, pk=pk)
     book.enabled = False
     book.save()
+    return redirect("library:home")
+
+
+@login_required
+def send_to_kindle(request, pk: int):
+    model = models.Books
+    book: model = get_object_or_404(model, pk=pk)
+    user = request.user
+    if user.kindle_email is not None:
+        tasks.send_book.apply_async(args=(
+            [user.kindle_email],
+            book.file.name.split("/")[-1]
+        ))
     return redirect("library:home")

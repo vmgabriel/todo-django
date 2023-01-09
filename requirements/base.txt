@@ -30,13 +30,8 @@ django-celery-results==2.4.0
 redis==4.4.0
 msgpack==1.0.4
 python-dateutil==2.8.2
-PyQt6==6.4.0
-PyQt6-Qt6==6.4.1
-PyQt6-sip==13.4.0
 regex==2022.10.31
 mechanize==0.4.8
 css-parser==1.0.8
 html5-parser==0.4.10
 bs4==0.0.1
-PyQt6-WebEngine==6.4.0
-PyQt6-WebEngine-Qt6==6.4.2

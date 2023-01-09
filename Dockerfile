@@ -1,4 +1,4 @@
-FROM python:3.9.10-slim-buster
+FROM python:3.9.16-slim-bullseye
 LABEL maintainer="my_home.com"
 
 ENV PYTHONUNBUFFERED 1

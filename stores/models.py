@@ -44,7 +44,11 @@ class StoreProduct(models.Model):
     )
 
     description = models.CharField(max_length=120)
-    price = MoneyField(max_digits=14, decimal_places=2, default_currency='USD')
+    price = MoneyField(
+        max_digits=14,
+        decimal_places=2,
+        default_currency=settings.DEFAULT_CURRENCIES[0],
+    )
 
     enabled = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -62,3 +66,30 @@ class StoreProduct(models.Model):
 
     def __str__(self):
         return "{} - ${}".format(str(self.store.name).title(), self.price)
+
+
+class StoreProductHistory(models.Model):
+    store_product = models.ForeignKey(
+        "stores.StoreProduct",
+        related_name="store_product",
+        on_delete=models.CASCADE,
+    )
+    price = MoneyField(
+        max_digits=14,
+        decimal_places=2,
+        default_currency=settings.DEFAULT_CURRENCIES[0],
+    )
+
+    enabled = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        'accounts.User',
+        related_name="sph_creator",
+        on_delete=models.CASCADE,
+    )
+    updated_by = models.ForeignKey(
+        'accounts.User',
+        related_name="sph_updater",
+        on_delete=models.CASCADE,
+    )

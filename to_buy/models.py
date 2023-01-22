@@ -64,3 +64,4 @@ class ItemListToBuy(models.Model):
 
     def __str__(self):
         return "{}".format(str(self.list.name).title())
+

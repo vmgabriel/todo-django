@@ -65,3 +65,21 @@ class ItemListToBuy(models.Model):
     def __str__(self):
         return "{}".format(str(self.list.name).title())
 
+
+class ItemListComment(models.Model):
+    list = models.ForeignKey(
+        ListToBuy,
+        on_delete=models.CASCADE,
+        related_name='ltb_list'
+    )
+    comment = models.CharField(
+        max_length=150,
+    )
+    enabled = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        'accounts.User',
+        on_delete=models.CASCADE,
+        related_name="ilc_creator"
+    )

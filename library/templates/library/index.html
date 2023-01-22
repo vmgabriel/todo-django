@@ -110,8 +110,11 @@
                                     style="color: black;">{{ author.name }}</span>
                             {% endfor %}
                             {% for genre in book.genres.all %}
-                                <i
-                                style="background-color: {{ genre.color }}; color: black;">{{ genre.name }}</i>
+
+                                <div class="chip" style="color: {{ genre.color }}">
+                                    {{ genre.name }}
+                                    <i class="close material-icons">close</i>
+                                </div>
                             {% endfor %}
                             <div class="col" style="margin-top: 20px">
                                 <a class="row" style="color: black; display: flex; align-items: center; margin-bottom: 10px;" href="{% url 'library:send_to_kindle' book.id %}">

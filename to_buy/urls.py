@@ -21,5 +21,8 @@ urlpatterns = [
     path('<int:pk>/items/<int:pk_item>/edit', views.ToBuyEditItemView.as_view(), name="buys_edit_product"),
     path("<int:pk>/items/<int:pk_item>/delete", views.delete_product_to_list, name="buys_delete_product"),
 
+    path("<int:list_pk>/comments/new", views.ToBuyNewCommentView.as_view(), name="buys_new_comment"),
+    path("<int:list_pk>/comments/<int:pk>/edit", views.delete_comment_to_list, name="buys_delete_comment"),
+
     path("<int:pk>/telegram-send", views.telegram_send_list, name="buys_send_telegram")
 ]

@@ -17,6 +17,24 @@
                 </a>
             </div>
 
+            <div class="row">
+                <div class="row" style="display: flex;">
+                    <h4>Commentary</h4>
+                    <a class="btn-floating btn-medium waves-effect waves-light left-align" href="{% url 'to_buy:buys_new_comment' list_pk=object.pk %}">
+                        <i class="material-icons">add</i>
+                    </a>
+                </div>
+                <ul>
+                    {% for comment in comments %}
+                        <li>
+                            <a class="btn-floating waves-effect waves-light red" href="{% url 'to_buy:buys_delete_comment' list_pk=object.pk pk=comment.pk %}">
+                                <i class="material-icons">delete</i>
+                            </a> - {{ comment.created_by.username }} - {{ comment.comment }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
             <div class="row" style="margin-top: 3em;">
                 <div class="col s6">
                     <h5>Items of List</h5>

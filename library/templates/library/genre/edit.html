@@ -9,7 +9,7 @@
 
     <div class="card-panel">
         <div class="row" style="display: inline-flex;">
-            <h2>New Genre of Book</h2>
+            <h2>{% if mode == "Save" %}New{% else %}Edit{% endif %} Genre of Book</h2>
         </div>
 
         <form method="post" class="col s12" style="padding-bottom: 2em;">

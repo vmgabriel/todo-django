@@ -8,7 +8,7 @@
 
         <div class="card-panel">
             <div class="row" style="display: inline-flex;">
-                <h2>New Product</h2>
+                <h2>{% if mode == "Save" %}New{% else %}Edit{% endif %} Product</h2>
             </div>
 
             <form method="post" enctype="multipart/form-data" class="col s12" style="padding-bottom: 2em;">
@@ -51,13 +51,13 @@
                     </div>
                 </div>
                 <div class="col s12 right-align">
-                    <a href="{% url 'products:new_product' %}"
-                       class="btn waves-effect waves-red btn-large red">Cancel</a>
+                    <a href="{% url 'products:new_category' %}" class="btn waves-effect waves-red btn-large blue"><i
+                        class="material-icons">cancel</i></a>
                     <button type="submit" class="waves-effect waves-light btn-large">
                         {% if mode == "Save" %}
-                            Create
+                            <i class="material-icons">save</i>
                         {% else %}
-                            Edit
+                            <i class="material-icons">edit</i>
                         {% endif %}
                     </button>
                 </div>

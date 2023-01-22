@@ -164,6 +164,7 @@ def delete_store(request, pk):
 
 @login_required
 def add_product_to_store(request, pk):
+    model_history = models.StoreProductHistory
     form = forms.StoreProductCompleteForm(request.POST)
     if form.is_valid:
         object = form.save(
@@ -171,16 +172,31 @@ def add_product_to_store(request, pk):
             user=request.user,
         )
         object.save()
+        item_history = model_history(
+            store_product=object,
+            price=object.price,
+            created_by=request.user,
+            updated_by=request.user,
+        )
+        item_history.save()
     return redirect("stores:detail", pk=pk)
 
 
 @login_required
 def edit_product_to_store(request, pk, pk_item):
     model = models.StoreProduct
+    model_history = models.StoreProductHistory
     item = get_object_or_404(model, pk=pk_item)
     item.description = request.POST.get("description")
     item.price = Money(request.POST.get("price_0"), request.POST.get("price_1"))
+    item_history = model_history(
+        store_product=item,
+        price=item.price,
+        created_by=request.user,
+        updated_by=request.user,
+    )
     item.save()
+    item_history.save()
     return redirect("stores:detail", pk=pk)
 
 

@@ -113,3 +113,36 @@ class ItemListToBuyCompleteForm(forms.ModelForm):
             obj.save()
 
         return obj
+
+
+class ItemListCommentForm(forms.ModelForm):
+
+    def __init__(self, list_id: int = None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if list_id:
+            self.fields["list"] = forms.ModelChoiceField(
+                label="",
+                widget=forms.HiddenInput(),
+                queryset=None,
+                initial=list_id
+            )
+
+    class Meta:
+        model = models.ItemListComment
+        fields = [
+            "comment",
+            "list",
+        ]
+
+    def save(self, commit=True, updated=False, **kwargs):
+        obj = super().save(commit=False)
+        user = kwargs.get("user")
+
+        if not updated:
+            obj.created_by = user
+        obj.updated_by = user
+
+        if commit:
+            obj.save()
+
+        return obj

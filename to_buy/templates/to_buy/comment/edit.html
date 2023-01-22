@@ -1,0 +1,48 @@
+{% extends "content.html" %}
+
+{% block container %}
+    <div class="container" style="margin-top: 3em;">
+        <a href="{% url 'to_buy:buys_add_product' pk=list_pk %}">
+            <i class="material-icons">arrow_back</i>
+        </a>
+
+        <div class="card-panel">
+            <div class="row" style="display: inline-flex;">
+                <h2>{% if mode == "Save" %}New{% else %}Edit{% endif %} Comment</h2>
+            </div>
+
+            <form method="post" class="col s12" style="padding-bottom: 2em;">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s12">
+                        {{ form.comment }}
+                        <label for="comment">{{ form.comment.label }}</label>
+                        {% if form.comment.errors %}
+                            {% for error in form.comment.errors %}
+                                <p style="color: red">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form.list }}
+                </div>
+
+                <div class="col s12 right-align">
+                    <a href="{% url 'library:home' %}" class="btn waves-effect waves-red btn-large blue"><i
+                            class="material-icons">cancel</i></a>
+                    <button type="submit" class="waves-effect waves-light btn-large">
+                        {% if mode == "Save" %}
+                            <i class="material-icons">save</i>
+                        {% else %}
+                            <i class="material-icons">edit</i>
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock container %}
+
+{% block javascript %}
+{% endblock javascript %}

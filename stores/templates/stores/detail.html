@@ -25,6 +25,38 @@
                 </div>
             </div>
 
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header">
+                        <i class="material-icons">search</i>Filters Included
+                    </div>
+                    <div class="collapsible-body">
+                        <div class="row">
+                            <div class="col m12">
+                                <div class="input-field row">
+                                    <input id="id_search_included" name="search" type="text"
+                                           value="{% if search_included %}{{ search_included }}{% endif %}"
+                                           onkeyup="enter_key_event_search_included(event, change_search_element_included)"/>
+                                    <label for="id_search">Search Product</label>
+                                </div>
+                            </div>
+                            <div class="col m12">
+                                <label for="categories">Categories</label>
+                                <div class="col m12">
+                                    <div class="chips chips-autocomplete" id="chips_included"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn modal-trigger" onclick="change_search_element_included()" style="width: 100%;">
+                                <i class="material-icons">search</i>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+
             <div class="" style="display: flex; justify-content: space-between;">
                 <h6>{{ count_items }}</h6>
                 <h6>{{ items.number }} of {{ items.paginator.num_pages }}</h6>
@@ -170,7 +202,7 @@
                             <div class="col m12">
                                 <label for="categories">Categories</label>
                                 <div class="col m12">
-                                    <div class="chips chips-autocomplete"></div>
+                                    <div class="chips chips-autocomplete" id="chips_to_include"></div>
                                 </div>
                             </div>
                         </div>
@@ -320,12 +352,14 @@
 
 
 {% block javascript %}
-
     const get_element_of_elem = data => elem_data => get_element_document(data).querySelector(`#${elem_data}`);
     let chips_categories = {{ selected_categories|safe }};
-    const chip_to_include = document.querySelectorAll('.chips');
+    let chips_categories_included = {{ selected_categories_included|safe }};
+    const chip_to_include = document.querySelectorAll('#chips_to_include');
+    const chip_included = document.querySelectorAll("#chips_included")
     const get_element_document = data => document.getElementById(data);
     const search_element = get_element_document("id_search");
+    const search_element_included = get_element_document("id_search_included");
     const str_is_not_clear = x => x != "";
     const not_in_array = arr => elem => arr.includes(elem);
     const categories = {{ categories|safe }};
@@ -364,9 +398,28 @@
         window.location = search_url(`${window.location.origin}${window.location.pathname}`, filters);
     }
 
+    function change_search_element_included() {
+        let filters = {}
+        if (search_element_included.value.length > 0) {
+            filters.included_name = search_element_included.value;
+            filters.page_items = "1";
+        }
+        if (chips_categories_included.length > 0) {
+            filters.included_categories = chips_categories_included.join(",");
+            filters.page_items = "1";
+        }
+        window.location = search_url(`${window.location.origin}${window.location.pathname}`, filters);
+    }
+
     function enter_key_event_search(key) {
         if (key.key == "Enter") {
             change_search_element();
+        }
+    }
+
+    function enter_key_event_search_included(key) {
+        if (key.key == "Enter") {
+            change_search_element_included();
         }
     }
 
@@ -387,6 +440,11 @@
         chips_categories = data[0].M_Chips.chipsData.map(x => x.tag).map(x => categories[x]);
     }
 
+    function set_categories_included(data) {
+        console.log(data);
+        chips_categories_included = data[0].M_Chips.chipsData.map(x => x.tag).map(x => categories[x]);
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         const chipCategory = M.Chips.init(chip_to_include, {
             data: chips_categories.map(x => Object.entries(categories)
@@ -401,6 +459,21 @@
             },
             onChipAdd: set_categories_to_include,
             onChipDelete: set_categories_to_include
+        });
+
+        const chipIncludedCategory = M.Chips.init(chip_included, {
+            data: chips_categories_included.map(x => Object.entries(categories)
+                .filter(([category, id_category]) => id_category == x)
+                .map(([category, id_category]) => ({tag: category}))
+                .pop()
+            ),
+            autocompleteOptions: {
+                data: Object.entries(categories).map(([key, value]) => ({[key]: null})).reduce((acc, ref) => ({...acc, ...ref}), {}),
+                limit: Infinity,
+                minLength: 1
+            },
+            onChipAdd: set_categories_included,
+            onChipDelete: set_categories_included
         });
 
         for (i in get_data) {

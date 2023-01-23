@@ -1,8 +1,7 @@
 """Store Views"""
 
 # Libraries
-from itertools import product
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views import generic
@@ -10,9 +9,10 @@ from django.conf import settings
 from django.db.models import Q, QuerySet
 from django.core.paginator import Paginator
 from djmoney.money import Money
+from django_filters.views import FilterView
 
 # Modules
-from . import models, forms
+from . import models, forms, filters
 from products import models as product_models
 
 
@@ -102,18 +102,30 @@ class DetailStoreView(LoginRequiredMixin, generic.detail.DetailView):
             )
         return data
 
-    def filter_query(self, query: QuerySet, filters: dict) -> QuerySet:
+    def filter_query(
+            self,
+            query: QuerySet,
+            filters: dict,
+            prefix: str = "to_include_",
+            is_included: bool = False,
+    ) -> QuerySet:
         base_filter: dict = {
-            key[11:]: value
+            key[len(prefix):]: value
             for key, value in filters.items()
-            if key.startswith("to_include_")
+            if key.startswith(prefix)
         }
         for key, value in base_filter.items():
+            field = ""
             if key == "name":
-                query = query.filter(name__icontains=value)
+                if is_included:
+                    field = "product__"
+                field += "name__icontains"
             if key == "categories" and value != "":
-                ids: list[int] = [int(id) for id in value.split(",")]
-                query = query.filter(categories__in=ids)
+                value = [int(pk) for pk in value.split(",")]
+                if is_included:
+                    field = "product__"
+                field += "categories__in"
+            query = query.filter(Q(**{field: value}))
         return query
 
     def paginate(self, data: QuerySet) -> Paginator:
@@ -132,11 +144,16 @@ class DetailStoreView(LoginRequiredMixin, generic.detail.DetailView):
             context["store"]
         ), query))
         count_products = products.count
-        products = products.page(self.request.GET.get("page_products") or 1)
+        products = products.page(self.request.GET.get("page_products", 1))
 
-        items = self.paginate(self.queryset_list(context['store']))
+        items = self.paginate(self.filter_query(
+            self.queryset_list(context['store']),
+            query,
+            "included_",
+            True,
+        ))
         count_items = items.count
-        items = items.page(self.request.GET.get("page_items") or 1)
+        items = items.page(self.request.GET.get("page_items", 1))
 
         context['items'] = items
         context['products'] = products
@@ -144,9 +161,15 @@ class DetailStoreView(LoginRequiredMixin, generic.detail.DetailView):
         context["form_item"] = forms.StoreProductForm(context['store'])
         context["count_items"] = count_items
         context["search"] = query.get("to_include_name", "")
+        context["search_included"] = query.get("included_name", "")
         context["selected_categories"] = [
             int(x)
             for x in query.get("to_include_categories", "").split(",")
+            if x != ""
+        ]
+        context["selected_categories_included"] = [
+            int(x)
+            for x in query.get("included_categories", "").split(",")
             if x != ""
         ]
         context["categories"] = self.get_categories()

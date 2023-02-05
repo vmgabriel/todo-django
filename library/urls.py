@@ -1,10 +1,10 @@
 """Url Pages"""
 
 # Libraries
-from django.urls import path
+from django.urls import path, re_path
 
 # Views
-from . import views
+from . import views, autocompletes
 
 
 app_name = 'library'
@@ -22,6 +22,7 @@ urlpatterns = [
     path('genres/<int:pk>/delete', views.delete_book_genre, name='delete_book_genre'),
 
     path("authors", views.AuthorsListView.as_view(), name="list_authors"),
+    re_path("authors-autocomplete/$", autocompletes.AuthorAutoComplete.as_view(), name="author-autocomplete"),
     path("authors/new", views.AuthorNewView.as_view(), name="new_author"),
     path('authors/<int:pk>/edit', views.AuthorEditView.as_view(), name='edit_author'),
     path('authors/<int:pk>/delete', views.delete_author, name='delete_author'),

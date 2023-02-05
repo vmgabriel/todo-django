@@ -1,12 +1,16 @@
 
 # Library
+from dal import autocomplete
 from django import forms
 
 # Modules
 from . import models
+from custom_widgets.multiple_select_list.multiple_select_materialize import MaterializeCheckboxSelectMultiple
+from custom_widgets.multiple_autocomplete_select_list.multiple_autocomplete_select import MaterializeModelSelect2Multiple
+
 
 class BookGenreForm(forms.ModelForm):
-    "Book Genre Form Control"
+    """Book Genre Form Control"""
 
     class Meta:
         """Meta Book Genre Form"""
@@ -30,7 +34,7 @@ class BookGenreForm(forms.ModelForm):
         return obj
 
 class AuthorForm(forms.ModelForm):
-    "Author Form Control"
+    """Author Form Control"""
 
     class Meta:
         """Meta Author Form"""
@@ -54,15 +58,11 @@ class AuthorForm(forms.ModelForm):
             
         return obj
     
-class BookForm(forms.ModelForm):
+class BookForm(autocomplete.FutureModelForm):
     """Book Form Control for Generate Model"""
     genres = forms.ModelMultipleChoiceField(
         queryset=models.BookGenres.objects.filter(enabled=True),
-        widget=forms.CheckboxSelectMultiple()
-    )
-    authors = forms.ModelMultipleChoiceField(
-        queryset=models.Authors.objects.filter(enabled=True),
-        widget=forms.CheckboxSelectMultiple()
+        widget=MaterializeCheckboxSelectMultiple(),
     )
     class Meta:
         """Meta Book Form"""
@@ -75,6 +75,9 @@ class BookForm(forms.ModelForm):
             'genres',
             'file',
         ]
+        widgets = {
+            "authors": MaterializeModelSelect2Multiple(url="library:author-autocomplete"),
+        }
 
     def save(self, commit=True, updated=False, **kwargs):
         """Save of Book with the form"""

@@ -1,0 +1,14 @@
+{% if widget.wrap_label %}
+    <label
+            {% if widget.attrs.id %} for="{{ widget.attrs.id }}"{% endif %}
+    >
+{% endif %}
+
+{% include "select_multiple_materialize/input.html" %}
+
+{% if widget.wrap_label %}
+    <span>
+        {{ widget.label }}
+    </span>
+    </label>
+{% endif %}

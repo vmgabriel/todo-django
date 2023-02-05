@@ -3,9 +3,10 @@
 from dal import autocomplete
 from django import forms
 
-
 # Modules
 from . import models
+from custom_widgets.multiple_select_list.multiple_select_materialize import MaterializeCheckboxSelectMultiple
+
 
 class BookGenreForm(forms.ModelForm):
     "Book Genre Form Control"
@@ -60,7 +61,7 @@ class BookForm(autocomplete.FutureModelForm):
     """Book Form Control for Generate Model"""
     genres = forms.ModelMultipleChoiceField(
         queryset=models.BookGenres.objects.filter(enabled=True),
-        widget=forms.CheckboxSelectMultiple()
+        widget=MaterializeCheckboxSelectMultiple(),
     )
     class Meta:
         """Meta Book Form"""

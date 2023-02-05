@@ -46,6 +46,7 @@ USER_APPLICATIONS = [
     "stores.apps.StoresConfig",
     "cash_flow.apps.CashFlowConfig",
     "library.apps.LibraryConfig",
+    "custom_widgets.apps.CustomWidgetsConfig",
 ]
 
 EXTERNALS_APPLICATIONS = [
@@ -57,6 +58,8 @@ EXTERNALS_APPLICATIONS = [
     "django_filters",
     "pwa",
     "django_celery_results",
+    "dal",
+    "dal_select2",
 ]
 
 

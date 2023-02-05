@@ -8,13 +8,14 @@ from datetime import datetime
 from . import models, enums
 from accounts import models as models_accounts
 from stores import models as models_stores
+from custom_widgets.multiple_select_list.multiple_select_materialize import MaterializeCheckboxSelectMultiple
 
 
 class ListToBuyForm(forms.ModelForm):
     """Product Form Control for Generate Model"""
     users = forms.ModelMultipleChoiceField(
         queryset=models_accounts.User.objects.filter(is_active=True),
-        widget=forms.CheckboxSelectMultiple(),
+        widget=MaterializeCheckboxSelectMultiple(),
         required=False,
     )
     priority = forms.ChoiceField(choices=enums.Priority.choices)

@@ -12,9 +12,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <script src=
-                    "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -28,8 +26,6 @@
 {% block content %}
 {% endblock content %}
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="{% static 'js/jscolor.js' %}"></script>
 <script>
     {% block js %}
@@ -42,6 +38,8 @@
         $('.carousel').carousel();
         $(".dropdown-trigger").dropdown();
         $('.modal').modal();
+        $('.collapsible').collapsible();
+        $('.chips').chips();
     });
 </script>
 </body>

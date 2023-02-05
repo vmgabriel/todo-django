@@ -1,6 +1,8 @@
 
 # Library
+from dal import autocomplete
 from django import forms
+
 
 # Modules
 from . import models
@@ -54,14 +56,10 @@ class AuthorForm(forms.ModelForm):
             
         return obj
     
-class BookForm(forms.ModelForm):
+class BookForm(autocomplete.FutureModelForm):
     """Book Form Control for Generate Model"""
     genres = forms.ModelMultipleChoiceField(
         queryset=models.BookGenres.objects.filter(enabled=True),
-        widget=forms.CheckboxSelectMultiple()
-    )
-    authors = forms.ModelMultipleChoiceField(
-        queryset=models.Authors.objects.filter(enabled=True),
         widget=forms.CheckboxSelectMultiple()
     )
     class Meta:
@@ -75,6 +73,9 @@ class BookForm(forms.ModelForm):
             'genres',
             'file',
         ]
+        widgets = {
+            "authors": autocomplete.ModelSelect2Multiple(url="library:author-autocomplete"),
+        }
 
     def save(self, commit=True, updated=False, **kwargs):
         """Save of Book with the form"""

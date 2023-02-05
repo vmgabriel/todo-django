@@ -57,6 +57,8 @@ EXTERNALS_APPLICATIONS = [
     "django_filters",
     "pwa",
     "django_celery_results",
+    "dal",
+    "dal_select2",
 ]
 
 

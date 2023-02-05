@@ -35,3 +35,4 @@ mechanize==0.4.8
 css-parser==1.0.8
 html5-parser==0.4.10
 bs4==0.0.1
+django-autocomplete-light==3.9.4

@@ -6,10 +6,11 @@ from django import forms
 # Modules
 from . import models
 from custom_widgets.multiple_select_list.multiple_select_materialize import MaterializeCheckboxSelectMultiple
+from custom_widgets.multiple_autocomplete_select_list.multiple_autocomplete_select import MaterializeModelSelect2Multiple
 
 
 class BookGenreForm(forms.ModelForm):
-    "Book Genre Form Control"
+    """Book Genre Form Control"""
 
     class Meta:
         """Meta Book Genre Form"""
@@ -33,7 +34,7 @@ class BookGenreForm(forms.ModelForm):
         return obj
 
 class AuthorForm(forms.ModelForm):
-    "Author Form Control"
+    """Author Form Control"""
 
     class Meta:
         """Meta Author Form"""
@@ -75,7 +76,7 @@ class BookForm(autocomplete.FutureModelForm):
             'file',
         ]
         widgets = {
-            "authors": autocomplete.ModelSelect2Multiple(url="library:author-autocomplete"),
+            "authors": MaterializeModelSelect2Multiple(url="library:author-autocomplete"),
         }
 
     def save(self, commit=True, updated=False, **kwargs):

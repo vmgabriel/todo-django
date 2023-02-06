@@ -2,10 +2,13 @@
 
 # Libraries
 from django import forms
+from dal import autocomplete
 import django_filters
 
 # Modules
 from . import models
+from custom_widgets.multiple_autocomplete_select_list.multiple_autocomplete_select import MaterializeModelSelect2Multiple
+from custom_widgets.multiple_select_list.multiple_select_materialize import MaterializeCheckboxSelectMultiple
 
 class BooksFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(lookup_expr='icontains')
@@ -13,13 +16,13 @@ class BooksFilter(django_filters.FilterSet):
         # field_name='book_genres',
         queryset=models.BookGenres.objects.all(),
         conjoined=True,
-        widget=forms.CheckboxSelectMultiple(),
+        widget=MaterializeCheckboxSelectMultiple(),
     )
     authors = django_filters.ModelMultipleChoiceFilter(
         # field_name='authors',
         queryset=models.Authors.objects.all(),
         conjoined=True,
-        widget=forms.CheckboxSelectMultiple(),
+        widget=MaterializeModelSelect2Multiple(url="library:author-autocomplete"),
     )
     ordering = django_filters.OrderingFilter(
         fields=(

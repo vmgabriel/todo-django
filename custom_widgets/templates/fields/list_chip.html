@@ -1,0 +1,7 @@
+<td>
+    {% for chip in value.all %}
+        <div class="chip" style="border: 1px solid {{ chip.color }}; color: {{ chip.color }};">
+            {{ chip.name }}
+        </div>
+    {% endfor %}
+</td>

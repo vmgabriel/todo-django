@@ -9,75 +9,7 @@
             <i class="material-icons">arrow_back</i>
         </a>
 
-        <div class="card-panel">
-            <div class="row right-align">
-                <a class="btn-floating btn-large waves-effect waves-light left-align" href="{% url 'stores:create' %}">
-                    <i class="material-icons">add</i>
-                </a>
-            </div>
-            <div class="row" style="display: inline-flex;">
-                <h2>Stores</h2>
-            </div>
-
-            <div class="" style="display: flex; justify-content: space-between;">
-                <h6>{{ count }}</h6>
-                <h6>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h6>
-            </div>
-
-            {% if object_list %}
-                <table class="table" style="margin-bottom: 1em;display: block;overflow-x: auto;white-space: nowrap;">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for store in object_list %}
-                        <tr>
-                            <td>{{ store.name }}</td>
-                            <td>{{ store.description }}</td>
-                            <td>
-                                <a class="btn-floating yellow" href="{% url 'stores:update' pk=store.pk %}"><i
-                                        class="small material-icons">edit</i>
-                                </a>
-                                <a class="btn-floating red" href="{% url 'stores:delete' pk=store.pk %}"><i
-                                        class="small material-icons">delete</i>
-                                </a>
-                                <a class="btn-floating green" href="{% url 'stores:detail' pk=store.pk %}"><i
-                                        class="small material-icons">visibility</i>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-                <ul class="pagination" style="font-size: 11px;display: flex; justify-content: center;">
-                    {% if page_obj.has_previous %}
-                        <li class="waves-effect"><a href="?{% param_replace page=1 %}"><i class="material-icons">first_page</i></a></li>
-                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.previous_page_number %}"><i class="material-icons">chevron_left</i></a></li>
-                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a></li>
-                    {% else %}
-                        <li class="disabled"><a href="?{% param_replace page=1 %}"><i class="material-icons">first_page</i></a></li>
-                        <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
-                    {% endif %}
-                    <li class="active"><a href="">{{ page_obj.number }}</a></li>
-                    {% if page_obj.has_next %}
-                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a></li>
-                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.next_page_number %}"><i class="material-icons">chevron_right</i></a></li>
-                        <li class="waves-effect"><a href="?{% param_replace page=page_obj.paginator.num_pages %}"><i class="material-icons">last_page</i></a></li>
-                    {% else %}
-                        <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
-                        <li class="disabled"><a href=""><i class="material-icons">last_page</i></a></li>
-                    {% endif %}
-                </ul>
-            {% else %}
-                <p class="flow-text">Not Products yet.</p>
-            {% endif %}
-
-
-        </div>
+        {{ list_view.as_div }}
     </div>
 {% endblock container %}
 

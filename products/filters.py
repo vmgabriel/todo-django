@@ -29,3 +29,19 @@ class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = models.Product
         fields = ["name", "categories"]
+
+class CategoryFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr='icontains')
+    ordering = django_filters.OrderingFilter(
+        fields=(
+            ('name', 'name'),
+        ),
+
+        field_labels={
+            'name': 'Category Name',
+        }
+    )
+
+    class Meta:
+        model = models.Category
+        fields = ["name"]

@@ -1,37 +1,51 @@
 """View Products"""
 
 # Libraries
-from itertools import chain
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.views import generic
 from django.conf import settings
-from django_filters.views import FilterView
+from custom_widgets.list import basic as list_basic, list_object
+from custom_widgets import fields
 
 # Modules
 from . import models, forms, filters
 
 
-class ProductListView(LoginRequiredMixin, FilterView):
+class ProductListView(LoginRequiredMixin, list_basic.ListBasicMixin):
     model = models.Product
     paginate_by = settings.PAGINATION_LIMIT
-    template_name = 'products/index.html'
+    template_name = "products/index.html"
     filterset_class = filters.ProductFilter
-
-    def get_queryset_with_filter(self):
-        queryset = self.get_queryset()
-        return self.filterset_class(self.request.GET, queryset=queryset).qs
-
-    def get_queryset(self, *args, **kwargs):
-        queryset = super(ProductListView, self).get_queryset(*args, **kwargs)
-        queryset = queryset.filter(enabled=True)
-        return queryset
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(ProductListView, self).get_context_data(*args, **kwargs)
-        context['count'] = self.get_queryset().count()
-        return context
+    fields_back = {}
+    fields_in_url = {"pk": "object.id"}
+    url_create = "products:new_product"
+    url_delete = "products:delete_product"
+    url_edit = "products:edit_product"
+    title_form = "Products"
+    fields_to_show: list[list_object.ListComponent] = [
+        list_object.ListComponent(
+            "image",
+            "",
+            fields.Field.IMAGE,
+        ),
+        list_object.ListComponent(
+            "name",
+            "Name",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "description",
+            "Description",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "categories",
+            "Categories",
+            fields.Field.CHIP,
+        ),
+    ]
 
 
 class ProductNewView(LoginRequiredMixin, generic.edit.FormView):
@@ -77,24 +91,34 @@ class ProductEditView(LoginRequiredMixin, generic.edit.UpdateView):
             self.get_success_url()
         )
 
-
-class CategoryListView(LoginRequiredMixin, generic.list.ListView):
+class CategoryListView(LoginRequiredMixin, list_basic.ListBasicMixin):
     model = models.Category
     paginate_by = settings.PAGINATION_LIMIT
-    context_object_name = 'categories'
     template_name = 'categories/index.html'
-
-    def get_queryset(self, *args, **kwargs):
-        queryset = super(CategoryListView, self).get_queryset(*args, **kwargs)
-        queryset = queryset.filter(enabled=True)
-        return queryset
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(CategoryListView, self).get_context_data(*args, **kwargs)
-        context['count'] = self.get_queryset().count()
-
-        return context
-
+    filterset_class = filters.CategoryFilter
+    fields_back = {}
+    fields_in_url = {"pk": "object.id"}
+    url_create = "products:new_category"
+    url_delete = "products:delete_category"
+    url_edit = "products:edit_category"
+    title_form = "Categories"
+    fields_to_show: list[list_object.ListComponent] = [
+        list_object.ListComponent(
+            "name",
+            "Name",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "description",
+            "Description",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "color",
+            "Color",
+            fields.Field.COLOR,
+        ),
+    ]
 
 class CategoryNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = 'categories/edit.html'

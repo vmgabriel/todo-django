@@ -9,17 +9,38 @@ from django.conf import settings
 from django.db.models import Q, QuerySet
 from django.core.paginator import Paginator
 from djmoney.money import Money
-from django_filters.views import FilterView
+from custom_widgets.list import basic as list_basic, list_object
+from custom_widgets import fields
 
 # Modules
 from . import models, forms, filters
 from products import models as product_models
 
 
-class StoreListView(LoginRequiredMixin, generic.list.ListView):
+class StoreListView(LoginRequiredMixin, list_basic.ListBasicMixin):
     model = models.Store
     paginate_by = settings.PAGINATION_LIMIT
-    template_name = 'stores/index.html'
+    template_name = "stores/index.html"
+    filterset_class = filters.StoreFilter
+    fields_back = {}
+    fields_in_url = {"pk": "object.id"}
+    url_create = "stores:create"
+    url_view = "stores:detail"
+    url_edit = "stores:update"
+    url_delete = "stores:delete"
+    title_form = "Stores"
+    fields_to_show: list[list_object.ListComponent] = [
+        list_object.ListComponent(
+            "name",
+            "Name",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "description",
+            "Description",
+            fields.Field.STRING,
+        ),
+    ]
 
     def get_queryset(self, *args, **kwargs):
         queryset = super(StoreListView, self).get_queryset(*args, **kwargs)

@@ -1,0 +1,9 @@
+{% load static %}
+
+<td>
+    {% if value %}
+        <img alt="image" src="{{ value.url }}" width="32">
+    {% else %}
+        <img alt="default image" src="{% static 'imgs/user.png' %}" width="32">
+    {% endif %}
+</td>

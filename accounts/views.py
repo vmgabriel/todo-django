@@ -4,12 +4,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
+from custom_widgets.list import basic as list_basic, list_object
+from custom_widgets import fields
 from django.urls import reverse_lazy
 from django.views import generic
 from django.conf import settings
 
 # Forms
 from .forms import UserForm, RegisterForm, UserFormAdmin
+from . import filters
 
 # Models
 from .models import User
@@ -49,21 +52,43 @@ class UpdateProfileView(LoginRequiredMixin, generic.edit.UpdateView):
         return context
 
 
-class UserListView(LoginRequiredMixin, generic.list.ListView):
+class UserListView(LoginRequiredMixin, list_basic.ListBasicMixin):
     model = User
     paginate_by = settings.PAGINATION_LIMIT
-    template_name = 'users/index.html'
-
-    def get_queryset(self, *args, **kwargs):
-        queryset = super().get_queryset(*args, **kwargs)
-        queryset = queryset.filter(is_active=True)
-        return queryset
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['count'] = self.get_queryset().count()
-        return context
-
+    template_name = "users/index.html"
+    filterset_class = filters.UserFilter
+    fields_back = {}
+    fields_in_url = {"pk": "object.id"}
+    url_create = "accounts:create_user"
+    url_delete = "accounts:delete_user"
+    title_form = "Users"
+    fields_to_show: list[list_object.ListComponent] = [
+        list_object.ListComponent(
+            "image",
+            "",
+            fields.Field.IMAGE,
+        ),
+        list_object.ListComponent(
+            "username",
+            "Username",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "first_name",
+            "First Name",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "last_name",
+            "Last Name",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "telephone",
+            "Phone",
+            fields.Field.STRING,
+        ),
+    ]
 
 class CreateAdminView(LoginRequiredMixin, generic.edit.FormView):
     """Create View Sign Up of account"""

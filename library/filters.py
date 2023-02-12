@@ -1,8 +1,6 @@
 """All Filters In Products"""
 
 # Libraries
-from django import forms
-from dal import autocomplete
 import django_filters
 
 # Modules
@@ -52,4 +50,21 @@ class AuthorFilter(django_filters.FilterSet):
 
     class Meta:
         model = models.Authors
+        fields = ["name"]
+
+
+class BookGenreFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr='icontains')
+    ordering = django_filters.OrderingFilter(
+        fields=(
+            ('name', 'name'),
+        ),
+
+        field_labels={
+            'name': 'Name Genre',
+        }
+    )
+
+    class Meta:
+        model = models.BookGenres
         fields = ["name"]

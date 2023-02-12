@@ -1,4 +1,5 @@
 # Libraries
+from __future__ import annotations
 import os
 import mimetypes
 
@@ -10,6 +11,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django_filters.views import FilterView
 from django.conf import settings
 from . import models, filters, forms, tasks
+from custom_widgets.list import basic as list_basic, list_object
+from custom_widgets import fields
 
 # Books
 class LibraryView(LoginRequiredMixin, FilterView):
@@ -24,7 +27,7 @@ class LibraryView(LoginRequiredMixin, FilterView):
         return self.filterset_class(self.request.GET, queryset=queryset).qs
 
     def get_queryset(self, *args, **kwargs):
-        queryset = super(LibraryView, self).get_queryset(*args, **kwargs)
+        queryset = super().get_queryset(*args, **kwargs)
         queryset = queryset.filter(enabled=True)
         return queryset
 
@@ -77,37 +80,48 @@ class BookEditView(LoginRequiredMixin, generic.edit.UpdateView):
         )
 
 # Book Genres
-class BookGenresListView(LoginRequiredMixin, generic.list.ListView):
+class BookGenresListView(LoginRequiredMixin, list_basic.ListBasicMixin):
     model = models.BookGenres
-    paginate_by = settings.PAGINATION_LIMIT
-    context_object_name = 'genres'
-    template_name = 'library/genre/index.html'
-
-    def get_queryset(self, *args, **kwargs):
-        queryset = super(BookGenresListView, self).get_queryset(*args, **kwargs)
-        queryset = queryset.filter(enabled=True)
-        return queryset
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(BookGenresListView, self).get_context_data(*args, **kwargs)
-        context['count'] = self.get_queryset().count()
-
-        return context
+    filterset_class = filters.BookGenreFilter
+    template_name = "library/genre/index.html"
+    url_create = "library:new_genre"
+    fields_back = {}
+    fields_in_url = {"pk": "object.id"}
+    url_delete = "library:edit_genre"
+    url_edit = "library:delete_book_genre"
+    title_form = "Book Genres"
+    fields_to_show: list[list_object.ListComponent] = [
+        list_object.ListComponent(
+            "name",
+            "Name",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "description",
+            "Description",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "color",
+            "Color",
+            fields.Field.COLOR,
+        ),
+    ]
 
 class BookGenreNewView(LoginRequiredMixin, generic.edit.FormView):
-    template_name = 'library/genre/edit.html'
+    template_name = "library/genre/edit.html"
     form_class = forms.BookGenreForm
     success_url = "library:new_genre"
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(BookGenreNewView, self).get_context_data(**kwargs)
-        context['mode'] = 'Save'
+        context["mode"] = "Save"
         return context
 
     def form_valid(self, form):
         self.object = form.save(
             commit=False,
-            **{'user': self.request.user}
+            **{"user": self.request.user}
         )
         self.object.save()
         return redirect(self.get_success_url())

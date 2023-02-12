@@ -7,7 +7,7 @@ from django import forms
 from . import models
 from custom_widgets.multiple_select_list.multiple_select_materialize import MaterializeCheckboxSelectMultiple
 from custom_widgets.multiple_autocomplete_select_list.multiple_autocomplete_select import MaterializeModelSelect2Multiple
-from custom_widgets.file_field.file_field import MaterializeFileInput
+from custom_widgets.fields.file_field import MaterializeFileInput
 
 
 class BookGenreForm(forms.ModelForm):

@@ -5,6 +5,7 @@ from django import forms
 import django_filters
 
 # Modules
+from custom_widgets.multiple_select_list.multiple_select_materialize import MaterializeCheckboxSelectMultiple
 from . import models
 
 
@@ -14,7 +15,7 @@ class ProductFilter(django_filters.FilterSet):
         # field_name='categories',
         queryset=models.Category.objects.all(),
         conjoined=True,
-        widget=forms.CheckboxSelectMultiple(),
+        widget=MaterializeCheckboxSelectMultiple(),
     )
     ordering = django_filters.OrderingFilter(
         fields=(

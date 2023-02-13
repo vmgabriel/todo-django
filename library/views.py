@@ -84,9 +84,9 @@ class BookGenresListView(LoginRequiredMixin, list_basic.ListBasicMixin):
     model = models.BookGenres
     filterset_class = filters.BookGenreFilter
     template_name = "library/genre/index.html"
-    url_create = "library:new_genre"
     fields_back = {}
     fields_in_url = {"pk": "object.id"}
+    url_create = "library:new_genre"
     url_delete = "library:edit_genre"
     url_edit = "library:delete_book_genre"
     title_form = "Book Genres"
@@ -148,11 +148,34 @@ class BookGenderEditView(LoginRequiredMixin, generic.edit.UpdateView):
 
 
 # Authors
-class AuthorsListView(LoginRequiredMixin, FilterView):
+class AuthorsListView(LoginRequiredMixin, list_basic.ListBasicMixin):
     model = models.Authors
     paginate_by = settings.PAGINATION_LIMIT
-    template_name = 'library/author/index.html'
+    template_name = "library/author/index.html"
     filterset_class = filters.AuthorFilter
+    fields_back = {}
+    fields_in_url = {"pk": "object.id"}
+    url_create = "library:new_author"
+    url_delete = "library:delete_author"
+    url_edit = "library:edit_author"
+    title_form = "Authors"
+    fields_to_show: list[list_object.ListComponent] = [
+        list_object.ListComponent(
+            "image",
+            "Image",
+            fields.Field.IMAGE,
+        ),
+        list_object.ListComponent(
+            "name",
+            "Name",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "description",
+            "Description",
+            fields.Field.STRING,
+        ),
+    ]
 
     def get_queryset_with_filter(self):
         queryset = self.get_queryset()

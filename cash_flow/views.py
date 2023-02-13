@@ -5,7 +5,6 @@ import calendar
 from decimal import Decimal
 from datetime import datetime, timedelta
 
-import django.utils.timezone
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F, Case, When, FloatField
 from django.views import generic
@@ -14,7 +13,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import ExtractDay, Abs
 from django.utils.timezone import make_aware
 from django.http import JsonResponse
-from django_filters.views import FilterView
+from custom_widgets.list import basic as list_basic, list_object
+from custom_widgets import fields
 
 # Modules
 from django.conf import settings
@@ -298,12 +298,40 @@ class FlowMoneyEditView(LoginRequiredMixin, generic.edit.UpdateView):
         return redirect(self.get_success_url())
 
 
-class CategoryFlowListView(LoginRequiredMixin, FilterView):
+class CategoryFlowListView(LoginRequiredMixin, list_basic.ListBasicMixin):
     model = models.CategoryFlow
     paginate_by = settings.PAGINATION_LIMIT
-    context_object_name = 'categories_flow'
-    template_name = 'categories_flow/index.html'
+    context_object_name = "categories_flow"
+    template_name = "categories_flow/index.html"
     filterset_class = filters.CategoryFlowFilter
+    fields_back = {}
+    fields_in_url = {"pk": "object.id"}
+    url_create = "cash_flow:new_category"
+    url_delete = "cash_flow:delete_category"
+    url_edit = "cash_flow:edit_category"
+    title_form = "Flow Category"
+    fields_to_show: list[list_object.ListComponent] = [
+        list_object.ListComponent(
+            "name",
+            "Name",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "description",
+            "Description",
+            fields.Field.STRING,
+        ),
+        list_object.ListComponent(
+            "color",
+            "Color",
+            fields.Field.COLOR,
+        ),
+        list_object.ListComponent(
+            "parent_category",
+            "Parent",
+            fields.Field.STRING,
+        ),
+    ]
 
     def enabled_queryset(self):
         queryset = super().get_queryset()
@@ -312,17 +340,13 @@ class CategoryFlowListView(LoginRequiredMixin, FilterView):
     def get_queryset(self):
         return self.enabled_queryset().filter(parent_category__isnull=False)
 
-    def get_queryset_with_filter(self):
-        queryset = self.get_queryset()
-        return self.filterset_class(self.request.GET, queryset=queryset).qs
-
     def get_queryset_primary(self):
         return self.enabled_queryset().filter(parent_category__isnull=True)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         primary = self.get_queryset_primary()
-        context['count'] = self.get_queryset_with_filter().count()
         context["primary"] = primary
         context["count_primary"] = primary.count()
 

@@ -52,7 +52,7 @@ class ProductNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "products/edit.html"
     form_class = forms.ProductForm
     success_url = "product.list"
-    form_name = "product"
+    form_name = "Product"
     fields_in_url = {}
     url_cancel = "products:list"
 
@@ -80,11 +80,17 @@ class ProductEditView(LoginRequiredMixin, generic.edit.UpdateView):
     form_class = forms.ProductForm
     template_name = 'products/edit.html'
     success_url = 'products:list'
+    form_name = "Product"
+    fields_in_url = {}
+    url_cancel = "products:list"
 
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(ProductEditView, self).get_context_data(**kwargs)
-        context['mode'] = 'Update'
+        context["mode"] = "Update"
+        context["form_name"] = self.form_name
+        context["fields_in_url"] = self.fields_in_url
+        context["url_cancel"] = self.url_cancel
         return context
 
     def form_valid(self, form, *args, **kwargs):
@@ -127,20 +133,26 @@ class CategoryListView(LoginRequiredMixin, list_basic.ListBasicMixin):
     ]
 
 class CategoryNewView(LoginRequiredMixin, generic.edit.FormView):
-    template_name = 'categories/edit.html'
+    template_name = "categories/edit.html"
     form_class = forms.CategoryForm
-    success_url = 'products:list_categories'
+    success_url = "products:list_categories"
+    form_name = "Product Category"
+    fields_in_url = {}
+    url_cancel = "products:list_categories"
 
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(CategoryNewView, self).get_context_data(**kwargs)
-        context['mode'] = 'Save'
+        context["mode"] = "Save"
+        context["form_name"] = self.form_name
+        context["fields_in_url"] = self.fields_in_url
+        context["url_cancel"] = self.url_cancel
         return context
 
     def form_valid(self, form):
         self.object = form.save(
             commit=False,
-            **{'user': self.request.user}
+            user=self.request.user,
         )
         self.object.save()
         return redirect(self.get_success_url())
@@ -149,13 +161,19 @@ class CategoryNewView(LoginRequiredMixin, generic.edit.FormView):
 class CategoryEditView(LoginRequiredMixin, generic.edit.UpdateView):
     model = models.Category
     form_class = forms.CategoryForm
-    template_name = 'categories/edit.html'
-    success_url = 'products:list_categories'
+    template_name = "categories/edit.html"
+    success_url = "products:list_categories"
+    form_name = "Product Category"
+    fields_in_url = {}
+    url_cancel = "products:list_categories"
 
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(CategoryEditView, self).get_context_data(**kwargs)
-        context['mode'] = 'Update'
+        context["mode"] = "Update"
+        context["form_name"] = self.form_name
+        context["fields_in_url"] = self.fields_in_url
+        context["url_cancel"] = self.url_cancel
         return context
 
     def form_valid(self, form):

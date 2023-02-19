@@ -54,22 +54,27 @@ class StoreListView(LoginRequiredMixin, list_basic.ListBasicMixin):
 
 
 class StoreNewView(LoginRequiredMixin, generic.edit.FormView):
-    template_name = 'stores/edit.html'
+    template_name = "stores/edit.html"
     form_class = forms.StoreForm
-    success_url = 'stores:list'
+    success_url = "stores:list"
+    form_name = "Store"
+    fields_in_url = {}
+    url_cancel = "stores:list"
 
     def get_context_data(self, **kwargs):
         """Get Context Data"""
-        # context = super(StoreNewView, self).get_context_data(**kwargs)
-        context = {}
-        context['mode'] = 'Save'
-        context['form'] = self.form_class(self.request.user)
+        context = super().get_context_data(**kwargs)
+        context["mode"] = "Save"
+        context["form"] = self.form_class(self.request.user)
+        context["form_name"] = self.form_name
+        context["fields_in_url"] = self.fields_in_url
+        context["url_cancel"] = self.url_cancel
         return context
 
     def form_valid(self, form):
         self.object = form.save(
             commit=False,
-            **{'user': self.request.user}
+            user=self.request.user,
         )
         self.object.save()
         return redirect(self.get_success_url())
@@ -78,13 +83,19 @@ class StoreNewView(LoginRequiredMixin, generic.edit.FormView):
 class StoreEditView(LoginRequiredMixin, generic.edit.UpdateView):
     model = models.Store
     form_class = forms.StoreForm
-    template_name = 'stores/edit.html'
-    success_url = 'stores:list'
+    template_name = "stores/edit.html"
+    success_url = "stores:list"
+    form_name = "Store"
+    fields_in_url = {}
+    url_cancel = "stores:list"
 
     def get_context_data(self, **kwargs):
         """Get Context Data"""
-        context = super(StoreEditView, self).get_context_data(**kwargs)
-        context['mode'] = 'Update'
+        context = super().get_context_data(**kwargs)
+        context["mode"] = "Update"
+        context["form_name"] = self.form_name
+        context["fields_in_url"] = self.fields_in_url
+        context["url_cancel"] = self.url_cancel
         return context
 
     def form_valid(self, form, *args, **kwargs):
@@ -92,7 +103,7 @@ class StoreEditView(LoginRequiredMixin, generic.edit.UpdateView):
         self.object = form.save(commit=False, updated=True)
         self.object = form.save(
             commit=False,
-            **{'user': self.request.user}
+            user=self.request.user,
         )
         self.object.save()
 

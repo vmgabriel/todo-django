@@ -49,23 +49,29 @@ class ProductListView(LoginRequiredMixin, list_basic.ListBasicMixin):
 
 
 class ProductNewView(LoginRequiredMixin, generic.edit.FormView):
-    template_name = 'products/edit.html'
+    template_name = "products/edit.html"
     form_class = forms.ProductForm
-    success_url = 'products:list'
+    success_url = "product.list"
+    form_name = "product"
+    fields_in_url = {}
+    url_cancel = "products:list"
 
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(ProductNewView, self).get_context_data(**kwargs)
-        context['mode'] = 'Save'
+        context["mode"] = "Save"
+        context["form_name"] = self.form_name
+        context["fields_in_url"] = self.fields_in_url
+        context["url_cancel"] = self.url_cancel
         return context
 
     def form_valid(self, form):
         self.object = form.save(
             commit=False,
-            **{'user': self.request.user}
+            user=self.request.user,
         )
         self.object.save()
-        self.object.categories.set(form.cleaned_data['categories'])
+        self.object.categories.set(form.cleaned_data["categories"])
         return redirect(self.get_success_url())
 
 

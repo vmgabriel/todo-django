@@ -34,7 +34,7 @@ def get_days_month(
     return calendar.monthrange(year, month)[1] + 1
 
 
-def flow_sync(user):
+def flow_sync(user: account_models.User):
     previous_flow_money = models.FlowMoneyHistory.objects.filter(
         enabled=True,
         created_by=user,
@@ -201,7 +201,7 @@ class CashFlowHomeView(LoginRequiredMixin, generic.TemplateView):
             ordered.append(definition[day.day])
         return ordered
 
-    def get(self, request):
+    def get(self, request: object) -> object:
         dt = datetime.now()
         week_in_year = dt.isocalendar().week
         year = dt.isocalendar().year
@@ -261,13 +261,16 @@ class FlowMoneyNewView(LoginRequiredMixin, generic.edit.FormView):
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(FlowMoneyNewView, self).get_context_data(**kwargs)
-        context['mode'] = 'Save'
+        context["mode"] = "Save"
+        context["form_name"] = "Flow Money"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "cash_flow:home_cash_flow"
         return context
 
     def form_valid(self, form):
         self.object = form.save(
             commit=False,
-            **{'user': self.request.user}
+            user=self.request.user,
         )
         self.object.save()
 
@@ -285,7 +288,10 @@ class FlowMoneyEditView(LoginRequiredMixin, generic.edit.UpdateView):
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(FlowMoneyEditView, self).get_context_data(**kwargs)
-        context['mode'] = 'Update'
+        context["mode"] = "Update"
+        context["form_name"] = "Flow Money"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "cash_flow:home_cash_flow"
         return context
 
     def form_valid(self, form):
@@ -361,13 +367,16 @@ class CategoryFlowNewView(LoginRequiredMixin, generic.edit.FormView):
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(CategoryFlowNewView, self).get_context_data(**kwargs)
-        context['mode'] = 'Save'
+        context["mode"] = "Save"
+        context["form_name"] = "Category Flow"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "cash_flow:categories"
         return context
 
     def form_valid(self, form):
         self.object = form.save(
             commit=False,
-            **{'user': self.request.user}
+            user=self.request.user,
         )
         self.object.save()
         return redirect(self.get_success_url())
@@ -382,7 +391,10 @@ class CategoryFlowEditView(LoginRequiredMixin, generic.edit.UpdateView):
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(CategoryFlowEditView, self).get_context_data(**kwargs)
-        context['mode'] = 'Update'
+        context["mode"] = "Update"
+        context["form_name"] = "Category Flow"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "cash_flow:categories"
         return context
 
     def form_valid(self, form):

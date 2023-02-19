@@ -1,4 +1,4 @@
-{% extends 'content.html' %}
+{% extends "content.html" %}
 {% load static %}
 
 {% block container %}
@@ -7,89 +7,6 @@
             <i class="material-icons">arrow_back</i>
         </a>
 
-        <div class="card-panel">
-            <div class="row" style="display: inline-flex;">
-                <h2>{% if mode == "Save" %}New{% else %}Edit{% endif %} Book</h2>
-            </div>
-
-            <form method="post" enctype="multipart/form-data" class="col s12" style="padding-bottom: 2em;">
-                {% csrf_token %}
-
-                <div class="row">
-                    <div class="input-field col s12">
-                        {{ form.name }}
-                        <label for="name">{{ form.name.label }}</label>
-                        {% if form.name.errors %}
-                            {% for error in form.name.errors %}
-                                <p style="color: red">{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="input-field col s12">
-                        {{ form.description }}
-                        <label for="description">{{ form.description.label }}</label>
-                        {% if form.description.errors %}
-                            {% for error in form.description.errors %}
-                                <p style="color: red">{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-
-                    <div class="input-field col s12">
-                        <label for="image">{{ form.image.label }}</label><br/>
-                    </div>
-                    <div class="input-field col s12">
-                        {% if form.image %}
-                            <img src="{{ form.image.url }}" alt="img">
-                        {% endif %}
-                        {{ form.image }}
-                        {% if form.image.errors %}
-                            {% for error in form.image.errors %}
-                                <p style="color: red">{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-
-                    <div class="input-field col s12">
-                        <label for="genres">{{ form.genres.label }}</label>
-                    </div>
-                    <div class="input-field col s12">
-                        {{ form.genres }}
-                    </div>
-
-                    <div class="input-field col s12">
-                        <label for="authors">{{ form.authors.label }}</label>
-                    </div>
-                    <div class="input-field col s12">
-                        {{ form.authors }}
-                    </div>
-
-                    <div class="input-field col s12 m6">
-                        <label for="file">{{ form.file.label }}</label><br/>
-                    </div>
-                    <div class="input-field col s12">
-                        {{ form.file }}
-                        {% if form.file.errors %}
-                            {% for error in form.file.errors %}
-                                <p style="color: red">{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="col s12 right-align">
-                    <a href="{% url 'library:home' %}" class="btn waves-effect waves-red btn-large blue"><i
-                            class="material-icons">cancel</i></a>
-                    <button type="submit" class="waves-effect waves-light btn-large">
-                        {% if mode == "Save" %}
-                            <i class="material-icons">save</i>
-                        {% else %}
-                            <i class="material-icons">edit</i>
-                        {% endif %}
-                    </button>
-                </div>
-            </form>
-        </div>
+        {% include "edit/basic.html" %}
     </div>
-
-    {{ form.media }}
 {% endblock container %}

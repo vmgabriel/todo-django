@@ -36,20 +36,25 @@ class LibraryView(LoginRequiredMixin, FilterView):
         context['count'] = self.get_queryset().count()
         return context
 
+
 class BookNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = 'library/book/edit.html'
     form_class = forms.BookForm
     success_url = "library:home"
+
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(BookNewView, self).get_context_data(**kwargs)
-        context['mode'] = 'Save'
+        context["mode"] = "Save"
+        context["form_name"] = "Book"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "library:home"
         return context
 
     def form_valid(self, form):
         self.object = form.save(
             commit=False,
-            **{'user': self.request.user}
+            user=self.request.user,
         )
         self.object.save()
         self.object.genres.set(form.cleaned_data['genres'])
@@ -57,16 +62,20 @@ class BookNewView(LoginRequiredMixin, generic.edit.FormView):
         tasks.conversion_book.apply_async(args=(self.object.pk,))
         return redirect(self.get_success_url())
 
+
 class BookEditView(LoginRequiredMixin, generic.edit.UpdateView):
     model = models.Books
     form_class = forms.BookForm
-    template_name = 'library/book/edit.html'
-    success_url = 'library:home'
+    template_name = "library/book/edit.html"
+    success_url = "library:home"
 
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(BookEditView, self).get_context_data(**kwargs)
-        context['mode'] = 'Update'
+        context["mode"] = "Update"
+        context["form_name"] = "Book"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "library:home"
         return context
 
     def form_valid(self, form):
@@ -78,6 +87,7 @@ class BookEditView(LoginRequiredMixin, generic.edit.UpdateView):
         return redirect(
             self.get_success_url()
         )
+
 
 # Book Genres
 class BookGenresListView(LoginRequiredMixin, list_basic.ListBasicMixin):
@@ -108,6 +118,7 @@ class BookGenresListView(LoginRequiredMixin, list_basic.ListBasicMixin):
         ),
     ]
 
+
 class BookGenreNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "library/genre/edit.html"
     form_class = forms.BookGenreForm
@@ -116,15 +127,19 @@ class BookGenreNewView(LoginRequiredMixin, generic.edit.FormView):
         """Get Context Data"""
         context = super(BookGenreNewView, self).get_context_data(**kwargs)
         context["mode"] = "Save"
+        context["form_name"] = "Book Genre"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "library:list_genres"
         return context
 
     def form_valid(self, form):
         self.object = form.save(
             commit=False,
-            **{"user": self.request.user}
+            user=self.request.user,
         )
         self.object.save()
         return redirect(self.get_success_url())
+
 
 class BookGenderEditView(LoginRequiredMixin, generic.edit.UpdateView):
     model = models.BookGenres
@@ -135,7 +150,10 @@ class BookGenderEditView(LoginRequiredMixin, generic.edit.UpdateView):
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(BookGenderEditView, self).get_context_data(**kwargs)
-        context['mode'] = 'Update'
+        context["mode"] = "Update"
+        context["form_name"] = "Book Genre"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "library:list_genres"
         return context
 
     def form_valid(self, form):
@@ -186,34 +204,42 @@ class AuthorsListView(LoginRequiredMixin, list_basic.ListBasicMixin):
         queryset = queryset.filter(enabled=True)
         return queryset
 
+
 class AuthorNewView(LoginRequiredMixin, generic.edit.FormView):
-    template_name = 'library/author/edit.html'
+    template_name = "library/author/edit.html"
     form_class = forms.AuthorForm
     success_url = "library:new_author"
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(AuthorNewView, self).get_context_data(**kwargs)
-        context['mode'] = 'Save'
+        context["mode"] = "Save"
+        context["form_name"] = "Author"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "library:list_authors"
         return context
 
     def form_valid(self, form):
         self.object = form.save(
             commit=False,
-            **{'user': self.request.user}
+            user=self.request.user,
         )
         self.object.save()
         return redirect(self.get_success_url())
 
+
 class AuthorEditView(LoginRequiredMixin, generic.edit.UpdateView):
     model = models.Authors
     form_class = forms.AuthorForm
-    template_name = 'library/author/edit.html'
-    success_url = 'library:list_authors'
+    template_name = "library/author/edit.html"
+    success_url = "library:list_authors"
 
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(AuthorEditView, self).get_context_data(**kwargs)
-        context['mode'] = 'Update'
+        context["mode"] = "Update"
+        context["form_name"] = "Author"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "library:list_authors"
         return context
 
     def form_valid(self, form):

@@ -8,6 +8,7 @@ from . import models
 from custom_widgets.multiple_select_list.multiple_select_materialize import MaterializeCheckboxSelectMultiple
 from custom_widgets.multiple_autocomplete_select_list.multiple_autocomplete_select import MaterializeModelSelect2Multiple
 from custom_widgets.fields.file_field import MaterializeFileInput
+from custom_widgets.fields.string_area_field import MaterializeStringAreaField
 
 
 class BookGenreForm(forms.ModelForm):
@@ -41,10 +42,14 @@ class AuthorForm(forms.ModelForm):
         """Meta Author Form"""
         model = models.Authors
         fields = [
-            'name',
-            'image',
-            'description',
+            "name",
+            "image",
+            "description",
         ]
+        widgets = {
+            "description": MaterializeStringAreaField(),
+            "image": MaterializeFileInput(),
+        }
 
     def save(self, commit=True, updated=False, **kwargs):
         """Save of Author with the form"""

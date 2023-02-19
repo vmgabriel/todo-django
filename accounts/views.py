@@ -35,20 +35,24 @@ class SignUpView(LoginRequiredMixin, generic.edit.FormView):
 
 class UpdateProfileView(LoginRequiredMixin, generic.edit.UpdateView):
     """Update profile view."""
-    template_name = 'profiles/edit.html'
-    success_url = reverse_lazy('accounts:profile-user')
+    template_name = "profiles/edit.html"
+    success_url = reverse_lazy("accounts:profile-user")
     form_class = UserForm
     model = User
 
-    def get_object(self):
+    def get_object(self, **kwargs):
         """Return user"""
         return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['has_spotify_connection'] = SocialConnection.objects.filter(
-            user=context.get('user')
+        context["has_spotify_connection"] = SocialConnection.objects.filter(
+            user=context.get("user")
         ).exists()
+        context["mode"] = "Update"
+        context["form_name"] = "User"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "ccounts:profile-user"
         return context
 
 
@@ -90,11 +94,20 @@ class UserListView(LoginRequiredMixin, list_basic.ListBasicMixin):
         ),
     ]
 
+
 class CreateAdminView(LoginRequiredMixin, generic.edit.FormView):
     """Create View Sign Up of account"""
     form_class = UserFormAdmin
-    success_url = reverse_lazy('accounts:users')
-    template_name = 'users/edit.html'
+    success_url = reverse_lazy("accounts:users")
+    template_name = "users/edit.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["mode"] = "Save"
+        context["form_name"] = "User"
+        context["fields_in_url"] = {}
+        context["url_cancel"] = "accounts:users"
+        return context
 
     def form_valid(self, form):
         self.object = form.save(

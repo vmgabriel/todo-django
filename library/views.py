@@ -186,11 +186,6 @@ class AuthorsListView(LoginRequiredMixin, list_basic.ListBasicMixin):
         queryset = queryset.filter(enabled=True)
         return queryset
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(AuthorsListView, self).get_context_data(*args, **kwargs)
-        context['count'] = self.get_queryset().count()
-        return context
-
 class AuthorNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = 'library/author/edit.html'
     form_class = forms.AuthorForm

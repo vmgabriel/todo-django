@@ -1,15 +1,17 @@
 <div class="file-field input-field">
       <div class="btn">
           <span>{{ widget.name }}</span>
-          <input type="{{ widget.type }}">
+          <input
+                  type="{{ widget.type }}"
+                  value="{{ widget.value|stringformat:'s' }}"
+          >
       </div>
     <div class="file-path-wrapper">
         <input
                 class="file-path validate"
                 type="text"
-                {% if widget.value is not None %}
-                    value="{{ widget.value|stringformat:'s' }}"
-                {% endif %}
+                name="{{ widget.name }}"
+                value="{{ widget.value|stringformat:'s' }}"
         >
     </div>
 </div>

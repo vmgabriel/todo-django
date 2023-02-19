@@ -77,6 +77,15 @@ class HomeUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
         context["url_cancel"] = "home:home"
         return context
 
+    def form_valid(self, form):
+        """Get Form Valid"""
+        self.object = form.save(commit=False, updated=True, user=self.request.user)
+        self.object.administrators.set(form.cleaned_data["administrators"])
+        self.object.save()
+        return redirect(
+            self.get_success_url()
+        )
+
 
 @login_required
 def delete_home(request, pk):

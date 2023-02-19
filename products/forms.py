@@ -2,7 +2,9 @@
 
 # Libraries
 from django import forms
-from datetime import datetime
+from custom_widgets.multiple_select_list.multiple_select_materialize import MaterializeCheckboxSelectMultiple
+from custom_widgets.fields.file_field import MaterializeFileInput
+from custom_widgets.fields.string_area_field import MaterializeStringAreaField
 
 # Models
 from . import models
@@ -11,17 +13,21 @@ class ProductForm(forms.ModelForm):
     """Product Form Control for Generate Model"""
     categories = forms.ModelMultipleChoiceField(
         queryset=models.Category.objects.filter(enabled=True),
-        widget=forms.CheckboxSelectMultiple()
+        widget=MaterializeCheckboxSelectMultiple()
     )
     class Meta:
         """Meta Board Form"""
         model = models.Product
         fields = [
-            'name',
-            'description',
-            'image',
-            'categories',
+            "name",
+            "description",
+            "image",
+            "categories",
         ]
+        widgets = {
+            "image": MaterializeFileInput(),
+            "description": MaterializeStringAreaField(),
+        }
 
     def save(self, commit=True, updated=False, **kwargs):
         """Save of Board with the form"""

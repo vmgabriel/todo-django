@@ -6,17 +6,17 @@
 {% endblock style %}
 
 {% block content %}
-  {% include 'components/sidebar.html' %}
-  {% include 'components/header.html' %}
+  {% include "components/sidebar.html" %}
+  {% include "components/header.html" %}
 
   {% if user.is_authenticated %}
     {% block container %}
     {% endblock container %}
   {% else %}
-    {% include 'components/home.html' %}
+    {% include "components/home.html'" %}
   {% endif %}
 
-  {% include 'components/footer.html' %}
+  {% include "components/footer.html" %}
 {% endblock content %}
 
 {% block js %}

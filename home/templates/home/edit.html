@@ -1,0 +1,36 @@
+{% extends "content.html" %}
+{% load my_tags %}
+
+{% block container %}
+    <div class="container" style="margin-top: 3em;">
+        <a href="{% url_object_list url_cancel %}">
+            <i class="material-icons">arrow_back</i>
+        </a>
+
+        <div class="card-panel">
+            <div class="row" style="display: inline-flex;">
+                <h2>{% if mode == "Save" %}New{% else %}Edit{% endif %} {{ form_name }}</h2>
+            </div>
+
+            <form method="post" class="col s12" style="padding-bottom: 2em;">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <div class="col s12 right-align">
+                    <a href="{% url_object_list url_cancel %}" class="btn waves-effect waves-red btn-large blue"><i
+                            class="material-icons">cancel</i></a>
+                    <button type="submit" class="waves-effect waves-light btn-large">
+                        {% if mode == "Save" %}
+                            <i class="material-icons">save</i>
+                        {% else %}
+                            <i class="material-icons">edit</i>
+                        {% endif %}
+                    </button>
+                </div>
+
+            </form>
+
+            {{ form.media }}
+        </div>
+    </div>
+{% endblock container %}

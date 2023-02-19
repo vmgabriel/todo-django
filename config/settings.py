@@ -47,6 +47,7 @@ USER_APPLICATIONS = [
     "cash_flow.apps.CashFlowConfig",
     "library.apps.LibraryConfig",
     "custom_widgets.apps.CustomWidgetsConfig",
+    "home.apps.HomeConfig",
 ]
 
 EXTERNALS_APPLICATIONS = [

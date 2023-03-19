@@ -8,40 +8,15 @@
 
         <div class="card-panel">
             <h1>Home - {{ object.name }}</h1>
-
-            <div class="row center-align">
-                <div class="col s12 m3" style="margin-top: 1em;">
-                    <a class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>New History</a>
-                </div>
-            </div>
         </div>
 
-        <div class="card-panel">
-            <h2>List Floors</h2>
-            <div class="row center-align">
-                <div class="col s12 m3" style="margin-top: 1em;">
-                    <a class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>New Floor</a>
-                </div>
-            </div>
-        </div>
+        {{ list_history.as_div }}
 
-        <div class="card-panel">
-            <h2>List Departments</h2>
-            <div class="row center-align">
-                <div class="col s12 m3" style="margin-top: 1em;">
-                    <a class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>New Department</a>
-                </div>
-            </div>
-        </div>
+        {{ list_floor.as_div }}
 
-        <div class="card-panel">
-            <h2>List Group</h2>
-            <div class="row center-align">
-                <div class="col s12 m3" style="margin-top: 1em;">
-                    <a class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>New Group</a>
-                </div>
-            </div>
-        </div>
+        {{ list_department.as_div }}
+
+        {{ list_group.as_div }}
 
         <div class="card-panel">
             <h2>List Attachment</h2>

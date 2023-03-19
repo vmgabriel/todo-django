@@ -1,0 +1,143 @@
+{% load static %}
+{% load my_tags %}
+
+<div class="card-panel">
+    <div class="row" style="display: inline-flex;">
+        <h2>{{ title }}</h2>
+    </div>
+
+    {% if url_create %}
+        <div class="row center-align">
+            <div class="col s12 m3" style="margin-top: 1em;">
+                <a class="waves-effect waves-light btn"><i class="material-icons left">add</i>New {{ singular }}</a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if object_list %}
+        <ul class="collapsible">
+            <li>
+                <div class="collapsible-header">
+                    <i class="material-icons">search</i>Filters
+                </div>
+                <div class="collapsible-body">
+                    <form method="get">
+                        {{ form.as_p }}
+                        <div class="row">
+                            <button class="btn waves-effect waves-light" type="submit" name="action"
+                                    style="width: 100%;">
+                                <i class="material-icons">search</i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </li>
+        </ul>
+    {% endif %}
+
+    <div class="" style="display: flex; justify-content: space-between;">
+        <h6>{{ paginator.count }}</h6>
+        <h6>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</h6>
+    </div>
+
+    {% if object_list %}
+        <table class="table" style="margin-bottom: 1em;display: block;overflow-x: auto;white-space: nowrap;">
+            <thead>
+            <tr>
+                {% for field in fields_to_show %}
+                    <th>{{ field.to_show }}</th>
+                {% endfor %}
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in extra.object_list %}
+                <tr>
+                    {% for field in fields_to_show %}
+                        {% render obj=object widget=field %}
+                    {% endfor %}
+                    <td>
+                        {% if extra.url_edit %}
+                            <a class="btn-floating yellow" href="{% url_object_list url_edit %}">
+                                <i class="small material-icons">edit</i>
+                            </a>
+                        {% endif %}
+                        {% if extra.url_delete %}
+                            <a class="btn-floating red waves-effect waves-light modal-trigger" href="#delete_modal">
+                                <i class="small material-icons">delete</i>
+                            </a>
+                            <div id="delete_modal" class="modal">
+                                <div class="modal-content">
+                                    <h4>Delete?</h4>
+                                    <p>Are you sure that you want delete this register?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+                                    <a href="{% url_object_list url_delete %}"
+                                       class="modal-close waves-effect waves-green btn-flat">Delete</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if extra.url_view %}
+                            <a class="btn-floating green" href="{% url_object_list url_view %}">
+                                <i class="small material-icons">visibility</i>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if page_obj.paginator.num_pages > 1 %}
+            <ul class="pagination" style="font-size: 11px;display: flex; justify-content: center;">
+                {% if page_obj.has_previous %}
+                    <li class="waves-effect"><a href="?{% param_replace page=1 %}"><i
+                            class="material-icons">first_page</i></a>
+                    </li>
+                    <li class="waves-effect"><a href="?{% param_replace page=page_obj.previous_page_number %}"><i
+                            class="material-icons">chevron_left</i></a></li>
+                    <li class="waves-effect"><a
+                            href="?{% param_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+                    </li>
+                {% else %}
+                    <li class="disabled"><a href="?{% param_replace page=1 %}"><i class="material-icons">first_page</i></a>
+                    </li>
+                    <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+                {% endif %}
+                <li class="active"><a href="">{{ page_obj.number }}</a></li>
+                {% if page_obj.has_next %}
+                    <li class="waves-effect"><a
+                            href="?{% param_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+                    </li>
+                    <li class="waves-effect"><a href="?{% param_replace page=page_obj.next_page_number %}"><i
+                            class="material-icons">chevron_right</i></a></li>
+                    <li class="waves-effect"><a href="?{% param_replace page=page_obj.paginator.num_pages %}"><i
+                            class="material-icons">last_page</i></a></li>
+                {% else %}
+                    <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+                    <li class="disabled"><a href=""><i class="material-icons">last_page</i></a></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <p class="flow-text">Not {{ singular }} yet.</p>
+    {% endif %}
+
+
+    {#    <div class="fixed-action-btn">#}
+    {#        <a class="btn-floating btn-large blue">#}
+    {#            <i class="large material-icons">menu</i>#}
+    {#        </a>#}
+    {#        <ul>#}
+    {#            <li><a class="btn-floating green" href="{% url_object created_url %}"><i class="material-icons">add</i></a>#}
+    {#            </li>#}
+    {#        </ul>#}
+    {#    </div>#}
+    {##}
+    {#    <script>#}
+    {#        document.addEventListener('DOMContentLoaded', () => {#}
+    {#            const elems = document.querySelectorAll('.fixed-action-btn');#}
+    {#            const instances = M.FloatingActionButton.init(elems, {});#}
+    {#        });#}
+    {#    </script>#}
+</div>

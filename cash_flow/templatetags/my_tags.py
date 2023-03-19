@@ -40,6 +40,7 @@ def param_replace(context, **kwargs):
         del d[k]
     return d.urlencode()
 
+
 @register.simple_tag()
 def render(obj, widget: list_object.ListComponent, **kwargs):
     return widget.custom_widget.render(widget.to_show, getattr(obj, widget.name))
@@ -49,6 +50,7 @@ def render(obj, widget: list_object.ListComponent, **kwargs):
 def url_object_list(parser, token):
     _, url = token.split_contents()
     return UrlCustomFormat(parser, url)
+
 
 @register.tag
 def url_object(parser, token):

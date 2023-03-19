@@ -7,6 +7,7 @@ from django.shortcuts import redirect, get_object_or_404
 
 from custom_widgets.list import basic as list_basic, list_object
 from custom_widgets import fields
+from custom_widgets.list.several import ListsFiltered, ListFiltered, ListComplexMixin
 from . import models, filters, forms
 
 
@@ -89,13 +90,76 @@ class HomeUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
         )
 
 
-class HomeDetailView(LoginRequiredMixin, generic.detail.DetailView):
+class HomeDetailView(LoginRequiredMixin, ListComplexMixin, generic.detail.DetailView):
     """Home Details View"""
     template_name = "home/index.html"
     model = models.Home
+    paginate_by = settings.PAGINATION_LIMIT
+    lists_to_show: ListsFiltered
+
+    def __init__(self, *args, **kwargs):
+        self.lists_to_show = ListsFiltered(*args, **kwargs)
+        self.lists_to_show.add(
+            ListFiltered("history", filters.HomeHistoryFilter, [
+                list_object.ListComponent(
+                    "home__name",
+                    "Home",
+                    fields.Field.STRING,
+                ),
+                list_object.ListComponent(
+                    "note",
+                    "Note",
+                    fields.Field.STRING,
+                ),
+                list_object.ListComponent(
+                    "state",
+                    "State",
+                    fields.Field.STRING,
+                ),
+            ]),
+        )
+        self.lists_to_show.add(
+            ListFiltered("floor", filters.HomeFloorFilter, [
+                list_object.ListComponent(
+                    "number",
+                    "Number",
+                    fields.Field.STRING,
+                ),
+            ]),
+        )
+        self.lists_to_show.add(
+            ListFiltered("department", filters.HomeDepartmentFilter, [
+                list_object.ListComponent(
+                    "code",
+                    "Code",
+                    fields.Field.STRING,
+                ),
+                list_object.ListComponent(
+                    "home__direction",
+                    "Home",
+                    fields.Field.STRING,
+                ),
+            ]),
+        )
+        self.lists_to_show.add(
+            ListFiltered("group", filters.DepartmentGroupHome, [
+                list_object.ListComponent(
+                    "code",
+                    "Code",
+                    fields.Field.STRING,
+                ),
+                list_object.ListComponent(
+                    "home__direction",
+                    "Home",
+                    fields.Field.STRING,
+                ),
+            ]),
+        )
+        super().__init__(*args, **kwargs)
     
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        context = super().get_context_data_list(request=self.request, *args, **context)
         print("context - ", context)
         return context
 

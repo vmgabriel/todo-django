@@ -20,6 +20,7 @@ class HomeListView(LoginRequiredMixin, list_basic.ListBasicMixin):
     url_create = "home:create_home"
     url_edit = "home:edit_home"
     url_delete = "home:delete_home"
+    url_view = "home:detail_home"
     title_form = "Homes"
     fields_to_show: list[list_object.ListComponent] = [
         list_object.ListComponent(
@@ -44,6 +45,7 @@ class HomeNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "home/edit.html"
     form_class = forms.HomeForm
     success_url = "home:home"
+
     def get_context_data(self, **kwargs):
         """Get Context Data"""
         context = super(HomeNewView, self).get_context_data(**kwargs)
@@ -85,6 +87,17 @@ class HomeUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
         return redirect(
             self.get_success_url()
         )
+
+
+class HomeDetailView(LoginRequiredMixin, generic.detail.DetailView):
+    """Home Details View"""
+    template_name = "home/index.html"
+    model = models.Home
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print("context - ", context)
+        return context
 
 
 @login_required

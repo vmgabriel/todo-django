@@ -9,7 +9,9 @@
     {% if url_create %}
         <div class="row center-align">
             <div class="col s12 m3" style="margin-top: 1em;">
-                <a class="waves-effect waves-light btn"><i class="material-icons left">add</i>New {{ singular }}</a>
+                <a class="waves-effect waves-light btn" href="{% url_object_list url_create %}">
+                    <i class="material-icons left">add</i>New {{ singular }}
+                </a>
             </div>
         </div>
     {% endif %}
@@ -44,25 +46,25 @@
         <table class="table" style="margin-bottom: 1em;display: block;overflow-x: auto;white-space: nowrap;">
             <thead>
             <tr>
-                {% for field in fields_to_show %}
+                {% for field in fields %}
                     <th>{{ field.to_show }}</th>
                 {% endfor %}
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            {% for object in extra.object_list %}
+            {% for object in object_list %}
                 <tr>
-                    {% for field in fields_to_show %}
+                    {% for field in fields %}
                         {% render obj=object widget=field %}
                     {% endfor %}
                     <td>
-                        {% if extra.url_edit %}
+                        {% if url_edit %}
                             <a class="btn-floating yellow" href="{% url_object_list url_edit %}">
                                 <i class="small material-icons">edit</i>
                             </a>
                         {% endif %}
-                        {% if extra.url_delete %}
+                        {% if url_delete %}
                             <a class="btn-floating red waves-effect waves-light modal-trigger" href="#delete_modal">
                                 <i class="small material-icons">delete</i>
                             </a>
@@ -78,7 +80,7 @@
                                 </div>
                             </div>
                         {% endif %}
-                        {% if extra.url_view %}
+                        {% if url_view %}
                             <a class="btn-floating green" href="{% url_object_list url_view %}">
                                 <i class="small material-icons">visibility</i>
                             </a>
@@ -122,22 +124,4 @@
     {% else %}
         <p class="flow-text">Not {{ singular }} yet.</p>
     {% endif %}
-
-
-    {#    <div class="fixed-action-btn">#}
-    {#        <a class="btn-floating btn-large blue">#}
-    {#            <i class="large material-icons">menu</i>#}
-    {#        </a>#}
-    {#        <ul>#}
-    {#            <li><a class="btn-floating green" href="{% url_object created_url %}"><i class="material-icons">add</i></a>#}
-    {#            </li>#}
-    {#        </ul>#}
-    {#    </div>#}
-    {##}
-    {#    <script>#}
-    {#        document.addEventListener('DOMContentLoaded', () => {#}
-    {#            const elems = document.querySelectorAll('.fixed-action-btn');#}
-    {#            const instances = M.FloatingActionButton.init(elems, {});#}
-    {#        });#}
-    {#    </script>#}
 </div>

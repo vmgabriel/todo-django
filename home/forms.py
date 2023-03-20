@@ -34,3 +34,29 @@ class HomeForm(forms.ModelForm):
             obj.save()
 
         return obj
+
+
+class FloorForm(forms.ModelForm):
+    """Floor Form Control"""
+
+    class Meta:
+        """Meta Floor Form"""
+        model = models.FloorHome
+        fields = [
+            "number",
+            "plain",
+            "home",
+        ]
+
+    def save(self, commit=True, updated=False, **kwargs):
+        """Save of Floor with the form"""
+        obj = super().save(commit=False)
+
+        if not updated:
+            obj.created_by = kwargs.get("user")
+        obj.updated_by = kwargs.get("user")
+
+        if commit:
+            obj.save()
+
+        return obj

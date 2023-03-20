@@ -1,5 +1,6 @@
 """All tags"""
 
+from functools import reduce
 from django import template
 from custom_widgets.list import list_object
 from django.template.defaulttags import URLNode
@@ -21,10 +22,18 @@ class UrlCustomFormat(template.Node):
     def render(self, context):
         try:
             obj = context.dicts[-1].get("object")
-            fields_in_obj = context.dicts[-2].get("extra", {}).get(
-                "fields_in_url" if not self.is_back else "fields_back",
-                {}
-            )
+            fields_in_obj = {}
+            field_dict = context.dicts[-2]
+            if "extra" in field_dict:
+                fields_in_obj = field_dict.get("extra", {}).get(
+                    "fields_in_url" if not self.is_back else "fields_back",
+                    {}
+                )
+            else:
+                fields_in_obj = field_dict.get(
+                    "fields_in_url" if not self.is_back else "fields_back",
+                    {}
+                )
             kwargs = {name: self.parser.compile_filter(field) for name, field in fields_in_obj.items()}
             return URLNode(self.url, [], kwargs, None).render(context)
         except template.VariableDoesNotExist:
@@ -43,7 +52,8 @@ def param_replace(context, **kwargs):
 
 @register.simple_tag()
 def render(obj, widget: list_object.ListComponent, **kwargs):
-    return widget.custom_widget.render(widget.to_show, getattr(obj, widget.name))
+    attr = reduce(lambda acc, val: getattr(acc, val), widget.name.split("."), obj)
+    return widget.custom_widget.render(widget.to_show, attr)
 
 
 @register.tag

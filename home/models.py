@@ -31,6 +31,9 @@ class Home(models.Model):
         on_delete=models.CASCADE,
     )
 
+    def __str__(self):
+        return f"Home - {self.name} - {self.direction}"
+
 
 class FloorHome(models.Model):
     number = models.IntegerField()

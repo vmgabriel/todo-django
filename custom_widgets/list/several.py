@@ -24,6 +24,7 @@ class ListFiltered(FilterView):
     url_edit: str | None
     url_delete: str | None
     url_show: str | None
+    url_create: str | None
     title: str
 
     template_list_name = "list/complex.html"
@@ -48,6 +49,8 @@ class ListFiltered(FilterView):
             self.url_delete = kwargs["url_delete"]
         if "url_show" in kwargs:
             self.url_show = kwargs["url_show"]
+        if "url_create" in kwargs:
+            self.url_create = kwargs["url_create"]
         self.fields_in_url = kwargs.get("fields_in_url", {})
         self.title = kwargs.get("title") or f"{self.model.__name__} List"
         self.page_kwarg = f"page_{self.model.__name__}"
@@ -69,12 +72,15 @@ class ListFiltered(FilterView):
     @property
     def as_div(self) -> HttpResponse:
         ctx = {
+            "instance": self.kwargs.get("object"),
+            "fields_in_url": self.fields_in_url,
             "title": self.title,
             "fields": self.fields,
             "form": self.filterset_class().form,
             "url_delete": getattr(self, "url_delete", None),
             "url_show": getattr(self, "url_show", None),
             "url_edit": getattr(self, "url_edit", None),
+            "url_create": getattr(self, "url_create", None),
             "paginator": self.kwargs.get("paginator"),
             "page_obj": self.kwargs.get("page_obj"),
             "object_list": self.kwargs.get("object_list"),

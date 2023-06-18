@@ -47,6 +47,7 @@ class FloorForm(forms.ModelForm):
             "plain",
             "home",
         ]
+        context_object_name = "floor_list"
 
     def save(self, commit=True, updated=False, **kwargs):
         """Save of Floor with the form"""

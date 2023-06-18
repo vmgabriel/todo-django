@@ -25,5 +25,5 @@ urlpatterns: list[path] = [
     # Floor
     path("floors/new", views.FloorNewView.as_view(), name="new_floor"),
     path("floors/<int:pk>/edit", views.FloorUpdateView.as_view(), name="edit_floor"),
-    path("floors/<int:pk>/delete", views.delete_floor, name="delete_floor")
+    path("floors/<int:pk>/delete", views.delete_floor, name="delete_floor"),
 ]

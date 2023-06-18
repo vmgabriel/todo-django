@@ -111,23 +111,26 @@ class HomeDetailView(LoginRequiredMixin, ListComplexMixin, generic.detail.Detail
     def __init__(self, *args, **kwargs):
         self.lists_to_show = ListsFiltered(*args, **kwargs)
         self.lists_to_show.add(
-            ListFiltered("history", filters.HomeHistoryFilter, [
-                list_object.ListComponent(
-                    "home.name",
-                    "Home",
-                    fields.Field.STRING,
-                ),
-                list_object.ListComponent(
-                    "note",
-                    "Note",
-                    fields.Field.STRING,
-                ),
-                list_object.ListComponent(
-                    "state",
-                    "State",
-                    fields.Field.STRING,
-                ),
-            ]),
+            ListFiltered(
+                "history",
+                filters.HomeHistoryFilter, [
+                    list_object.ListComponent(
+                        "home.name",
+                        "Home",
+                        fields.Field.STRING,
+                    ),
+                    list_object.ListComponent(
+                        "note",
+                        "Note",
+                        fields.Field.STRING,
+                    ),
+                    list_object.ListComponent(
+                        "state",
+                        "State",
+                        fields.Field.STRING,
+                    ),
+                ],
+            ),
         )
         self.lists_to_show.add(
             ListFiltered(
@@ -168,18 +171,17 @@ class HomeDetailView(LoginRequiredMixin, ListComplexMixin, generic.detail.Detail
                     fields.Field.STRING,
                 ),
                 list_object.ListComponent(
-                    "home__direction",
+                    "home.name",
                     "Home",
                     fields.Field.STRING,
                 ),
             ]),
         )
         super().__init__(*args, **kwargs)
-    
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context = super().get_context_data_list(request=self.request, *args, **context)
-        print("context - ", context)
         return context
 
 

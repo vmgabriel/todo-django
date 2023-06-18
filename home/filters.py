@@ -38,6 +38,11 @@ class HomeFloorFilter(django_filters.FilterSet):
         }
     )
 
+    def __init__(self, *args, **kwargs):
+        self.prefix = "floor"
+        kwargs["prefix"] = self.prefix
+        super().__init__(*args, **kwargs)
+
     class Meta:
         model = models.FloorHome
         fields = ["number"]

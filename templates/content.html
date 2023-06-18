@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block style %}
   {% block header %}
@@ -13,7 +13,7 @@
     {% block container %}
     {% endblock container %}
   {% else %}
-    {% include "components/home.html'" %}
+    {% include "components/home.html" %}
   {% endif %}
 
   {% include "components/footer.html" %}

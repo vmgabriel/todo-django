@@ -10,6 +10,9 @@ services:
       - .:/app
     networks:
       - cache-network
+    environment:
+      - VIRTUAL_HOST=my.home.local
+      - VIRTUAL_PORT=3030
     restart: always
     command: >
       sh -c "python manage.py runserver 0.0.0.0:3030"
@@ -24,7 +27,7 @@ services:
       - cache-network
 
   celery:
-    image: todo-django-app
+    image: smart_home_app
     volumes:
       - .:/app
     networks:
@@ -34,6 +37,22 @@ services:
     command: >
       sh -c "python -m celery -A config worker -l INFO"
 
+  proxy:
+    image: jwilder/nginx-proxy
+    container_name: proxy
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - DEFAULT_HOST=my.home.local
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      #- ./proxy/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/nginx/certs
+    networks:
+      - cache-network
+    depends_on:
+      - app
 
 networks:
   cache-network:

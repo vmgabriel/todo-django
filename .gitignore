@@ -194,3 +194,7 @@ cython_debug/
 db.sqlite3
 # Content of media
 media/
+
+
+certs/*
+session.session

@@ -1,46 +1,46 @@
 {% load static %}
+{% load pwa %}
 
 <!DOCTYPE html>
 <html>
-{% load pwa %}
-{% progressive_web_app_meta %}
-<link rel="manifest" href="manifest.json">
-<head>
-    <title>Smart Home</title>
+    <link rel="manifest" href="manifest.json">
+    <head>
+        <title>Smart Home</title>
 
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <link href="{% static 'css/base.css' %}" rel="stylesheet">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <link rel="icon" href="{% static 'imgs/brands/house.ico' %}">
-    {% block style %}
-    {% endblock style %}
+        <link rel="icon" href="{% static 'imgs/brands/house.ico' %}">
+        {% block style %}
+        {% endblock style %}
 
-</head>
-<body>
-{% block content %}
-{% endblock content %}
+        {% progressive_web_app_meta %}
+    </head>
+    <body>
+        {% block content %}
+        {% endblock content %}
 
-<script src="{% static 'js/jscolor.js' %}"></script>
-<script>
-    {% block js %}
-    {% endblock js %}
-</script>
+        <script src="{% static 'js/jscolor.js' %}"></script>
+        <script>
+            {% block js %}
+            {% endblock js %}
+        </script>
 
-<script>
-    $(document).ready(() => {
-        $('.sidenav').sidenav();
-        $('.carousel').carousel();
-        $(".dropdown-trigger").dropdown();
-        $('.modal').modal();
-        $('.collapsible').collapsible();
-        $('.chips').chips();
-    });
-</script>
-</body>
+        <script>
+            $(document).ready(() => {
+                $(".sidenav").sidenav();
+                $(".carousel").carousel();
+                $(".dropdown-trigger").dropdown();
+                $(".modal").modal();
+                $(".collapsible").collapsible();
+                $(".chips").chips();
+            });
+        </script>
+    </body>
 </html>

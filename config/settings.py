@@ -91,7 +91,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "templates"),
-            os.path.join(BASE_DIR, 'django_admin_geomap', 'templates'),
+            os.path.join(BASE_DIR, "django_admin_geomap", "templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -114,13 +114,13 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 MODE = env("MODE", default="test")
 DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': env("DATABASE_NAME"),
-            'USER': env("DATABASE_USER"),
-            'PASSWORD': env("DATABASE_PASSWORD"),
-            'HOST': env("DATABASE_HOST"),
-            'PORT': env("DATABASE_PORT"),
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": env("DATABASE_NAME"),
+            "USER": env("DATABASE_USER"),
+            "PASSWORD": env("DATABASE_PASSWORD"),
+            "HOST": env("DATABASE_HOST"),
+            "PORT": env("DATABASE_PORT"),
         }
     }
 
@@ -168,7 +168,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = "/static/"
 # STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = (
-  os.path.join(BASE_DIR, "static/"),
+    os.path.join(BASE_DIR, "static/"),
 )
 
 PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, "static/js", "serviceworker.js")
@@ -201,16 +201,16 @@ TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
 PHONE_DEFAULT = "+573057882366"
 
 # Location
-LOCATION_FIELD_PATH = STATIC_URL + 'location_field'
+LOCATION_FIELD_PATH = STATIC_URL + "location_field"
 
 LOCATION_FIELD = {
-    'map.provider': 'openstreetmap',
-    'search.provider': 'nominatim',
+    "map.provider": "openstreetmap",
+    "search.provider": "nominatim",
 
-    'resources.root_path': LOCATION_FIELD_PATH,
-    'resources.media': {
-        'js': (
-            LOCATION_FIELD_PATH + '/js/form.js',
+    "resources.root_path": LOCATION_FIELD_PATH,
+    "resources.media": {
+        "js": (
+            LOCATION_FIELD_PATH + "/js/form.js",
         ),
     },
 }
@@ -265,8 +265,8 @@ CELERY_CACHE_BACKEND = 'django-cache'
 
 # Configuration of Sending of Email
 EMAIL_PROVIDER = "django_email"
-EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_BACKEND ="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")

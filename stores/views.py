@@ -49,7 +49,7 @@ class StoreListView(LoginRequiredMixin, list_basic.ListBasicMixin):
 
     def get_context_data(self, *args, **kwargs):
         context = super(StoreListView, self).get_context_data(*args, **kwargs)
-        context['count'] = self.get_queryset().count()
+        context["count"] = self.get_queryset().count()
         return context
 
 
@@ -115,7 +115,7 @@ class StoreEditView(LoginRequiredMixin, generic.edit.UpdateView):
 class DetailStoreView(LoginRequiredMixin, generic.detail.DetailView):
     """Detail Board View"""
     model = models.Store
-    template_name = 'stores/detail.html'
+    template_name = "stores/detail.html"
 
     def queryset_list(self, pk):
         return models.StoreProduct.objects.filter(enabled=True, store=pk)
@@ -179,7 +179,7 @@ class DetailStoreView(LoginRequiredMixin, generic.detail.DetailView):
         products = products.page(self.request.GET.get("page_products", 1))
 
         items = self.paginate(self.filter_query(
-            self.queryset_list(context['store']),
+            self.queryset_list(context["store"]),
             query,
             "included_",
             True,
@@ -187,10 +187,10 @@ class DetailStoreView(LoginRequiredMixin, generic.detail.DetailView):
         count_items = items.count
         items = items.page(self.request.GET.get("page_items", 1))
 
-        context['items'] = items
-        context['products'] = products
+        context["items"] = items
+        context["products"] = products
         context["count_products"] = count_products
-        context["form_item"] = forms.StoreProductForm(context['store'])
+        context["form_item"] = forms.StoreProductForm(context["store"])
         context["count_items"] = count_items
         context["search"] = query.get("to_include_name", "")
         context["search_included"] = query.get("included_name", "")

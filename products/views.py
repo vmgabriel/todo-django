@@ -51,7 +51,7 @@ class ProductListView(LoginRequiredMixin, list_basic.ListBasicMixin):
 class ProductNewView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "products/edit.html"
     form_class = forms.ProductForm
-    success_url = "product.list"
+    success_url = "products:list"
     form_name = "Product"
     fields_in_url = {}
     url_cancel = "products:list"
